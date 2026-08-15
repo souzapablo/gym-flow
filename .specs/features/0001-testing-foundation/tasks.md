@@ -109,6 +109,8 @@ CI rules.
 
 ### T2: Add developer testing instructions
 
+**Status**: Complete
+
 **What**: Document Docker and Playwright prerequisites, environment safety,
 local commands, and expected CI behavior for developers.
 **Where**: `README.md`
@@ -123,10 +125,10 @@ local commands, and expected CI behavior for developers.
 
 **Done when**:
 
-- [ ] A clean-clone developer can identify prerequisites and every public test
+- [x] A clean-clone developer can identify prerequisites and every public test
       command.
-- [ ] The README links to `TESTING.md` instead of duplicating policy details.
-- [ ] Markdown and `npm run lint` pass.
+- [x] The README links to `TESTING.md` instead of duplicating policy details.
+- [x] Markdown and `npm run lint` pass.
 
 **Tests**: none, documentation layer
 **Gate**: quick, using the commands available before test tooling exists
