@@ -10,6 +10,7 @@
   --marker-yellow: oklch(87% 0.17 94);
   --marker-pink: oklch(72% 0.17 8);
   --marker-blue: oklch(70% 0.13 238);
+  --training-accent: var(--marker-yellow);
 }
 
 * {
@@ -383,6 +384,15 @@ input:focus-visible {
 .completed-list strong {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+
+.completed-list li > span:last-child {
+  background: radial-gradient(
+    circle,
+    var(--training-accent) 0 0.78rem,
+    transparent 0.8rem
+  );
+  font-weight: 700;
 }
 
 .set-form {
