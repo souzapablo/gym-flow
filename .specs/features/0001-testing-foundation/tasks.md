@@ -136,6 +136,8 @@ local commands, and expected CI behavior for developers.
 
 ### T3: Install and expose the testing toolchain
 
+**Status**: Complete
+
 **What**: Add Drizzle, node-postgres, Vitest, Testing Library, Testcontainers,
 Playwright, TypeScript path support, React test support, and public scripts.
 **Where**: `package.json`
@@ -150,13 +152,13 @@ Playwright, TypeScript path support, React test support, and public scripts.
 
 **Done when**:
 
-- [ ] Runtime dependencies add `drizzle-orm` and `pg` while retaining
+- [x] Runtime dependencies add `drizzle-orm` and `pg` while retaining
       `@neondatabase/serverless` until the migration reaches T12.
-- [ ] Development dependencies contain the approved test tools.
-- [ ] Scripts expose `test`, `test:vitest`, `test:unit`, `test:component`,
+- [x] Development dependencies contain the approved test tools.
+- [x] Scripts expose `test`, `test:vitest`, `test:unit`, `test:component`,
       `test:integration`, `test:e2e`, `test:watch`, `typecheck`, and `check`.
-- [ ] `package-lock.json` matches the manifest and install succeeds.
-- [ ] `npm run typecheck` passes with the initial configs allowed to land in
+- [x] `package-lock.json` matches the manifest and install succeeds.
+- [x] `npm run typecheck` passes with the initial configs allowed to land in
       subsequent tasks.
 
 **Tests**: none, package and configuration layer
