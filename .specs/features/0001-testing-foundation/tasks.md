@@ -59,7 +59,7 @@ T1 -> T2
 ### Phase 2: Drizzle and test infrastructure
 
 ```text
-T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8
+T2 -> T3 -> T4 -> T6 -> T5 -> T7 -> T8
 ```
 
 ### Phase 3: Current behavior coverage
@@ -192,12 +192,40 @@ and relationship without changing migration history.
 **Gate**: build
 **Commit**: `feat(db): declare drizzle schema`
 
+### T6: Configure isolated Vitest projects
+
+**Status**: Complete
+
+**What**: Configure named unit, component, and database projects with their
+correct environments, globs, setup files, aliases, and parallelism.
+**Where**: `vitest.config.ts`
+**Depends on**: T4
+**Reuses**: Installed Next.js Vitest guidance and test naming policy.
+**Requirement**: TEST-01, TEST-02
+
+**Tools**:
+
+- MCP: official Vitest documentation through web research
+- Skill: `coding-guidelines`, `tlc-spec-driven`
+
+**Done when**:
+
+- [x] Unit uses Node, component uses jsdom, and database uses Node.
+- [x] Database test files run without file-level parallelism.
+- [x] Project filters select only their documented suffixes.
+- [x] Empty projects exit successfully during staged adoption.
+- [x] `npm run typecheck` and config loading pass.
+
+**Tests**: none, runner configuration layer
+**Gate**: build
+**Commit**: `test(config): define isolated vitest projects`
+
 ### T5: Create the production Drizzle TCP client
 
 **What**: Add the module-scoped node-postgres pool and configuration validation
 for Neon pooled TCP access.
 **Where**: `src/db/client.ts`
-**Depends on**: T4
+**Depends on**: T6
 **Reuses**: Missing-`DATABASE_URL` behavior from `src/lib/db.ts`.
 **Requirement**: TEST-02
 
@@ -220,38 +248,12 @@ for Neon pooled TCP access.
 **Gate**: quick
 **Commit**: `feat(db): add pooled drizzle client`
 
-### T6: Configure isolated Vitest projects
-
-**What**: Configure named unit, component, and database projects with their
-correct environments, globs, setup files, aliases, and parallelism.
-**Where**: `vitest.config.ts`
-**Depends on**: T5
-**Reuses**: Installed Next.js Vitest guidance and test naming policy.
-**Requirement**: TEST-01, TEST-02
-
-**Tools**:
-
-- MCP: official Vitest documentation through web research
-- Skill: `coding-guidelines`, `tlc-spec-driven`
-
-**Done when**:
-
-- [ ] Unit uses Node, component uses jsdom, and database uses Node.
-- [ ] Database test files run without file-level parallelism.
-- [ ] Project filters select only their documented suffixes.
-- [ ] Empty projects exit successfully during staged adoption.
-- [ ] `npm run typecheck` and config loading pass.
-
-**Tests**: none, runner configuration layer
-**Gate**: build
-**Commit**: `test(config): define isolated vitest projects`
-
 ### T7: Start PostgreSQL and apply real migrations
 
 **What**: Add the PostgreSQL 18 Testcontainers lifecycle and ordered SQL
 migration runner with an integration smoke test.
 **Where**: `test/database/lifecycle.ts`
-**Depends on**: T6
+**Depends on**: T5
 **Reuses**: `migrations/*.sql` and `postgres:18-alpine`.
 **Requirement**: TEST-02
 
@@ -594,7 +596,7 @@ dependencies and runs the public `check` command.
 ```text
 Phase 1 -> Phase 2 -> Phase 3 -> Phase 4
 
-T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9 -> T10
+T1 -> T2 -> T3 -> T4 -> T6 -> T5 -> T7 -> T8 -> T9 -> T10
    -> T11 -> T12 -> T13 -> T14 -> T15 -> T16 -> T17 -> T18 -> T19
 ```
 
@@ -637,9 +639,9 @@ for any approved sub-agent delegation.
 | T2 | T1 | T1 -> T2 | Match |
 | T3 | T2 | T2 -> T3 | Match |
 | T4 | T3 | T3 -> T4 | Match |
-| T5 | T4 | T4 -> T5 | Match |
-| T6 | T5 | T5 -> T6 | Match |
-| T7 | T6 | T6 -> T7 | Match |
+| T6 | T4 | T4 -> T6 | Match |
+| T5 | T6 | T6 -> T5 | Match |
+| T7 | T5 | T5 -> T7 | Match |
 | T8 | T7 | T7 -> T8 | Match |
 | T9 | T8 | T8 -> T9 | Match |
 | T10 | T9 | T9 -> T10 | Match |
