@@ -222,6 +222,8 @@ correct environments, globs, setup files, aliases, and parallelism.
 
 ### T5: Create the production Drizzle TCP client
 
+**Status**: Complete
+
 **What**: Add the module-scoped node-postgres pool and configuration validation
 for Neon pooled TCP access.
 **Where**: `src/db/client.ts`
@@ -236,13 +238,13 @@ for Neon pooled TCP access.
 
 **Done when**:
 
-- [ ] The client uses `drizzle-orm/node-postgres` and one `pg.Pool` with
+- [x] The client uses `drizzle-orm/node-postgres` and one `pg.Pool` with
       `max: 5`.
-- [ ] Production rejects missing URLs and Neon URLs without `-pooler`.
-- [ ] Local test composition can supply a Testcontainer URI explicitly without
+- [x] Production rejects missing URLs and Neon URLs without `-pooler`.
+- [x] Local test composition can supply a Testcontainer URI explicitly without
       weakening production validation.
-- [ ] Three configuration unit tests pass.
-- [ ] Quick gate passes with 3 new tests.
+- [x] Three configuration unit tests pass.
+- [x] Quick gate passes with 3 new tests.
 
 **Tests**: unit
 **Gate**: quick
