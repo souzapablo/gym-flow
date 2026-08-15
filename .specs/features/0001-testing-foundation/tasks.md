@@ -252,6 +252,8 @@ for Neon pooled TCP access.
 
 ### T7: Start PostgreSQL and apply real migrations
 
+**Status**: Complete
+
 **What**: Add the PostgreSQL 18 Testcontainers lifecycle and ordered SQL
 migration runner with an integration smoke test.
 **Where**: `test/database/lifecycle.ts`
@@ -266,12 +268,12 @@ migration runner with an integration smoke test.
 
 **Done when**:
 
-- [ ] One container starts per database-project run and stops in teardown.
-- [ ] Migrations run once in lexical filename order before test files load.
-- [ ] Migration failures report the failing filename and original cause.
-- [ ] Tests receive the generated URI without Neon credentials.
-- [ ] Two lifecycle integration tests pass.
-- [ ] `npm run test:integration` passes with 2 new tests.
+- [x] One container starts per database-project run and stops in teardown.
+- [x] Migrations run once in lexical filename order before test files load.
+- [x] Migration failures report the failing filename and original cause.
+- [x] Tests receive the generated URI without Neon credentials.
+- [x] Two lifecycle integration tests pass.
+- [x] `npm run test:integration` passes with 2 new tests.
 
 **Tests**: integration
 **Gate**: full, limited to the available database project

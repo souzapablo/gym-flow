@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     passWithNoTests: true,
+    teardownTimeout: 120_000,
     projects: [
       {
         extends: true,
@@ -30,10 +31,13 @@ export default defineConfig({
           name: "database",
           environment: "node",
           fileParallelism: false,
+          globalSetup: ["./test/database/lifecycle.ts"],
+          hookTimeout: 120_000,
           include: [
             "src/**/*.integration.test.ts",
             "test/**/*.integration.test.ts",
           ],
+          testTimeout: 30_000,
         },
       },
     ],
