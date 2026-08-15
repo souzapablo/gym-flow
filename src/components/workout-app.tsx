@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import {
+  type CompletedWorkout,
   type Exercise,
   type MarkerColor,
+  type NewWorkout,
   type Workout,
+  type WorkoutSession,
 } from "@/lib/workout";
 
 type Entry = {
@@ -40,8 +43,21 @@ function MarkerLogo() {
   );
 }
 
-export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) {
+export function WorkoutApp({
+  initialWorkouts,
+  initialCompletedWorkouts,
+  persistenceEnabled,
+  createWorkoutAction,
+  saveWorkoutSessionAction,
+}: {
+  initialWorkouts: Workout[];
+  initialCompletedWorkouts: CompletedWorkout[];
+  persistenceEnabled: boolean;
+  createWorkoutAction: (input: unknown) => Promise<Workout>;
+  saveWorkoutSessionAction: (input: unknown) => Promise<void>;
+}) {
   const [workouts, setWorkouts] = useState<Workout[]>(initialWorkouts);
+  const [completedWorkouts, setCompletedWorkouts] = useState(initialCompletedWorkouts);
   const [tab, setTab] = useState<Tab>("workouts");
   const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
   const [screen, setScreen] = useState<Screen>("list");
@@ -54,6 +70,8 @@ export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) 
   const [evaluationSeconds, setEvaluationSeconds] = useState(EVALUATION_SECONDS);
   const [exerciseRatings, setExerciseRatings] = useState<Record<number, string>>({});
   const [workoutFeedback, setWorkoutFeedback] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const exercise = activeWorkout?.exercises[exerciseIndex];
   const totalSets = activeWorkout?.exercises.reduce(
@@ -137,6 +155,82 @@ export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) 
     setScreen("list");
   }
 
+  function createWorkout(input: NewWorkout) {
+    setMutationError(null);
+
+    if (!persistenceEnabled) {
+      setWorkouts((current) => [
+        ...current,
+        {
+          ...input,
+          id: crypto.randomUUID(),
+          exercises: input.exercises.map((exercise) => ({
+            ...exercise,
+            id: crypto.randomUUID(),
+          })),
+        },
+      ]);
+      setScreen("list");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const workout = await createWorkoutAction(input);
+        setWorkouts((current) => [...current, workout]);
+        setScreen("list");
+      } catch {
+        setMutationError("Não foi possível salvar o treino.");
+      }
+    });
+  }
+
+  function finishWorkout() {
+    if (!activeWorkout) return;
+
+    const completedWorkout: CompletedWorkout = {
+      id: crypto.randomUUID(),
+      workoutId: activeWorkout.id,
+      workoutName: activeWorkout.name,
+      color: activeWorkout.color,
+      completedAt: new Date().toISOString(),
+    };
+
+    if (!persistenceEnabled) {
+      setCompletedWorkouts((current) => [completedWorkout, ...current]);
+      closeWorkout();
+      return;
+    }
+
+    const session: WorkoutSession = {
+      workoutId: activeWorkout.id,
+      feedback: workoutFeedback,
+      sets: activeWorkout.exercises.flatMap((item, itemIndex) =>
+        Array.from({ length: item.sets }, (_, itemSetIndex) => {
+          const entry = entries[`${itemIndex}-${itemSetIndex}`];
+          return {
+            exercise_id: item.id,
+            set_number: itemSetIndex + 1,
+            weight: entry?.weight ? Number(entry.weight) : null,
+            reps: Number(entry?.reps || item.targetReps),
+            load_rating: exerciseRatings[itemIndex] ?? null,
+          };
+        }),
+      ),
+    };
+
+    setMutationError(null);
+    startTransition(async () => {
+      try {
+        await saveWorkoutSessionAction(session);
+        setCompletedWorkouts((current) => [completedWorkout, ...current]);
+        closeWorkout();
+      } catch {
+        setMutationError("Não foi possível salvar a sessão.");
+      }
+    });
+  }
+
   function completeSet() {
     if (!exercise) return;
 
@@ -196,7 +290,9 @@ export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) 
         entries={entries}
         exerciseRatings={exerciseRatings}
         feedback={workoutFeedback}
-        onClose={closeWorkout}
+        isSaving={isPending}
+        error={mutationError}
+        onClose={finishWorkout}
       />
     );
   }
@@ -232,11 +328,10 @@ export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) 
     return (
       <CreateWorkoutScreen
         usedColors={workouts.map((workout) => workout.color)}
+        isSaving={isPending}
+        error={mutationError}
         onCancel={() => setScreen("list")}
-        onCreate={(workout) => {
-          setWorkouts((current) => [...current, workout]);
-          setScreen("list");
-        }}
+        onCreate={createWorkout}
       />
     );
   }
@@ -250,7 +345,7 @@ export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) 
           onStart={startWorkout}
         />
       ) : (
-        <CalendarTab workouts={workouts} />
+        <CalendarTab workouts={workouts} completedWorkouts={completedWorkouts} />
       )}
     </AppTabs>
   );
@@ -312,9 +407,13 @@ const MONTHS = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
-const SAMPLE_COMPLETED_DAYS = [2, 4, 6, 9, 11, 13, 16, 18];
-
-function CalendarTab({ workouts }: { workouts: Workout[] }) {
+function CalendarTab({
+  workouts,
+  completedWorkouts,
+}: {
+  workouts: Workout[];
+  completedWorkouts: CompletedWorkout[];
+}) {
   const today = new Date();
   const [view, setView] = useState(() => ({
     year: today.getFullYear(),
@@ -324,12 +423,17 @@ function CalendarTab({ workouts }: { workouts: Workout[] }) {
   const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
   const isCurrentMonth =
     view.year === today.getFullYear() && view.month === today.getMonth();
-  const completedDays = isCurrentMonth
-    ? SAMPLE_COMPLETED_DAYS.filter((day) => day <= daysInMonth)
-    : [];
-  const completedByDay = new Map(
-    completedDays.map((day, index) => [day, workouts[index % workouts.length]]),
-  );
+  const completedInMonth = completedWorkouts.filter((completedWorkout) => {
+    const completedAt = new Date(completedWorkout.completedAt);
+    return completedAt.getFullYear() === view.year && completedAt.getMonth() === view.month;
+  });
+  const completedByDay = new Map<number, CompletedWorkout>();
+  for (const completedWorkout of completedInMonth) {
+    const completedAt = new Date(completedWorkout.completedAt);
+    if (!completedByDay.has(completedAt.getDate())) {
+      completedByDay.set(completedAt.getDate(), completedWorkout);
+    }
+  }
   const cells: (number | null)[] = [
     ...Array.from({ length: firstDay }, () => null),
     ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
@@ -362,7 +466,7 @@ function CalendarTab({ workouts }: { workouts: Workout[] }) {
           <button type="button" onClick={() => shiftMonth(-1)} aria-label="Mês anterior">←</button>
           <div aria-live="polite">
             <strong>{MONTHS[view.month]} {view.year}</strong>
-            <span>{completedDays.length} treinos concluídos</span>
+            <span>{completedInMonth.length} treinos concluídos</span>
           </div>
           <button type="button" onClick={() => shiftMonth(1)} aria-label="Próximo mês">→</button>
         </div>
@@ -374,13 +478,13 @@ function CalendarTab({ workouts }: { workouts: Workout[] }) {
           {cells.map((day, index) => {
             if (day === null) return <span role="gridcell" key={`empty-${index}`} />;
 
-            const workout = completedByDay.get(day);
+            const completedWorkout = completedByDay.get(day);
             const isToday = isCurrentMonth && day === today.getDate();
             return (
               <span
-                className={`calendar-day${workout ? ` marker-color-${workout.color} is-complete` : ""}${isToday ? " is-today" : ""}`}
+                className={`calendar-day${completedWorkout ? ` marker-color-${completedWorkout.color} is-complete` : ""}${isToday ? " is-today" : ""}`}
                 role="gridcell"
-                aria-label={workout ? `${day}, ${workout.name} concluído` : String(day)}
+                aria-label={completedWorkout ? `${day}, ${completedWorkout.workoutName} concluído` : String(day)}
                 key={day}
               >
                 {day}
@@ -492,11 +596,15 @@ type ExerciseDraft = Exercise;
 
 function CreateWorkoutScreen({
   usedColors,
+  isSaving,
+  error,
   onCreate,
   onCancel,
 }: {
   usedColors: MarkerColor[];
-  onCreate: (workout: Workout) => void;
+  isSaving: boolean;
+  error: string | null;
+  onCreate: (workout: NewWorkout) => void;
   onCancel: () => void;
 }) {
   const [name, setName] = useState("");
@@ -539,12 +647,10 @@ function CreateWorkoutScreen({
             if (color === null) return;
 
             onCreate({
-              id: crypto.randomUUID(),
               name: name.trim(),
               focus: focus.trim(),
               color,
-              exercises: exercises.map(({ id, name: exerciseName, sets, targetReps }) => ({
-                id,
+              exercises: exercises.map(({ name: exerciseName, sets, targetReps }) => ({
                 name: exerciseName.trim(),
                 sets,
                 targetReps,
@@ -699,8 +805,9 @@ function CreateWorkoutScreen({
             </button>
           </div>
 
-          <button className="complete-button" type="submit" disabled={color === null}>
-            <span>Salvar treino</span>
+          {error ? <p role="alert">{error}</p> : null}
+          <button className="complete-button" type="submit" disabled={color === null || isSaving}>
+            <span>{isSaving ? "Salvando…" : "Salvar treino"}</span>
             <span aria-hidden="true">→</span>
           </button>
         </form>
@@ -965,12 +1072,16 @@ function SummaryScreen({
   entries,
   exerciseRatings,
   feedback,
+  isSaving,
+  error,
   onClose,
 }: {
   workout: Workout;
   entries: Record<string, Entry>;
   exerciseRatings: Record<number, string>;
   feedback: string | null;
+  isSaving: boolean;
+  error: string | null;
   onClose: () => void;
 }) {
   const totalSets = workout.exercises.reduce(
@@ -1026,8 +1137,9 @@ function SummaryScreen({
 
         {feedback && <p className="summary-feedback">Como foi: {feedback}</p>}
 
-        <button className="complete-button" type="button" onClick={onClose}>
-          <span>Voltar às fichas</span>
+        {error ? <p role="alert">{error}</p> : null}
+        <button className="complete-button" type="button" onClick={onClose} disabled={isSaving}>
+          <span>{isSaving ? "Salvando…" : "Voltar às fichas"}</span>
           <span aria-hidden="true">→</span>
         </button>
       </section>
