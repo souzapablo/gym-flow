@@ -252,6 +252,23 @@ export function WorkoutApp() {
   );
 }
 
+function DumbbellIcon() {
+  return (
+    <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11" />
+    </svg>
+  );
+}
+
+function HistoryIcon() {
+  return (
+    <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+      <path d="M3 3v5h5M12 7v5l3 2" />
+    </svg>
+  );
+}
+
 function AppTabs({
   tab,
   onTabChange,
@@ -270,7 +287,7 @@ function AppTabs({
           aria-current={tab === "workouts" ? "page" : undefined}
           onClick={() => onTabChange("workouts")}
         >
-          <span className="tab-icon" aria-hidden="true">⌁</span>
+          <DumbbellIcon />
           Treinos
         </button>
         <button
@@ -278,8 +295,8 @@ function AppTabs({
           aria-current={tab === "calendar" ? "page" : undefined}
           onClick={() => onTabChange("calendar")}
         >
-          <span className="tab-icon" aria-hidden="true">▦</span>
-          Calendário
+          <HistoryIcon />
+          Histórico
         </button>
       </nav>
     </div>
@@ -334,7 +351,7 @@ function CalendarTab({ workouts }: { workouts: Workout[] }) {
 
         <div className="calendar-heading">
           <p className="kicker">Seu ritmo no papel</p>
-          <h1>Calendário.</h1>
+          <h1>Histórico.</h1>
         </div>
 
         <div className="month-switcher">

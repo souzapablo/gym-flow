@@ -130,8 +130,8 @@ button {
 }
 
 .tab-icon {
-  font-size: 1.35rem;
-  line-height: 1;
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .app-header,
