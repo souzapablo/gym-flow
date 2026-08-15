@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  TEST_WORKOUT,
   type Exercise,
   type MarkerColor,
   type Workout,
@@ -41,10 +40,10 @@ function MarkerLogo() {
   );
 }
 
-export function WorkoutApp() {
-  const [workouts, setWorkouts] = useState<Workout[]>([TEST_WORKOUT]);
+export function WorkoutApp({ initialWorkouts }: { initialWorkouts: Workout[] }) {
+  const [workouts, setWorkouts] = useState<Workout[]>(initialWorkouts);
   const [tab, setTab] = useState<Tab>("workouts");
-  const [activeWorkout, setActiveWorkout] = useState(TEST_WORKOUT);
+  const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
   const [screen, setScreen] = useState<Screen>("list");
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setIndex, setSetIndex] = useState(0);
@@ -56,17 +55,19 @@ export function WorkoutApp() {
   const [exerciseRatings, setExerciseRatings] = useState<Record<number, string>>({});
   const [workoutFeedback, setWorkoutFeedback] = useState<string | null>(null);
 
-  const exercise = activeWorkout.exercises[exerciseIndex];
-  const totalSets = activeWorkout.exercises.reduce(
+  const exercise = activeWorkout?.exercises[exerciseIndex];
+  const totalSets = activeWorkout?.exercises.reduce(
     (total, item) => total + item.sets,
     0,
-  );
-  const completedSets = activeWorkout.exercises
+  ) ?? 0;
+  const completedSets = activeWorkout?.exercises
     .slice(0, exerciseIndex)
-    .reduce((total, item) => total + item.sets, 0) + setIndex;
-  const progress = (completedSets / totalSets) * 100;
+    .reduce((total, item) => total + item.sets, 0) ?? 0;
+  const progress = totalSets === 0 ? 0 : ((completedSets + setIndex) / totalSets) * 100;
 
   const finishExercise = useCallback(() => {
+    if (!activeWorkout) return;
+
     const isLastExercise = exerciseIndex === activeWorkout.exercises.length - 1;
 
     if (isLastExercise) {
@@ -79,7 +80,7 @@ export function WorkoutApp() {
     setExerciseIndex((current) => current + 1);
     setSetIndex(0);
     setScreen("focus");
-  }, [activeWorkout.exercises.length, exerciseIndex]);
+  }, [activeWorkout, exerciseIndex]);
 
   useEffect(() => {
     if (screen !== "rest") return;
@@ -132,10 +133,13 @@ export function WorkoutApp() {
   }
 
   function closeWorkout() {
+    setActiveWorkout(null);
     setScreen("list");
   }
 
   function completeSet() {
+    if (!exercise) return;
+
     const entryKey = `${exerciseIndex}-${setIndex}`;
     const completedReps = reps || String(exercise.targetReps);
     setEntries((current) => ({
@@ -156,7 +160,7 @@ export function WorkoutApp() {
     setScreen("rest");
   }
 
-  if (screen === "focus") {
+  if (screen === "focus" && activeWorkout) {
     return (
       <FocusScreen
         workout={activeWorkout}
@@ -174,7 +178,7 @@ export function WorkoutApp() {
     );
   }
 
-  if (screen === "done") {
+  if (screen === "done" && activeWorkout) {
     return (
       <DoneScreen
         workout={activeWorkout}
@@ -185,7 +189,7 @@ export function WorkoutApp() {
     );
   }
 
-  if (screen === "summary") {
+  if (screen === "summary" && activeWorkout) {
     return (
       <SummaryScreen
         workout={activeWorkout}
@@ -197,7 +201,7 @@ export function WorkoutApp() {
     );
   }
 
-  if (screen === "evaluate") {
+  if (screen === "evaluate" && activeWorkout && exercise) {
     return (
       <EvaluationScreen
         workout={activeWorkout}
@@ -212,7 +216,7 @@ export function WorkoutApp() {
     );
   }
 
-  if (screen === "rest") {
+  if (screen === "rest" && activeWorkout) {
     return (
       <RestScreen
         workout={activeWorkout}
@@ -484,7 +488,7 @@ function EvaluationScreen({
   );
 }
 
-type ExerciseDraft = Exercise & { id: number };
+type ExerciseDraft = Exercise;
 
 function CreateWorkoutScreen({
   usedColors,
@@ -501,10 +505,13 @@ function CreateWorkoutScreen({
     () => MARKER_COLORS.find((option) => !usedColors.includes(option.value))?.value ?? null,
   );
   const [exercises, setExercises] = useState<ExerciseDraft[]>([
-    { id: 1, name: "", sets: 3, targetReps: 10 },
+    { id: crypto.randomUUID(), name: "", sets: 3, targetReps: 10 },
   ]);
 
-  function updateExercise(id: number, changes: Partial<Exercise>) {
+  function updateExercise(
+    id: Exercise["id"],
+    changes: Partial<Omit<Exercise, "id">>,
+  ) {
     setExercises((current) =>
       current.map((exercise) =>
         exercise.id === id ? { ...exercise, ...changes } : exercise,
@@ -532,10 +539,12 @@ function CreateWorkoutScreen({
             if (color === null) return;
 
             onCreate({
+              id: crypto.randomUUID(),
               name: name.trim(),
               focus: focus.trim(),
               color,
-              exercises: exercises.map(({ name: exerciseName, sets, targetReps }) => ({
+              exercises: exercises.map(({ id, name: exerciseName, sets, targetReps }) => ({
+                id,
                 name: exerciseName.trim(),
                 sets,
                 targetReps,
@@ -678,7 +687,7 @@ function CreateWorkoutScreen({
                 setExercises((current) => [
                   ...current,
                   {
-                    id: Math.max(...current.map((item) => item.id)) + 1,
+                    id: crypto.randomUUID(),
                     name: "",
                     sets: 3,
                     targetReps: 10,
@@ -737,7 +746,7 @@ function WorkoutList({
               <button
                 className={`workout-row marker-color-${workout.color}`}
                 type="button"
-                key={`${workout.name}-${index}`}
+                key={workout.id}
                 onClick={() => onStart(workout)}
               >
                 <span className="workout-letter">
@@ -987,7 +996,7 @@ function SummaryScreen({
             const ratingEmoji = LOAD_RATINGS.find((option) => option.label === rating)?.emoji;
 
             return (
-              <section className="summary-exercise" key={exercise.name}>
+              <section className="summary-exercise" key={exercise.id}>
                 <div className="summary-exercise-heading">
                   <span>{String(exerciseIndex + 1).padStart(2, "0")}</span>
                   <h2>{exercise.name}</h2>
