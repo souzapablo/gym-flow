@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Newsreader } from "next/font/google";
+import { IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 const body = Instrument_Sans({
@@ -7,25 +7,27 @@ const body = Instrument_Sans({
   subsets: ["latin"],
 });
 
-const display = Newsreader({
-  variable: "--font-display",
+const typewriter = IBM_Plex_Mono({
+  variable: "--font-typewriter",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Gym Flow",
-  description: "A private training workspace.",
+  title: "Minha Ficha",
+  description: "Seu treino, série por série.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#ded8c8",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${body.variable} ${display.variable}`}>
+    <html lang="pt-BR" className={`${body.variable} ${typewriter.variable}`}>
       <body>{children}</body>
     </html>
   );

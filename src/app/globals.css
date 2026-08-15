@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --paper: oklch(96% 0.018 86);
-  --ink: oklch(20% 0.025 70);
-  --muted: oklch(48% 0.025 70);
-  --line: oklch(83% 0.025 78);
-  --accent: oklch(55% 0.16 36);
-  --accent-ink: oklch(97% 0.015 85);
+  --desk: oklch(87% 0.018 83);
+  --paper: oklch(97.5% 0.014 91);
+  --ink: oklch(25% 0.025 65);
+  --pencil: oklch(48% 0.025 68);
+  --rule: oklch(83% 0.035 242);
+  --edge: oklch(80% 0.025 82);
+  --marker-yellow: oklch(87% 0.17 94);
+  --marker-pink: oklch(72% 0.17 8);
+  --marker-blue: oklch(70% 0.13 238);
 }
 
 * {
@@ -14,169 +17,536 @@
 }
 
 html {
-  background: var(--paper);
+  background: var(--desk);
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    linear-gradient(90deg, transparent 0 49.9%, var(--line) 50%, transparent 50.1%)
-      top center / min(100% - 2rem, 82rem) 100% no-repeat,
-    var(--paper);
   color: var(--ink);
   font-family: var(--font-body), sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
+button,
+input {
   font: inherit;
 }
 
-.shell {
-  display: grid;
+button {
+  color: inherit;
+}
+
+.desk {
   min-height: 100vh;
   min-height: 100svh;
-  grid-template-rows: auto 1fr auto;
-  padding: max(1.5rem, env(safe-area-inset-top))
-    max(1rem, env(safe-area-inset-right))
-    max(1.5rem, env(safe-area-inset-bottom))
-    max(1rem, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 30% 20%, oklch(93% 0.014 86 / 55%), transparent 30rem),
+    var(--desk);
 }
 
-.masthead,
-footer {
-  display: flex;
-  width: min(100%, 82rem);
+.sheet {
+  position: relative;
+  width: min(100%, 42rem);
+  min-height: 100vh;
+  min-height: 100svh;
   margin-inline: auto;
+  overflow: hidden;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2.45rem,
+    var(--rule) 2.45rem,
+    var(--rule) calc(2.45rem + 1px)
+  );
+  box-shadow: 0 1rem 4rem oklch(30% 0.025 70 / 18%);
+}
+
+.sheet::before {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0.65rem;
+  width: 0.65rem;
+  background-image: radial-gradient(
+    circle,
+    var(--desk) 0 0.24rem,
+    oklch(68% 0.02 80) 0.25rem,
+    transparent 0.3rem
+  );
+  background-position: center 2.8rem;
+  background-repeat: repeat-y;
+  background-size: 0.65rem 5.5rem;
+  content: "";
+  pointer-events: none;
+}
+
+.workout-list,
+.focus-sheet,
+.done-sheet {
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-left: max(2.2rem, env(safe-area-inset-left));
+}
+
+.workout-list {
+  padding-top: max(1.5rem, env(safe-area-inset-top));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+}
+
+.app-header,
+.focus-header {
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  font-family: var(--font-typewriter), monospace;
 }
 
-.wordmark {
-  font-family: var(--font-display), serif;
-  font-size: 1.25rem;
+.app-header {
+  min-height: 3.5rem;
+  border-bottom: 1px dashed var(--pencil);
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--pencil);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
 }
 
-.status,
-footer,
-.hint {
-  color: var(--muted);
+.marker-logo {
+  display: grid;
+  width: 1.65rem;
+  gap: 0.18rem;
+}
+
+.marker-logo span {
+  display: block;
+  height: 0.24rem;
+  transform: rotate(-1deg);
+  border-radius: 0.15rem 0.35rem 0.2rem 0.4rem;
+}
+
+.marker-logo span:nth-child(1) {
+  background: var(--marker-yellow);
+}
+
+.marker-logo span:nth-child(2) {
+  width: 75%;
+  background: var(--marker-pink);
+}
+
+.marker-logo span:nth-child(3) {
+  width: 88%;
+  background: var(--marker-blue);
+}
+
+.list-heading {
+  max-width: 29rem;
+  padding-block: clamp(4rem, 12vh, 7rem) 3rem;
+}
+
+.kicker,
+.exercise-heading > p {
+  margin: 0 0 0.85rem;
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.list-heading h1,
+.done-sheet h1 {
+  max-width: 9ch;
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+}
+
+.list-heading > p:last-child,
+.done-sheet > p:not(.kicker) {
+  max-width: 31rem;
+  margin: 1.5rem 0 0;
+  color: var(--pencil);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.workout-row {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 8.25rem;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  border: 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: oklch(97% 0.02 94 / 76%);
+  cursor: pointer;
+  padding: 1rem 0.5rem;
+  text-align: left;
+}
+
+.workout-row::after {
+  position: absolute;
+  z-index: -1;
+  inset: 28% -0.5rem 24%;
+  background: var(--marker-yellow);
+  border-radius: 0.25rem 0.7rem 0.35rem 0.65rem;
+  content: "";
+  opacity: 0.65;
+  transform: rotate(-0.4deg) scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workout-row:hover::after,
+.workout-row:focus-visible::after {
+  transform: rotate(-0.4deg) scaleX(1);
+}
+
+.workout-row:focus-visible,
+.close-button:focus-visible,
+.complete-button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--marker-blue);
+  outline-offset: 4px;
+}
+
+.workout-letter {
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  background: var(--marker-yellow);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 1.75rem;
+  font-weight: 600;
+  transform: rotate(-2deg);
+}
+
+.workout-details {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.workout-details strong {
+  font-family: var(--font-typewriter), monospace;
+  font-size: 1.15rem;
+}
+
+.workout-details > span,
+.workout-details small {
+  color: var(--pencil);
+}
+
+.workout-details small {
+  margin-top: 0.3rem;
   font-size: 0.75rem;
+}
+
+.row-action {
+  display: none;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.paper-note {
+  margin: 1rem 0 0;
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.7rem;
+}
+
+.focus-sheet {
+  display: flex;
+  flex-direction: column;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.focus-header {
+  min-height: 4.25rem;
+  gap: 1rem;
+}
+
+.focus-header > div {
+  display: grid;
+  flex: 1;
+  gap: 0.15rem;
+}
+
+.focus-header > div span,
+.exercise-count {
+  color: var(--pencil);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.focus-header > div strong {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.close-button {
+  min-height: 2.75rem;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.progress-track {
+  height: 0.38rem;
+  overflow: hidden;
+  background: var(--edge);
+}
+
+.progress-track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--marker-pink);
+  transform-origin: left;
+  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.focus-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-top: clamp(2.5rem, 8vh, 5rem);
+}
+
+.exercise-heading h1 {
+  max-width: 14ch;
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(2rem, 8vw, 3.6rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.exercise-heading > span {
+  display: inline-block;
+  margin-top: 1rem;
+  background: linear-gradient(
+    transparent 40%,
+    color-mix(in oklch, var(--marker-yellow), transparent 22%) 40% 90%,
+    transparent 90%
+  );
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.78rem;
+}
+
+.completed-list {
+  display: grid;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.completed-list li {
+  display: grid;
+  min-height: 2.45rem;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.8rem;
+}
+
+.completed-list span:first-child {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+}
+
+.completed-list strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.set-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 2.5rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.field-grid label {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.field-grid label > span:first-child {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.status::before {
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-right: 0.5rem;
-  border-radius: 50%;
-  background: var(--accent);
-  content: "";
+.input-line {
+  display: flex;
+  align-items: baseline;
+  border-bottom: 2px solid var(--ink);
 }
 
-.empty-state {
-  align-self: center;
-  width: min(100%, 82rem);
-  margin-inline: auto;
-  padding-block: clamp(5rem, 15vh, 10rem);
-}
-
-.eyebrow {
-  margin: 0 0 1.5rem;
-  color: var(--accent);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-h1 {
-  max-width: 12ch;
-  margin: 0 0 2rem -0.05em;
-  font-family: var(--font-display), serif;
-  font-size: clamp(3.5rem, 11vw, 8.5rem);
-  font-weight: 500;
-  letter-spacing: -0.065em;
-  line-height: 0.86;
-}
-
-.intro {
-  max-width: 36rem;
-  margin: 0 0 2rem;
-  color: var(--muted);
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.6;
-}
-
-button {
-  display: inline-flex;
-  min-height: 3rem;
-  align-items: center;
-  gap: 2rem;
+.input-line input {
+  width: 100%;
+  min-width: 0;
   border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: clamp(2.5rem, 12vw, 4.5rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.07em;
+  outline: 0;
+  padding: 0;
+}
+
+.input-line input::placeholder {
+  color: oklch(65% 0.02 80);
+}
+
+.input-line input::-webkit-inner-spin-button,
+.input-line input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.input-line small {
+  color: var(--pencil);
+  font-size: 0.75rem;
+}
+
+.complete-button {
+  display: flex;
+  width: 100%;
+  min-height: 3.75rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--ink);
   background: var(--ink);
-  color: var(--accent-ink);
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-top: 2rem;
+  padding: 0.8rem 1.15rem;
+  text-transform: uppercase;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.complete-button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.complete-button:disabled {
   cursor: not-allowed;
-  font-size: 0.875rem;
-  font-weight: 650;
-  padding: 0.75rem 1rem 0.75rem 1.25rem;
+  opacity: 0.35;
 }
 
-button span {
-  color: var(--accent);
-  font-size: 1.15rem;
+.complete-button span:last-child {
+  color: var(--marker-yellow);
+  font-size: 1.2rem;
 }
 
-.hint {
-  margin: 0.75rem 0 0;
+.done-sheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
 }
 
-footer {
-  border-top: 1px solid var(--line);
-  padding-top: 1rem;
+.done-sheet .marker-logo {
+  width: 3.5rem;
+  margin-bottom: 2rem;
+  gap: 0.35rem;
 }
 
-@media (min-width: 48rem) {
-  .shell {
-    padding-inline: clamp(2rem, 6vw, 6rem);
+.done-sheet .marker-logo span {
+  height: 0.5rem;
+}
+
+.done-sheet .complete-button {
+  max-width: 22rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 36rem) {
+  .workout-list,
+  .focus-sheet,
+  .done-sheet {
+    padding-right: 3rem;
+    padding-left: 4rem;
   }
 
-  .empty-state {
-    padding-left: clamp(2rem, 8vw, 8rem);
+  .workout-row {
+    grid-template-columns: auto 1fr auto;
+    padding-inline: 1rem;
+  }
+
+  .row-action {
+    display: inline;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .empty-state > * {
-    animation: arrive 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  .list-heading,
+  .workout-row,
+  .focus-content,
+  .done-sheet > * {
+    animation: paper-in 550ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .empty-state > :nth-child(2) {
-    animation-delay: 70ms;
+  .workout-row,
+  .done-sheet > :nth-child(2) {
+    animation-delay: 80ms;
   }
 
-  .empty-state > :nth-child(3) {
-    animation-delay: 140ms;
-  }
-
-  .empty-state > :nth-child(4),
-  .empty-state > :nth-child(5) {
-    animation-delay: 210ms;
+  .paper-note,
+  .done-sheet > :nth-child(3) {
+    animation-delay: 150ms;
   }
 }
 
-@keyframes arrive {
+@keyframes paper-in {
   from {
     opacity: 0;
-    transform: translateY(1rem);
+    transform: translateY(0.8rem);
   }
 }
