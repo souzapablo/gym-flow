@@ -690,7 +690,7 @@ input:focus-visible {
 
 .summary-exercise-heading {
   display: grid;
-  grid-template-columns: 2rem 1fr;
+  grid-template-columns: 2rem 1fr auto;
   align-items: baseline;
   gap: 0.5rem;
 }
@@ -705,6 +705,13 @@ input:focus-visible {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.summary-exercise-heading .summary-rating {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .summary-exercise ol {

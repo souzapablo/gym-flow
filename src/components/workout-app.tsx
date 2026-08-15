@@ -42,7 +42,7 @@ export function WorkoutApp() {
   const [reps, setReps] = useState("");
   const [restSeconds, setRestSeconds] = useState(TEST_REST_SECONDS);
   const [evaluationSeconds, setEvaluationSeconds] = useState(EVALUATION_SECONDS);
-  const [, setExerciseRatings] = useState<Record<number, string>>({});
+  const [exerciseRatings, setExerciseRatings] = useState<Record<number, string>>({});
   const [workoutFeedback, setWorkoutFeedback] = useState<string | null>(null);
 
   const exercise = TEST_WORKOUT.exercises[exerciseIndex];
@@ -168,7 +168,14 @@ export function WorkoutApp() {
   }
 
   if (screen === "summary") {
-    return <SummaryScreen entries={entries} feedback={workoutFeedback} onClose={closeWorkout} />;
+    return (
+      <SummaryScreen
+        entries={entries}
+        exerciseRatings={exerciseRatings}
+        feedback={workoutFeedback}
+        onClose={closeWorkout}
+      />
+    );
   }
 
   if (screen === "evaluate") {
@@ -498,10 +505,12 @@ function DoneScreen({
 
 function SummaryScreen({
   entries,
+  exerciseRatings,
   feedback,
   onClose,
 }: {
   entries: Record<string, Entry>;
+  exerciseRatings: Record<number, string>;
   feedback: string | null;
   onClose: () => void;
 }) {
@@ -518,27 +527,37 @@ function SummaryScreen({
         </header>
 
         <div className="summary-exercises">
-          {TEST_WORKOUT.exercises.map((exercise, exerciseIndex) => (
-            <section className="summary-exercise" key={exercise.name}>
-              <div className="summary-exercise-heading">
-                <span>{String(exerciseIndex + 1).padStart(2, "0")}</span>
-                <h2>{exercise.name}</h2>
-              </div>
-              <ol>
-                {Array.from({ length: exercise.sets }, (_, setIndex) => {
-                  const entry = entries[`${exerciseIndex}-${setIndex}`];
+          {TEST_WORKOUT.exercises.map((exercise, exerciseIndex) => {
+            const rating = exerciseRatings[exerciseIndex];
+            const ratingEmoji = LOAD_RATINGS.find((option) => option.label === rating)?.emoji;
 
-                  return (
-                    <li key={setIndex}>
-                      <span>Série {setIndex + 1}</span>
-                      <strong>{entry?.weight ? `${entry.weight} kg` : "—"}</strong>
-                      <strong>{entry?.reps ? `${entry.reps} reps` : "—"}</strong>
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
-          ))}
+            return (
+              <section className="summary-exercise" key={exercise.name}>
+                <div className="summary-exercise-heading">
+                  <span>{String(exerciseIndex + 1).padStart(2, "0")}</span>
+                  <h2>{exercise.name}</h2>
+                  {ratingEmoji && (
+                    <span className="summary-rating" aria-label={`Carga ${rating}`}>
+                      {ratingEmoji}
+                    </span>
+                  )}
+                </div>
+                <ol>
+                  {Array.from({ length: exercise.sets }, (_, setIndex) => {
+                    const entry = entries[`${exerciseIndex}-${setIndex}`];
+
+                    return (
+                      <li key={setIndex}>
+                        <span>Série {setIndex + 1}</span>
+                        <strong>{entry?.weight ? `${entry.weight} kg` : "—"}</strong>
+                        <strong>{entry?.reps ? `${entry.reps} reps` : "—"}</strong>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            );
+          })}
         </div>
 
         {feedback && <p className="summary-feedback">Como foi: {feedback}</p>}
