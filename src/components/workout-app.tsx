@@ -122,9 +122,10 @@ export function WorkoutApp() {
 
   function completeSet() {
     const entryKey = `${exerciseIndex}-${setIndex}`;
+    const completedReps = reps || String(exercise.targetReps);
     setEntries((current) => ({
       ...current,
-      [entryKey]: { weight, reps },
+      [entryKey]: { weight, reps: completedReps },
     }));
 
     const isLastSet = setIndex === exercise.sets - 1;
