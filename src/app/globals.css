@@ -60,6 +60,7 @@ button {
 
 .workout-list,
 .focus-sheet,
+.rest-sheet,
 .done-sheet {
   padding-right: max(1.25rem, env(safe-area-inset-right));
   padding-left: max(1.25rem, env(safe-area-inset-left));
@@ -255,6 +256,50 @@ input:focus-visible {
   flex-direction: column;
   padding-top: max(1rem, env(safe-area-inset-top));
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.rest-sheet {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.rest-content {
+  display: flex;
+  min-height: calc(100svh - 7rem);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rest-content h1 {
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(3rem, 14vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+}
+
+.rest-timer {
+  display: block;
+  width: fit-content;
+  margin-top: 2.5rem;
+  background: linear-gradient(
+    transparent 38%,
+    color-mix(in oklch, var(--marker-yellow), transparent 12%) 38% 88%,
+    transparent 88%
+  );
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(4rem, 22vw, 7.5rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.09em;
+  line-height: 1;
+}
+
+.rest-content > p:last-child {
+  max-width: 28rem;
+  margin: 2rem 0 0;
+  color: var(--pencil);
+  line-height: 1.6;
 }
 
 .focus-header {
@@ -523,6 +568,7 @@ input:focus-visible {
 @media (min-width: 36rem) {
   .workout-list,
   .focus-sheet,
+  .rest-sheet,
   .done-sheet {
     padding-right: 3rem;
     padding-left: 3rem;

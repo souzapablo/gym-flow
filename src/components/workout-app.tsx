@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TEST_WORKOUT } from "@/lib/workout";
 
 type Entry = {
@@ -8,7 +8,9 @@ type Entry = {
   reps: string;
 };
 
-type Screen = "list" | "focus" | "done";
+type Screen = "list" | "focus" | "rest" | "done";
+
+const TEST_REST_SECONDS = 5;
 
 const totalSets = TEST_WORKOUT.exercises.reduce(
   (total, exercise) => total + exercise.sets,
@@ -32,6 +34,7 @@ export function WorkoutApp() {
   const [entries, setEntries] = useState<Record<string, Entry>>({});
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
+  const [restSeconds, setRestSeconds] = useState(TEST_REST_SECONDS);
 
   const exercise = TEST_WORKOUT.exercises[exerciseIndex];
   const completedSets = TEST_WORKOUT.exercises
@@ -39,12 +42,31 @@ export function WorkoutApp() {
     .reduce((total, item) => total + item.sets, 0) + setIndex;
   const progress = (completedSets / totalSets) * 100;
 
+  useEffect(() => {
+    if (screen !== "rest") return;
+
+    const interval = window.setInterval(() => {
+      setRestSeconds((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          setScreen("focus");
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [screen]);
+
   function startWorkout() {
     setExerciseIndex(0);
     setSetIndex(0);
     setEntries({});
     setWeight("");
     setReps("");
+    setRestSeconds(TEST_REST_SECONDS);
     setScreen("focus");
   }
 
@@ -76,6 +98,8 @@ export function WorkoutApp() {
 
     setWeight("");
     setReps("");
+    setRestSeconds(TEST_REST_SECONDS);
+    setScreen("rest");
   }
 
   if (screen === "focus") {
@@ -99,7 +123,59 @@ export function WorkoutApp() {
     return <DoneScreen onClose={closeWorkout} />;
   }
 
+  if (screen === "rest") {
+    return (
+      <RestScreen
+        exerciseIndex={exerciseIndex}
+        setIndex={setIndex}
+        seconds={restSeconds}
+        onClose={closeWorkout}
+      />
+    );
+  }
+
   return <WorkoutList onStart={startWorkout} />;
+}
+
+function RestScreen({
+  exerciseIndex,
+  setIndex,
+  seconds,
+  onClose,
+}: {
+  exerciseIndex: number;
+  setIndex: number;
+  seconds: number;
+  onClose: () => void;
+}) {
+  const exercise = TEST_WORKOUT.exercises[exerciseIndex];
+
+  return (
+    <main className="desk">
+      <section className="sheet rest-sheet">
+        <header className="focus-header">
+          <button className="close-button" type="button" onClick={onClose}>
+            <span aria-hidden="true">←</span> sair
+          </button>
+          <div>
+            <span>{TEST_WORKOUT.name}</span>
+            <strong>Intervalo</strong>
+          </div>
+        </header>
+
+        <div className="rest-content">
+          <p className="kicker">Série concluída</p>
+          <h1>Respira.</h1>
+          <strong className="rest-timer" aria-live="polite">
+            00:{String(seconds).padStart(2, "0")}
+          </strong>
+          <p>
+            A próxima é a série {setIndex + 1} de {exercise.sets} em {exercise.name}.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
 }
 
 function WorkoutList({ onStart }: { onStart: () => void }) {
