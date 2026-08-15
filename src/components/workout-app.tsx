@@ -331,7 +331,6 @@ function FocusScreen({
   onClose: () => void;
 }) {
   const exercise = TEST_WORKOUT.exercises[exerciseIndex];
-  const canComplete = weight !== "" && reps !== "";
   const completedForExercise = Array.from({ length: setIndex }, (_, index) => ({
     index,
     entry: entries[`${exerciseIndex}-${index}`],
@@ -372,8 +371,8 @@ function FocusScreen({
               {completedForExercise.map(({ index, entry }) => (
                 <li key={index}>
                   <span>série {String(index + 1).padStart(2, "0")}</span>
-                  <strong>{entry.weight} kg</strong>
-                  <strong>{entry.reps} reps</strong>
+                  <strong>{entry.weight ? `${entry.weight} kg` : "—"}</strong>
+                  <strong>{entry.reps ? `${entry.reps} reps` : "—"}</strong>
                   <span aria-label="concluída">✓</span>
                 </li>
               ))}
@@ -384,12 +383,12 @@ function FocusScreen({
             className="set-form"
             onSubmit={(event) => {
               event.preventDefault();
-              if (canComplete) onComplete();
+              onComplete();
             }}
           >
             <div className="field-grid">
               <label>
-                <span>Peso</span>
+                <span>Peso (opcional)</span>
                 <span className="input-line">
                   <input
                     type="number"
@@ -405,7 +404,7 @@ function FocusScreen({
                 </span>
               </label>
               <label>
-                <span>Repetições</span>
+                <span>Repetições (opcional)</span>
                 <span className="input-line">
                   <input
                     type="number"
@@ -421,7 +420,7 @@ function FocusScreen({
               </label>
             </div>
 
-            <button className="complete-button" type="submit" disabled={!canComplete}>
+            <button className="complete-button" type="submit">
               <span>Concluir série</span>
               <span aria-hidden="true">→</span>
             </button>
