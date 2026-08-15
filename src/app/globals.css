@@ -51,42 +51,17 @@ button {
   min-height: 100svh;
   margin-inline: auto;
   overflow: hidden;
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 2.45rem,
-    var(--rule) 2.45rem,
-    var(--rule) calc(2.45rem + 1px)
-  );
-  box-shadow: 0 1rem 4rem oklch(30% 0.025 70 / 18%);
-}
-
-.sheet::before {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  bottom: 0;
-  left: 0.65rem;
-  width: 0.65rem;
-  background-image: radial-gradient(
-    circle,
-    var(--desk) 0 0.24rem,
-    oklch(68% 0.02 80) 0.25rem,
-    transparent 0.3rem
-  );
-  background-position: center 2.8rem;
-  background-repeat: repeat-y;
-  background-size: 0.65rem 5.5rem;
-  content: "";
-  pointer-events: none;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px oklch(73% 0.018 80 / 55%),
+    0 1rem 4rem oklch(30% 0.025 70 / 16%);
 }
 
 .workout-list,
 .focus-sheet,
 .done-sheet {
   padding-right: max(1.25rem, env(safe-area-inset-right));
-  padding-left: max(2.2rem, env(safe-area-inset-left));
+  padding-left: max(1.25rem, env(safe-area-inset-left));
 }
 
 .workout-list {
@@ -104,7 +79,8 @@ button {
 
 .app-header {
   min-height: 3.5rem;
-  border-bottom: 1px dashed var(--pencil);
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
 }
 
 .app-header p {
@@ -190,14 +166,12 @@ button {
   position: relative;
   display: grid;
   width: 100%;
-  min-height: 8.25rem;
+  min-height: 7.5rem;
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 1rem;
-  border: 0;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  background: oklch(97% 0.02 94 / 76%);
+  border: 1px solid var(--ink);
+  background: var(--paper);
   cursor: pointer;
   padding: 1rem 0.5rem;
   text-align: left;
@@ -285,6 +259,8 @@ input:focus-visible {
 .focus-header {
   min-height: 4.25rem;
   gap: 1rem;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
 }
 
 .focus-header > div {
@@ -316,7 +292,7 @@ input:focus-visible {
 }
 
 .progress-track {
-  height: 0.38rem;
+  height: 0.28rem;
   overflow: hidden;
   background: var(--edge);
 }
@@ -335,6 +311,11 @@ input:focus-visible {
   flex: 1;
   flex-direction: column;
   padding-top: clamp(2.5rem, 8vh, 5rem);
+}
+
+.exercise-heading {
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 1.25rem;
 }
 
 .exercise-heading h1 {
@@ -362,6 +343,7 @@ input:focus-visible {
 .completed-list {
   display: grid;
   margin: 2rem 0 0;
+  border: 1px solid var(--ink);
   padding: 0;
   list-style: none;
 }
@@ -372,8 +354,23 @@ input:focus-visible {
   grid-template-columns: 1fr auto auto auto;
   align-items: center;
   gap: 1rem;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--ink);
   font-size: 0.8rem;
+}
+
+.completed-list li:last-child {
+  border-bottom: 0;
+}
+
+.completed-list li > * {
+  display: flex;
+  min-height: 2.45rem;
+  align-items: center;
+}
+
+.completed-list li > *:not(:last-child) {
+  border-right: 1px solid var(--edge);
+  padding-right: 0.65rem;
 }
 
 .completed-list span:first-child {
@@ -397,12 +394,17 @@ input:focus-visible {
 .field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  border: 1px solid var(--ink);
 }
 
 .field-grid label {
   display: grid;
   gap: 0.55rem;
+  padding: 0.75rem 0.9rem 0.6rem;
+}
+
+.field-grid label + label {
+  border-left: 1px solid var(--ink);
 }
 
 .field-grid label > span:first-child {
@@ -417,7 +419,6 @@ input:focus-visible {
 .input-line {
   display: flex;
   align-items: baseline;
-  border-bottom: 2px solid var(--ink);
 }
 
 .input-line input {
@@ -512,7 +513,7 @@ input:focus-visible {
   .focus-sheet,
   .done-sheet {
     padding-right: 3rem;
-    padding-left: 4rem;
+    padding-left: 3rem;
   }
 
   .workout-row {
