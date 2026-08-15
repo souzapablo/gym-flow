@@ -536,33 +536,23 @@ input:focus-visible {
   font-weight: 600;
 }
 
-.workout-row.marker-color-yellow,
-.active-workout-color.marker-color-yellow,
-.color-picker .marker-color-yellow {
+.marker-color-yellow {
   --workout-color: var(--marker-yellow);
 }
 
-.workout-row.marker-color-pink,
-.active-workout-color.marker-color-pink,
-.color-picker .marker-color-pink {
+.marker-color-pink {
   --workout-color: var(--marker-pink);
 }
 
-.workout-row.marker-color-blue,
-.active-workout-color.marker-color-blue,
-.color-picker .marker-color-blue {
+.marker-color-blue {
   --workout-color: var(--marker-blue);
 }
 
-.workout-row.marker-color-green,
-.active-workout-color.marker-color-green,
-.color-picker .marker-color-green {
+.marker-color-green {
   --workout-color: var(--marker-green);
 }
 
-.workout-row.marker-color-orange,
-.active-workout-color.marker-color-orange,
-.color-picker .marker-color-orange {
+.marker-color-orange {
   --workout-color: var(--marker-orange);
 }
 
