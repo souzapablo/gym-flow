@@ -7,12 +7,16 @@ export type Exercise = {
 export type Workout = {
   name: string;
   focus: string;
+  color: MarkerColor;
   exercises: Exercise[];
 };
+
+export type MarkerColor = "yellow" | "pink" | "blue" | "green" | "orange";
 
 export const TEST_WORKOUT: Workout = {
   name: "Treino A",
   focus: "Peito e tríceps",
+  color: "yellow",
   exercises: [
     { name: "Supino reto", sets: 3, targetReps: 10 },
     { name: "Supino inclinado", sets: 3, targetReps: 12 },

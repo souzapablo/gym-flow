@@ -10,6 +10,8 @@
   --marker-yellow: oklch(87% 0.17 94);
   --marker-pink: oklch(72% 0.17 8);
   --marker-blue: oklch(70% 0.13 238);
+  --marker-green: oklch(79% 0.14 145);
+  --marker-orange: oklch(78% 0.17 58);
   --training-accent: var(--marker-yellow);
 }
 
@@ -62,7 +64,8 @@ button {
 .focus-sheet,
 .rest-sheet,
 .evaluation-sheet,
-.done-sheet {
+.done-sheet,
+.create-sheet {
   padding-right: max(1.25rem, env(safe-area-inset-right));
   padding-left: max(1.25rem, env(safe-area-inset-left));
 }
@@ -166,6 +169,7 @@ button {
 }
 
 .workout-row {
+  --workout-color: var(--marker-yellow);
   position: relative;
   display: grid;
   width: 100%;
@@ -184,7 +188,7 @@ button {
   position: absolute;
   z-index: -1;
   inset: 28% -0.5rem 24%;
-  background: var(--marker-yellow);
+  background: var(--workout-color);
   border-radius: 0.25rem 0.7rem 0.35rem 0.65rem;
   content: "";
   opacity: 0.65;
@@ -204,6 +208,9 @@ button {
 .feedback-option:focus-visible,
 .load-rating-option:focus-visible,
 .evaluation-skip:focus-visible,
+.create-workout-button:focus-visible,
+.add-exercise-button:focus-visible,
+.remove-exercise-button:focus-visible,
 input:focus-visible {
   outline: 3px solid var(--marker-blue);
   outline-offset: 4px;
@@ -214,7 +221,7 @@ input:focus-visible {
   width: 3.4rem;
   height: 3.4rem;
   place-items: center;
-  background: var(--marker-yellow);
+  background: var(--workout-color);
   font-family: var(--font-typewriter), monospace;
   font-size: 1.75rem;
   font-weight: 600;
@@ -255,6 +262,278 @@ input:focus-visible {
   font-size: 0.7rem;
 }
 
+.workout-rows {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.create-workout-button,
+.add-exercise-button {
+  display: flex;
+  width: 100%;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px dashed var(--pencil);
+  background: transparent;
+  color: var(--pencil);
+  cursor: pointer;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  text-transform: uppercase;
+}
+
+.create-workout-button span,
+.add-exercise-button span {
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+
+.create-sheet {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+}
+
+.create-form {
+  padding-top: clamp(2.5rem, 7vh, 4.5rem);
+}
+
+.create-heading h1 {
+  max-width: 11ch;
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(2.35rem, 9vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.create-basics {
+  display: grid;
+  margin-top: 2.5rem;
+  border: 1px solid var(--ink);
+}
+
+.create-basics label,
+.exercise-draft label {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.8rem;
+}
+
+.create-basics label + label {
+  border-top: 1px solid var(--ink);
+}
+
+.create-basics label > span,
+.exercise-draft label > span {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.create-basics input,
+.exercise-draft input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  outline: 0;
+  padding: 0;
+}
+
+.create-basics input {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.workout-row.marker-color-yellow,
+.active-workout-color.marker-color-yellow,
+.color-picker .marker-color-yellow {
+  --workout-color: var(--marker-yellow);
+}
+
+.workout-row.marker-color-pink,
+.active-workout-color.marker-color-pink,
+.color-picker .marker-color-pink {
+  --workout-color: var(--marker-pink);
+}
+
+.workout-row.marker-color-blue,
+.active-workout-color.marker-color-blue,
+.color-picker .marker-color-blue {
+  --workout-color: var(--marker-blue);
+}
+
+.workout-row.marker-color-green,
+.active-workout-color.marker-color-green,
+.color-picker .marker-color-green {
+  --workout-color: var(--marker-green);
+}
+
+.workout-row.marker-color-orange,
+.active-workout-color.marker-color-orange,
+.color-picker .marker-color-orange {
+  --workout-color: var(--marker-orange);
+}
+
+.active-workout-color {
+  --training-accent: var(--workout-color);
+}
+
+.color-picker {
+  margin: 1.5rem 0 0;
+  border: 0;
+  padding: 0;
+}
+
+.color-picker legend {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.color-picker > div {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid var(--ink);
+}
+
+.color-picker label {
+  --workout-color: var(--marker-yellow);
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 4.5rem;
+  place-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  padding: 0.55rem 0.2rem;
+}
+
+.color-picker label + label {
+  border-left: 1px solid var(--edge);
+}
+
+.color-picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.color-picker label > span {
+  width: 1.8rem;
+  height: 0.65rem;
+  background: var(--workout-color);
+  border-radius: 0.2rem 0.45rem 0.25rem 0.4rem;
+  transform: rotate(-3deg);
+}
+
+.color-picker small {
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--pencil);
+  font-size: 0.56rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.color-picker input:checked + span {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.color-picker label:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.color-picker > p {
+  margin: 0.65rem 0 0;
+  color: var(--marker-pink);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.65rem;
+}
+
+.exercise-editor {
+  margin-top: 2.5rem;
+}
+
+.exercise-editor-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 0.65rem;
+}
+
+.exercise-editor-heading h2 {
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.exercise-editor-heading span {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.7rem;
+}
+
+.exercise-draft {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.5rem 4.5rem;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  padding: 0 2.25rem 0 2rem;
+}
+
+.exercise-draft legend {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.62rem;
+}
+
+.exercise-draft label + label {
+  border-left: 1px solid var(--edge);
+}
+
+.exercise-draft input[type="number"] {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.remove-exercise-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  background: transparent;
+  color: var(--pencil);
+  cursor: pointer;
+  font-size: 1.25rem;
+  transform: translateY(-50%);
+}
+
 .focus-sheet {
   display: flex;
   flex-direction: column;
@@ -289,7 +568,7 @@ input:focus-visible {
   margin-top: 2.5rem;
   background: linear-gradient(
     transparent 38%,
-    color-mix(in oklch, var(--marker-yellow), transparent 12%) 38% 88%,
+    color-mix(in oklch, var(--training-accent), transparent 12%) 38% 88%,
     transparent 88%
   );
   font-family: var(--font-typewriter), monospace;
@@ -383,7 +662,7 @@ input:focus-visible {
   margin-top: 1rem;
   background: linear-gradient(
     transparent 40%,
-    color-mix(in oklch, var(--marker-yellow), transparent 22%) 40% 90%,
+    color-mix(in oklch, var(--training-accent), transparent 22%) 40% 90%,
     transparent 90%
   );
   font-family: var(--font-typewriter), monospace;
@@ -610,7 +889,7 @@ input:focus-visible {
 }
 
 .complete-button span:last-child {
-  color: var(--marker-yellow);
+  color: var(--training-accent);
   font-size: 1.2rem;
 }
 
@@ -740,7 +1019,7 @@ input:focus-visible {
 .summary-feedback {
   display: inline-block;
   margin: 1.5rem 0 0;
-  background: linear-gradient(transparent 45%, var(--marker-yellow) 45%, var(--marker-yellow) 88%, transparent 88%);
+  background: linear-gradient(transparent 45%, var(--training-accent) 45%, var(--training-accent) 88%, transparent 88%);
   font-family: var(--font-typewriter), monospace;
   font-size: 0.72rem;
   font-weight: 600;
@@ -790,7 +1069,7 @@ input:focus-visible {
 }
 
 .feedback-option[aria-pressed="true"] {
-  background: var(--marker-yellow);
+  background: var(--training-accent);
 }
 
 .feedback-option > span {
@@ -824,7 +1103,8 @@ input:focus-visible {
   .rest-sheet,
   .evaluation-sheet,
   .done-sheet,
-  .summary-sheet {
+  .summary-sheet,
+  .create-sheet {
     padding-right: 3rem;
     padding-left: 3rem;
   }
