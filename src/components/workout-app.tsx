@@ -14,6 +14,7 @@ type Entry = {
 };
 
 type Screen = "list" | "create" | "focus" | "evaluate" | "rest" | "done" | "summary";
+type Tab = "workouts" | "calendar";
 
 const TEST_REST_SECONDS = 5;
 const EVALUATION_SECONDS = 5;
@@ -42,6 +43,7 @@ function MarkerLogo() {
 
 export function WorkoutApp() {
   const [workouts, setWorkouts] = useState<Workout[]>([TEST_WORKOUT]);
+  const [tab, setTab] = useState<Tab>("workouts");
   const [activeWorkout, setActiveWorkout] = useState(TEST_WORKOUT);
   const [screen, setScreen] = useState<Screen>("list");
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -236,11 +238,147 @@ export function WorkoutApp() {
   }
 
   return (
-    <WorkoutList
-      workouts={workouts}
-      onCreate={() => setScreen("create")}
-      onStart={startWorkout}
-    />
+    <AppTabs tab={tab} onTabChange={setTab}>
+      {tab === "workouts" ? (
+        <WorkoutList
+          workouts={workouts}
+          onCreate={() => setScreen("create")}
+          onStart={startWorkout}
+        />
+      ) : (
+        <CalendarTab workouts={workouts} />
+      )}
+    </AppTabs>
+  );
+}
+
+function AppTabs({
+  tab,
+  onTabChange,
+  children,
+}: {
+  tab: Tab;
+  onTabChange: (tab: Tab) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="tab-shell">
+      {children}
+      <nav className="tab-bar" aria-label="Navegação principal">
+        <button
+          type="button"
+          aria-current={tab === "workouts" ? "page" : undefined}
+          onClick={() => onTabChange("workouts")}
+        >
+          <span className="tab-icon" aria-hidden="true">⌁</span>
+          Treinos
+        </button>
+        <button
+          type="button"
+          aria-current={tab === "calendar" ? "page" : undefined}
+          onClick={() => onTabChange("calendar")}
+        >
+          <span className="tab-icon" aria-hidden="true">▦</span>
+          Calendário
+        </button>
+      </nav>
+    </div>
+  );
+}
+
+const MONTHS = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+];
+const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
+const SAMPLE_COMPLETED_DAYS = [2, 4, 6, 9, 11, 13, 16, 18];
+
+function CalendarTab({ workouts }: { workouts: Workout[] }) {
+  const today = new Date();
+  const [view, setView] = useState(() => ({
+    year: today.getFullYear(),
+    month: today.getMonth(),
+  }));
+  const firstDay = new Date(view.year, view.month, 1).getDay();
+  const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
+  const isCurrentMonth =
+    view.year === today.getFullYear() && view.month === today.getMonth();
+  const completedDays = isCurrentMonth
+    ? SAMPLE_COMPLETED_DAYS.filter((day) => day <= daysInMonth)
+    : [];
+  const completedByDay = new Map(
+    completedDays.map((day, index) => [day, workouts[index % workouts.length]]),
+  );
+  const cells: (number | null)[] = [
+    ...Array.from({ length: firstDay }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
+  ];
+
+  function shiftMonth(delta: number) {
+    setView((current) => {
+      const next = new Date(current.year, current.month + delta, 1);
+      return { year: next.getFullYear(), month: next.getMonth() };
+    });
+  }
+
+  return (
+    <main className="desk">
+      <section className="sheet calendar-sheet">
+        <header className="app-header">
+          <div className="brand">
+            <MarkerLogo />
+            <span>Minha Ficha</span>
+          </div>
+          <p>histórico</p>
+        </header>
+
+        <div className="calendar-heading">
+          <p className="kicker">Seu ritmo no papel</p>
+          <h1>Calendário.</h1>
+        </div>
+
+        <div className="month-switcher">
+          <button type="button" onClick={() => shiftMonth(-1)} aria-label="Mês anterior">←</button>
+          <div aria-live="polite">
+            <strong>{MONTHS[view.month]} {view.year}</strong>
+            <span>{completedDays.length} treinos concluídos</span>
+          </div>
+          <button type="button" onClick={() => shiftMonth(1)} aria-label="Próximo mês">→</button>
+        </div>
+
+        <div className="calendar-grid" role="grid" aria-label={`${MONTHS[view.month]} de ${view.year}`}>
+          {WEEKDAYS.map((weekday, index) => (
+            <span className="weekday" role="columnheader" key={`${weekday}-${index}`}>{weekday}</span>
+          ))}
+          {cells.map((day, index) => {
+            if (day === null) return <span role="gridcell" key={`empty-${index}`} />;
+
+            const workout = completedByDay.get(day);
+            const isToday = isCurrentMonth && day === today.getDate();
+            return (
+              <span
+                className={`calendar-day${workout ? ` marker-color-${workout.color} is-complete` : ""}${isToday ? " is-today" : ""}`}
+                role="gridcell"
+                aria-label={workout ? `${day}, ${workout.name} concluído` : String(day)}
+                key={day}
+              >
+                {day}
+              </span>
+            );
+          })}
+        </div>
+
+        <div className="calendar-legend">
+          <h2>Legenda</h2>
+          {workouts.map((workout, index) => (
+            <div key={`${workout.name}-${index}`}>
+              <span className={`legend-marker marker-color-${workout.color}`} aria-hidden="true" />
+              <p><strong>{workout.name}</strong><span> — {workout.focus}</span></p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
 
