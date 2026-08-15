@@ -58,6 +58,8 @@ export function WorkoutApp() {
       return;
     }
 
+    setWeight("");
+    setReps("");
     setExerciseIndex((current) => current + 1);
     setSetIndex(0);
     setRestSeconds(TEST_REST_SECONDS);
@@ -124,9 +126,6 @@ export function WorkoutApp() {
     }));
 
     const isLastSet = setIndex === exercise.sets - 1;
-
-    setWeight("");
-    setReps("");
 
     if (isLastSet) {
       setEvaluationSeconds(EVALUATION_SECONDS);
