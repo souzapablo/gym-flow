@@ -46,13 +46,11 @@ function MarkerLogo() {
 export function WorkoutApp({
   initialWorkouts,
   initialCompletedWorkouts,
-  persistenceEnabled,
   createWorkoutAction,
   saveWorkoutSessionAction,
 }: {
   initialWorkouts: Workout[];
   initialCompletedWorkouts: CompletedWorkout[];
-  persistenceEnabled: boolean;
   createWorkoutAction: (input: unknown) => Promise<Workout>;
   saveWorkoutSessionAction: (input: unknown) => Promise<void>;
 }) {
@@ -158,22 +156,6 @@ export function WorkoutApp({
   function createWorkout(input: NewWorkout) {
     setMutationError(null);
 
-    if (!persistenceEnabled) {
-      setWorkouts((current) => [
-        ...current,
-        {
-          ...input,
-          id: crypto.randomUUID(),
-          exercises: input.exercises.map((exercise) => ({
-            ...exercise,
-            id: crypto.randomUUID(),
-          })),
-        },
-      ]);
-      setScreen("list");
-      return;
-    }
-
     startTransition(async () => {
       try {
         const workout = await createWorkoutAction(input);
@@ -195,12 +177,6 @@ export function WorkoutApp({
       color: activeWorkout.color,
       completedAt: new Date().toISOString(),
     };
-
-    if (!persistenceEnabled) {
-      setCompletedWorkouts((current) => [completedWorkout, ...current]);
-      closeWorkout();
-      return;
-    }
 
     const session: WorkoutSession = {
       workoutId: activeWorkout.id,

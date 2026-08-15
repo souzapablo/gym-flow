@@ -15,9 +15,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Without `.env.local`, the app stays in local prototype mode and uses fixture data.
-When `DATABASE_URL` is configured, workouts and completed sessions are loaded from
-Postgres and mutations are persisted through Server Actions.
+`DATABASE_URL` is required. Workouts and completed sessions are loaded from
+Postgres, and mutations are persisted through Server Actions.
 
 Database access is isolated in `src/data/workouts.ts`. The temporary single-user
 resolver lives in `src/lib/owner.ts`; replace it with the selected authentication
