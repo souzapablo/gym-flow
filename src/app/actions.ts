@@ -5,7 +5,7 @@ import {
   createWorkout,
   saveWorkoutSession,
 } from "@/data/workouts";
-import { getCurrentOwnerId } from "@/lib/owner";
+import { getCurrentUser } from "@/lib/owner";
 import type { Workout } from "@/lib/workout";
 import {
   parseNewWorkout,
@@ -13,14 +13,14 @@ import {
 } from "@/lib/workout-validation";
 
 export async function createWorkoutAction(input: unknown): Promise<Workout> {
-  const ownerId = getCurrentOwnerId();
-  const workout = await createWorkout(ownerId, parseNewWorkout(input));
+  const user = await getCurrentUser();
+  const workout = await createWorkout(user.id, parseNewWorkout(input));
   revalidatePath("/");
   return workout;
 }
 
 export async function saveWorkoutSessionAction(input: unknown): Promise<void> {
-  const ownerId = getCurrentOwnerId();
-  await saveWorkoutSession(ownerId, parseWorkoutSession(input));
+  const user = await getCurrentUser();
+  await saveWorkoutSession(user.id, parseWorkoutSession(input));
   revalidatePath("/");
 }

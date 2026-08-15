@@ -2,14 +2,14 @@ import { connection } from "next/server";
 import { createWorkoutAction, saveWorkoutSessionAction } from "@/app/actions";
 import { WorkoutApp } from "@/components/workout-app";
 import { listCompletedWorkouts, listWorkouts } from "@/data/workouts";
-import { getCurrentOwnerId } from "@/lib/owner";
+import { getCurrentUser } from "@/lib/owner";
 
 export default async function Home() {
   await connection();
-  const ownerId = getCurrentOwnerId();
+  const user = await getCurrentUser();
   const [workouts, completedWorkouts] = await Promise.all([
-    listWorkouts(ownerId),
-    listCompletedWorkouts(ownerId),
+    listWorkouts(user.id),
+    listCompletedWorkouts(user.id),
   ]);
 
   return (
