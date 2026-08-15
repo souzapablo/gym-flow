@@ -63,8 +63,7 @@ export function WorkoutApp() {
     setReps("");
     setExerciseIndex((current) => current + 1);
     setSetIndex(0);
-    setRestSeconds(TEST_REST_SECONDS);
-    setScreen("rest");
+    setScreen("focus");
   }, [exerciseIndex]);
 
   useEffect(() => {
