@@ -80,6 +80,8 @@ T15 -> T16 -> T17 -> T18 -> T19
 
 ### T1: Define the executable testing contract
 
+**Status**: Complete
+
 **What**: Expand the agent testing policy with the approved stack, honeycomb,
 commands, naming, lifecycle, mocking, database safety, PostgreSQL parity, and
 CI rules.
@@ -95,11 +97,11 @@ CI rules.
 
 **Done when**:
 
-- [ ] Every TEST-01 acceptance criterion is stated explicitly.
-- [ ] The guide identifies integration as default, unit as selective, and E2E
+- [x] Every TEST-01 acceptance criterion is stated explicitly.
+- [x] The guide identifies integration as default, unit as selective, and E2E
       as three critical journeys.
-- [ ] The guide requires `postgres:18-alpine`, pooled Neon TCP, and Node.js.
-- [ ] Markdown and `npm run lint` pass.
+- [x] The guide requires `postgres:18-alpine`, pooled Neon TCP, and Node.js.
+- [x] Markdown and `npm run lint` pass.
 
 **Tests**: none, documentation layer
 **Gate**: quick, using the commands available before test tooling exists
