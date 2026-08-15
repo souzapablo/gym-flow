@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TEST_WORKOUT } from "@/lib/workout";
 
 type Entry = {
@@ -8,9 +8,15 @@ type Entry = {
   reps: string;
 };
 
-type Screen = "list" | "focus" | "rest" | "done";
+type Screen = "list" | "focus" | "evaluate" | "rest" | "done";
 
 const TEST_REST_SECONDS = 5;
+const EVALUATION_SECONDS = 5;
+const LOAD_RATINGS = [
+  { emoji: "😌", label: "Leve" },
+  { emoji: "💪", label: "Ideal" },
+  { emoji: "🫠", label: "Pesada" },
+];
 
 const totalSets = TEST_WORKOUT.exercises.reduce(
   (total, exercise) => total + exercise.sets,
@@ -35,12 +41,28 @@ export function WorkoutApp() {
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [restSeconds, setRestSeconds] = useState(TEST_REST_SECONDS);
+  const [evaluationSeconds, setEvaluationSeconds] = useState(EVALUATION_SECONDS);
+  const [, setExerciseRatings] = useState<Record<number, string>>({});
 
   const exercise = TEST_WORKOUT.exercises[exerciseIndex];
   const completedSets = TEST_WORKOUT.exercises
     .slice(0, exerciseIndex)
     .reduce((total, item) => total + item.sets, 0) + setIndex;
   const progress = (completedSets / totalSets) * 100;
+
+  const finishExercise = useCallback(() => {
+    const isLastExercise = exerciseIndex === TEST_WORKOUT.exercises.length - 1;
+
+    if (isLastExercise) {
+      setScreen("done");
+      return;
+    }
+
+    setExerciseIndex((current) => current + 1);
+    setSetIndex(0);
+    setRestSeconds(TEST_REST_SECONDS);
+    setScreen("rest");
+  }, [exerciseIndex]);
 
   useEffect(() => {
     if (screen !== "rest") return;
@@ -60,13 +82,33 @@ export function WorkoutApp() {
     return () => window.clearInterval(interval);
   }, [screen]);
 
+  useEffect(() => {
+    if (screen !== "evaluate") return;
+
+    const interval = window.setInterval(() => {
+      setEvaluationSeconds((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          finishExercise();
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [screen, finishExercise]);
+
   function startWorkout() {
     setExerciseIndex(0);
     setSetIndex(0);
     setEntries({});
+    setExerciseRatings({});
     setWeight("");
     setReps("");
     setRestSeconds(TEST_REST_SECONDS);
+    setEvaluationSeconds(EVALUATION_SECONDS);
     setScreen("focus");
   }
 
@@ -82,22 +124,17 @@ export function WorkoutApp() {
     }));
 
     const isLastSet = setIndex === exercise.sets - 1;
-    const isLastExercise = exerciseIndex === TEST_WORKOUT.exercises.length - 1;
-
-    if (isLastSet && isLastExercise) {
-      setScreen("done");
-      return;
-    }
-
-    if (isLastSet) {
-      setExerciseIndex((current) => current + 1);
-      setSetIndex(0);
-    } else {
-      setSetIndex((current) => current + 1);
-    }
 
     setWeight("");
     setReps("");
+
+    if (isLastSet) {
+      setEvaluationSeconds(EVALUATION_SECONDS);
+      setScreen("evaluate");
+      return;
+    }
+
+    setSetIndex((current) => current + 1);
     setRestSeconds(TEST_REST_SECONDS);
     setScreen("rest");
   }
@@ -121,6 +158,20 @@ export function WorkoutApp() {
 
   if (screen === "done") {
     return <DoneScreen onClose={closeWorkout} />;
+  }
+
+  if (screen === "evaluate") {
+    return (
+      <EvaluationScreen
+        exerciseName={exercise.name}
+        seconds={evaluationSeconds}
+        onSelect={(rating) => {
+          setExerciseRatings((current) => ({ ...current, [exerciseIndex]: rating }));
+          finishExercise();
+        }}
+        onSkip={finishExercise}
+      />
+    );
   }
 
   if (screen === "rest") {
@@ -173,6 +224,46 @@ function RestScreen({
             A próxima é a série {setIndex + 1} de {exercise.sets} em {exercise.name}.
           </p>
         </div>
+      </section>
+    </main>
+  );
+}
+
+function EvaluationScreen({
+  exerciseName,
+  seconds,
+  onSelect,
+  onSkip,
+}: {
+  exerciseName: string;
+  seconds: number;
+  onSelect: (rating: string) => void;
+  onSkip: () => void;
+}) {
+  return (
+    <main className="desk">
+      <section className="sheet evaluation-sheet">
+        <p className="kicker">Exercício concluído</p>
+        <h1>Como sentiu a carga?</h1>
+        <p>{exerciseName}</p>
+
+        <div className="load-rating-options" aria-label="Avalie a carga do exercício">
+          {LOAD_RATINGS.map(({ emoji, label }) => (
+            <button
+              className="load-rating-option"
+              type="button"
+              key={label}
+              onClick={() => onSelect(label)}
+            >
+              <span aria-hidden="true">{emoji}</span>
+              <small>{label}</small>
+            </button>
+          ))}
+        </div>
+
+        <button className="evaluation-skip" type="button" onClick={onSkip}>
+          Pular · continua em {seconds}s
+        </button>
       </section>
     </main>
   );
@@ -342,6 +433,14 @@ function FocusScreen({
 }
 
 function DoneScreen({ onClose }: { onClose: () => void }) {
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const feedbackOptions = [
+    { emoji: "🫠", label: "Muito pesado" },
+    { emoji: "😮‍💨", label: "Puxado" },
+    { emoji: "😊", label: "Na medida" },
+    { emoji: "🔥", label: "Mandou bem" },
+  ];
+
   return (
     <main className="desk">
       <section className="sheet done-sheet">
@@ -349,6 +448,28 @@ function DoneScreen({ onClose }: { onClose: () => void }) {
         <p className="kicker">Ficha preenchida</p>
         <h1>Treino concluído.</h1>
         <p>As séries desta sessão ficaram registradas durante o treino.</p>
+
+        <fieldset className="feedback-fieldset">
+          <legend>Como foi o treino?</legend>
+          <div className="feedback-options">
+            {feedbackOptions.map(({ emoji, label }) => (
+              <button
+                className="feedback-option"
+                type="button"
+                key={label}
+                aria-pressed={feedback === label}
+                onClick={() => setFeedback(label)}
+              >
+                <span aria-hidden="true">{emoji}</span>
+                <small>{label}</small>
+              </button>
+            ))}
+          </div>
+          <p className="feedback-status" aria-live="polite">
+            {feedback ? "Valeu pelo feedback!" : "Toque em uma opção para responder."}
+          </p>
+        </fieldset>
+
         <button className="complete-button" type="button" onClick={onClose}>
           <span>Voltar às fichas</span>
           <span aria-hidden="true">→</span>

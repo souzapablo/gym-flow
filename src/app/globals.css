@@ -61,6 +61,7 @@ button {
 .workout-list,
 .focus-sheet,
 .rest-sheet,
+.evaluation-sheet,
 .done-sheet {
   padding-right: max(1.25rem, env(safe-area-inset-right));
   padding-left: max(1.25rem, env(safe-area-inset-left));
@@ -200,6 +201,9 @@ button {
 .workout-row:focus-visible,
 .close-button:focus-visible,
 .complete-button:focus-visible,
+.feedback-option:focus-visible,
+.load-rating-option:focus-visible,
+.evaluation-skip:focus-visible,
 input:focus-visible {
   outline: 3px solid var(--marker-blue);
   outline-offset: 4px;
@@ -508,6 +512,74 @@ input:focus-visible {
   font-size: 0.75rem;
 }
 
+.load-rating-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--ink);
+}
+
+.load-rating-option {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.load-rating-option + .load-rating-option {
+  border-left: 1px solid var(--ink);
+}
+
+.load-rating-option > span {
+  font-size: 1.25rem;
+}
+
+.load-rating-option small {
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.evaluation-sheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
+}
+
+.evaluation-sheet h1 {
+  max-width: 11ch;
+  margin: 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+}
+
+.evaluation-sheet > p:not(.kicker) {
+  margin: 1rem 0 2.5rem;
+  color: var(--pencil);
+}
+
+.evaluation-skip {
+  align-self: center;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--pencil);
+  cursor: pointer;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
 .complete-button {
   display: flex;
   width: 100%;
@@ -562,13 +634,81 @@ input:focus-visible {
 
 .done-sheet .complete-button {
   max-width: 22rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
+}
+
+.feedback-fieldset {
+  width: 100%;
+  max-width: 31rem;
+  margin: 2.5rem 0 0;
+  border: 0;
+  padding: 0;
+}
+
+.feedback-fieldset legend {
+  margin-bottom: 0.85rem;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.feedback-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--ink);
+}
+
+.feedback-option {
+  display: grid;
+  min-width: 0;
+  min-height: 5.5rem;
+  place-items: center;
+  gap: 0.35rem;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.6rem 0.25rem;
+}
+
+.feedback-option + .feedback-option {
+  border-left: 1px solid var(--ink);
+}
+
+.feedback-option[aria-pressed="true"] {
+  background: var(--marker-yellow);
+}
+
+.feedback-option > span {
+  font-size: 1.9rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.feedback-option:hover > span,
+.feedback-option[aria-pressed="true"] > span {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+.feedback-option small {
+  color: var(--pencil);
+  font-size: 0.6rem;
+  line-height: 1.2;
+}
+
+.feedback-status {
+  min-height: 1.2rem;
+  margin: 0.65rem 0 0;
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.65rem;
 }
 
 @media (min-width: 36rem) {
   .workout-list,
   .focus-sheet,
   .rest-sheet,
+  .evaluation-sheet,
   .done-sheet {
     padding-right: 3rem;
     padding-left: 3rem;
