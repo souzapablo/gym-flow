@@ -350,10 +350,9 @@ input:focus-visible {
 
 .completed-list li {
   display: grid;
-  min-height: 2.45rem;
-  grid-template-columns: 1fr auto auto auto;
+  min-height: 3rem;
+  grid-template-columns: minmax(0, 1fr) 5.25rem 5.25rem 2.5rem;
   align-items: center;
-  gap: 1rem;
   border-bottom: 1px solid var(--ink);
   font-size: 0.8rem;
 }
@@ -364,16 +363,19 @@ input:focus-visible {
 
 .completed-list li > * {
   display: flex;
-  min-height: 2.45rem;
+  min-width: 0;
+  min-height: 3rem;
   align-items: center;
+  justify-content: center;
+  padding-inline: 0.75rem;
 }
 
 .completed-list li > *:not(:last-child) {
   border-right: 1px solid var(--edge);
-  padding-right: 0.65rem;
 }
 
 .completed-list span:first-child {
+  justify-content: flex-start;
   color: var(--pencil);
   font-family: var(--font-typewriter), monospace;
 }
