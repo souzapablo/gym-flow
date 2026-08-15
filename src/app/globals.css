@@ -637,6 +637,113 @@ input:focus-visible {
   margin-top: 2rem;
 }
 
+.summary-sheet {
+  padding-top: max(2.5rem, env(safe-area-inset-top));
+  padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+}
+
+.summary-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 1.5rem;
+}
+
+.summary-header h1 {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-typewriter), monospace;
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+}
+
+.summary-header p:last-child,
+.summary-header > strong {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.summary-header > strong {
+  flex: none;
+  padding-bottom: 0.2rem;
+}
+
+.summary-exercises {
+  border-bottom: 1px solid var(--ink);
+}
+
+.summary-exercise {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid var(--ink);
+  padding: 1.25rem 0;
+}
+
+.summary-exercise:first-child {
+  border-top: 0;
+}
+
+.summary-exercise-heading {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.summary-exercise-heading span {
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.68rem;
+}
+
+.summary-exercise-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.summary-exercise ol {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.summary-exercise li {
+  display: grid;
+  grid-template-columns: 1fr minmax(4rem, auto) minmax(5rem, auto);
+  gap: 0.75rem;
+  color: var(--pencil);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.7rem;
+}
+
+.summary-exercise li strong {
+  color: var(--ink);
+  font-weight: 600;
+  text-align: right;
+}
+
+.summary-feedback {
+  display: inline-block;
+  margin: 1.5rem 0 0;
+  background: linear-gradient(transparent 45%, var(--marker-yellow) 45%, var(--marker-yellow) 88%, transparent 88%);
+  font-family: var(--font-typewriter), monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.summary-sheet .complete-button {
+  max-width: 22rem;
+}
+
 .feedback-fieldset {
   width: 100%;
   max-width: 31rem;
@@ -709,7 +816,8 @@ input:focus-visible {
   .focus-sheet,
   .rest-sheet,
   .evaluation-sheet,
-  .done-sheet {
+  .done-sheet,
+  .summary-sheet {
     padding-right: 3rem;
     padding-left: 3rem;
   }
@@ -728,7 +836,8 @@ input:focus-visible {
   .list-heading,
   .workout-row,
   .focus-content,
-  .done-sheet > * {
+  .done-sheet > *,
+  .summary-sheet > * {
     animation: paper-in 550ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 

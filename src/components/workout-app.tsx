@@ -8,7 +8,7 @@ type Entry = {
   reps: string;
 };
 
-type Screen = "list" | "focus" | "evaluate" | "rest" | "done";
+type Screen = "list" | "focus" | "evaluate" | "rest" | "done" | "summary";
 
 const TEST_REST_SECONDS = 5;
 const EVALUATION_SECONDS = 5;
@@ -43,6 +43,7 @@ export function WorkoutApp() {
   const [restSeconds, setRestSeconds] = useState(TEST_REST_SECONDS);
   const [evaluationSeconds, setEvaluationSeconds] = useState(EVALUATION_SECONDS);
   const [, setExerciseRatings] = useState<Record<number, string>>({});
+  const [workoutFeedback, setWorkoutFeedback] = useState<string | null>(null);
 
   const exercise = TEST_WORKOUT.exercises[exerciseIndex];
   const completedSets = TEST_WORKOUT.exercises
@@ -107,6 +108,7 @@ export function WorkoutApp() {
     setSetIndex(0);
     setEntries({});
     setExerciseRatings({});
+    setWorkoutFeedback(null);
     setWeight("");
     setReps("");
     setRestSeconds(TEST_REST_SECONDS);
@@ -156,7 +158,17 @@ export function WorkoutApp() {
   }
 
   if (screen === "done") {
-    return <DoneScreen onClose={closeWorkout} />;
+    return (
+      <DoneScreen
+        feedback={workoutFeedback}
+        onFeedbackChange={setWorkoutFeedback}
+        onContinue={() => setScreen("summary")}
+      />
+    );
+  }
+
+  if (screen === "summary") {
+    return <SummaryScreen entries={entries} feedback={workoutFeedback} onClose={closeWorkout} />;
   }
 
   if (screen === "evaluate") {
@@ -430,8 +442,15 @@ function FocusScreen({
   );
 }
 
-function DoneScreen({ onClose }: { onClose: () => void }) {
-  const [feedback, setFeedback] = useState<string | null>(null);
+function DoneScreen({
+  feedback,
+  onFeedbackChange,
+  onContinue,
+}: {
+  feedback: string | null;
+  onFeedbackChange: (feedback: string) => void;
+  onContinue: () => void;
+}) {
   const feedbackOptions = [
     { emoji: "🫠", label: "Muito pesado" },
     { emoji: "😮‍💨", label: "Puxado" },
@@ -456,7 +475,7 @@ function DoneScreen({ onClose }: { onClose: () => void }) {
                 type="button"
                 key={label}
                 aria-pressed={feedback === label}
-                onClick={() => setFeedback(label)}
+                onClick={() => onFeedbackChange(label)}
               >
                 <span aria-hidden="true">{emoji}</span>
                 <small>{label}</small>
@@ -467,6 +486,62 @@ function DoneScreen({ onClose }: { onClose: () => void }) {
             {feedback ? "Valeu pelo feedback!" : "Toque em uma opção para responder."}
           </p>
         </fieldset>
+
+        <button className="complete-button" type="button" onClick={onContinue}>
+          <span>Ver resumo</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function SummaryScreen({
+  entries,
+  feedback,
+  onClose,
+}: {
+  entries: Record<string, Entry>;
+  feedback: string | null;
+  onClose: () => void;
+}) {
+  return (
+    <main className="desk">
+      <section className="sheet summary-sheet">
+        <header className="summary-header">
+          <div>
+            <p className="kicker">Resumo do treino</p>
+            <h1>{TEST_WORKOUT.name}</h1>
+            <p>{TEST_WORKOUT.focus}</p>
+          </div>
+          <strong>{totalSets} séries</strong>
+        </header>
+
+        <div className="summary-exercises">
+          {TEST_WORKOUT.exercises.map((exercise, exerciseIndex) => (
+            <section className="summary-exercise" key={exercise.name}>
+              <div className="summary-exercise-heading">
+                <span>{String(exerciseIndex + 1).padStart(2, "0")}</span>
+                <h2>{exercise.name}</h2>
+              </div>
+              <ol>
+                {Array.from({ length: exercise.sets }, (_, setIndex) => {
+                  const entry = entries[`${exerciseIndex}-${setIndex}`];
+
+                  return (
+                    <li key={setIndex}>
+                      <span>Série {setIndex + 1}</span>
+                      <strong>{entry?.weight ? `${entry.weight} kg` : "—"}</strong>
+                      <strong>{entry?.reps ? `${entry.reps} reps` : "—"}</strong>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          ))}
+        </div>
+
+        {feedback && <p className="summary-feedback">Como foi: {feedback}</p>}
 
         <button className="complete-button" type="button" onClick={onClose}>
           <span>Voltar às fichas</span>
