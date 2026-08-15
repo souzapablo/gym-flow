@@ -167,6 +167,8 @@ Playwright, TypeScript path support, React test support, and public scripts.
 
 ### T4: Declare the existing PostgreSQL schema in Drizzle
 
+**Status**: Complete
+
 **What**: Model every existing table, column, constraint, index-relevant key,
 and relationship without changing migration history.
 **Where**: `src/db/schema.ts`
@@ -181,10 +183,10 @@ and relationship without changing migration history.
 
 **Done when**:
 
-- [ ] The schema mirrors all five current tables and their nullability.
-- [ ] Application-facing domain types remain separate.
-- [ ] Existing SQL files remain the migration source of truth.
-- [ ] `npm run typecheck` and `npm run build` pass.
+- [x] The schema mirrors all five current tables and their nullability.
+- [x] Application-facing domain types remain separate.
+- [x] Existing SQL files remain the migration source of truth.
+- [x] `npm run typecheck` and `npm run build` pass.
 
 **Tests**: none, schema layer; migration parity is exercised by T7
 **Gate**: build
