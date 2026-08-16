@@ -1,5 +1,9 @@
 import "server-only";
 
+import { asc, eq, sql } from "drizzle-orm";
+
+import { database } from "@/db/client";
+import { exercises, workouts } from "@/db/schema";
 import { db } from "@/lib/db";
 import type {
   CompletedWorkout,
@@ -10,55 +14,54 @@ import type {
 } from "@/lib/workout";
 
 type WorkoutRow = {
-  workout_id: string;
-  workout_name: string;
+  workoutId: string;
+  workoutName: string;
   focus: string;
   color: MarkerColor;
-  exercise_id: string;
-  exercise_name: string;
+  exerciseId: string;
+  exerciseName: string;
   sets: number;
-  target_reps: number;
+  targetReps: number;
 };
 
 export async function listWorkouts(ownerId: string): Promise<Workout[]> {
-  const sql = db();
-  const rows = (await sql`
-    select
-      w.id::text as workout_id,
-      w.name as workout_name,
-      w.focus,
-      w.color,
-      e.id::text as exercise_id,
-      e.name as exercise_name,
-      e.sets,
-      e.target_reps
-    from workouts w
-    join exercises e on e.workout_id = w.id
-    where w.owner_id = ${ownerId}
-    order by w.created_at, e.position
-  `) as WorkoutRow[];
+  const rows: WorkoutRow[] = await database()
+    .select({
+      workoutId: workouts.id,
+      workoutName: workouts.name,
+      focus: workouts.focus,
+      color: sql<MarkerColor>`${workouts.color}`,
+      exerciseId: exercises.id,
+      exerciseName: exercises.name,
+      sets: exercises.sets,
+      targetReps: exercises.targetReps,
+    })
+    .from(workouts)
+    .innerJoin(exercises, eq(exercises.workoutId, workouts.id))
+    .where(eq(workouts.ownerId, ownerId))
+    .orderBy(asc(workouts.createdAt), asc(exercises.position));
 
-  const workouts = new Map<string, Workout>();
+  const mappedWorkouts = new Map<string, Workout>();
 
   for (const row of rows) {
-    const workout: Workout = workouts.get(row.workout_id) ?? {
-      id: row.workout_id,
-      name: row.workout_name,
+    const workout: Workout = mappedWorkouts.get(row.workoutId) ?? {
+      id: row.workoutId,
+      name: row.workoutName,
       focus: row.focus,
       color: row.color,
       exercises: [],
     };
 
     workout.exercises.push({
-      id: row.exercise_id,
-      name: row.exercise_name,
+      id: row.exerciseId,
+      name: row.exerciseName,
       sets: row.sets,
-      targetReps: row.target_reps,
+      targetReps: row.targetReps,
     });
-    workouts.set(row.workout_id, workout);
+    mappedWorkouts.set(row.workoutId, workout);
   }
 
-  return [...workouts.values()];
+  return [...mappedWorkouts.values()];
 }
 
 export async function listCompletedWorkouts(
@@ -91,37 +94,26 @@ export async function createWorkout(
       id: crypto.randomUUID(),
     })),
   };
-  const sql = db();
 
-  await sql`
-    with inserted_workout as (
-      insert into workouts (id, owner_id, name, focus, color)
-      values (${workout.id}, ${ownerId}, ${workout.name}, ${workout.focus}, ${workout.color})
-      returning id
-    )
-    insert into exercises (id, workout_id, name, sets, target_reps, position)
-    select
-      exercise.id::uuid,
-      inserted_workout.id,
-      exercise.name,
-      exercise.sets,
-      exercise.target_reps,
-      exercise.position
-    from inserted_workout
-    cross join jsonb_to_recordset(${JSON.stringify(
+  await database().transaction(async (transaction) => {
+    await transaction.insert(workouts).values({
+      id: workout.id,
+      ownerId,
+      name: workout.name,
+      focus: workout.focus,
+      color: workout.color,
+    });
+    await transaction.insert(exercises).values(
       workout.exercises.map((exercise, position) => ({
-        ...exercise,
-        target_reps: exercise.targetReps,
+        id: exercise.id,
+        workoutId: workout.id,
+        name: exercise.name,
+        sets: exercise.sets,
+        targetReps: exercise.targetReps,
         position,
       })),
-    )}::jsonb) as exercise(
-      id text,
-      name text,
-      sets integer,
-      target_reps integer,
-      position integer
-    )
-  `;
+    );
+  });
 
   return workout;
 }

@@ -337,6 +337,8 @@ behavior against PostgreSQL.
 
 ### T10: Migrate workout creation and listing with coverage
 
+**Status**: Complete
+
 **What**: Move workout creation and listing to Drizzle while preserving
 generated IDs, ordering, mapping, uniqueness, and owner isolation.
 **Where**: `src/data/workouts.ts`
@@ -351,11 +353,11 @@ generated IDs, ordering, mapping, uniqueness, and owner isolation.
 
 **Done when**:
 
-- [ ] Creation persists one workout and ordered exercises atomically.
-- [ ] Listing returns mapped, ordered, owner-scoped results and an empty array.
-- [ ] Duplicate owner/color failure leaves no partial workout.
-- [ ] Seven creation and listing integration tests pass.
-- [ ] Full gate passes with 7 new tests.
+- [x] Creation persists one workout and ordered exercises atomically.
+- [x] Listing returns mapped, ordered, owner-scoped results and an empty array.
+- [x] Duplicate owner/color failure leaves no partial workout.
+- [x] Seven creation and listing integration tests pass.
+- [x] Full gate passes with 7 new tests.
 
 **Tests**: integration
 **Gate**: full
