@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { createDatabaseContext, database } from "./client";
+import { database } from "./client";
 
 const originalDatabaseUrl = process.env.DATABASE_URL;
 
@@ -28,18 +28,11 @@ describe("production database configuration", () => {
 
     expect(() => database()).toThrowError(/Neon.*-pooler/);
   });
-});
 
-describe("explicit database composition", () => {
-  it("creates a bounded client for a Testcontainer URI", async () => {
-    const connectionUri =
+  it("rejects a Testcontainer-style URL at the production boundary", () => {
+    process.env.DATABASE_URL =
       "postgresql://test:test@localhost:5432/gym_flow_test";
-    const context = createDatabaseContext(connectionUri);
 
-    expect(context.pool.options.connectionString).toBe(connectionUri);
-    expect(context.pool.options.max).toBe(5);
-    expect(context.database).toBeDefined();
-
-    await context.close();
+    expect(() => database()).toThrowError(/Neon.*-pooler/);
   });
 });

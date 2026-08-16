@@ -13,7 +13,7 @@ export type DatabaseContext = {
 
 let productionContext: DatabaseContext | undefined;
 
-export function createDatabaseContext(connectionString: string): DatabaseContext {
+function createDatabaseContext(connectionString: string): DatabaseContext {
   const pool = new Pool({
     connectionString,
     max: 5,
