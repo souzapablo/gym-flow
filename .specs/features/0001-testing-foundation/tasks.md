@@ -310,6 +310,8 @@ user and workout fixture builders.
 
 ### T9: Migrate user data access with integration coverage
 
+**Status**: Complete
+
 **What**: Replace the user query with Drizzle and prove found and missing-user
 behavior against PostgreSQL.
 **Where**: `src/data/users.ts`
@@ -324,10 +326,10 @@ behavior against PostgreSQL.
 
 **Done when**:
 
-- [ ] `findUserById` retains its public signature and mapping.
-- [ ] Found-user and missing-user integration tests pass.
-- [ ] No database result is mocked.
-- [ ] Full gate passes with 2 new tests.
+- [x] `findUserById` retains its public signature and mapping.
+- [x] Found-user and missing-user integration tests pass.
+- [x] No database result is mocked.
+- [x] Full gate passes with 2 new tests.
 
 **Tests**: integration
 **Gate**: full

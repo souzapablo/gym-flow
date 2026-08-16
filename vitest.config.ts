@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -27,6 +28,12 @@ export default defineConfig({
       },
       {
         extends: true,
+        resolve: {
+          alias: {
+            "@/db/client": resolve(process.cwd(), "test/database/client.ts"),
+            "server-only": resolve(process.cwd(), "test/setup/server-only.ts"),
+          },
+        },
         test: {
           name: "database",
           environment: "node",
