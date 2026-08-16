@@ -49,7 +49,8 @@
 ## Handoff
 
 - **Current feature**: `0002-gym-workspaces-memberships`
-- **Status**: Specification ready for approval and design
-- **Next step**: Approve and design spec 0002 before advancing through the dependency-ordered membership-access roadmap.
+- **Status**: Implemented and independently verified (22/22 requirements; 138 tests; 6/6 sensor mutations killed)
+- **Completed**: T1-T11 plus verifier regression fix on `feat/0002-gym-workspaces-memberships`
+- **Next step**: Push the branch, open a pull request into `main`, and merge after explicit remote-action approval.
 - **Roadmap**: `.specs/features/0002-gym-workspaces-memberships/roadmap.md`
 - **Dependencies**: 0002 → 0003 → 0004; 0003 → 0005 → 0006; 0003 + 0005 → 0007.

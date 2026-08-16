@@ -17,7 +17,7 @@ History: `src/components/workout-app.tsx:CalendarTab()`
 
 Model: `src/lib/workout.ts`
 
-- `Workout.color` is unique per owner, enforced by `migrations/001_initial.sql`
+- `Workout.color` is unique per gym, finalized by `migrations/005_gym_owned_training.sql`
 - Marker palette: yellow, pink, blue, green, orange
 
 Creation: `src/components/workout-app.tsx:CreateWorkoutScreen()`
@@ -28,7 +28,9 @@ Creation: `src/components/workout-app.tsx:CreateWorkoutScreen()`
 
 Persistence: `src/data/workouts.ts`
 
-- `src/app/page.tsx:Home()` loads workouts and completed sessions for the current owner
+- `src/app/page.tsx:Home()` resolves verified identity and active gym before loading training data
+- Every data read/write requires `GymContextDto`; creator ID is attribution, not ownership
+- Cross-gym workout/session access returns the same non-disclosing denial
 - `DATABASE_URL` is required; there is no fixture or in-memory fallback
 
 Styling: `src/app/globals.css`
@@ -36,4 +38,4 @@ Styling: `src/app/globals.css`
 - `marker-color-*` classes set `--workout-color` for cards and picker swatches
 - Active workout maps `--workout-color` to `--training-accent` for set highlights
 
-Updated: 2026-08-15
+Updated: 2026-08-16

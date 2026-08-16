@@ -135,30 +135,30 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 
 ## Requirement Traceability
 
-| Requirement ID | Story                             | Phase  | Status      |
-| -------------- | --------------------------------- | ------ | ----------- |
-| GWM-01         | Establish Global Identity         | T3     | Implemented |
-| GWM-02         | Establish Global Identity         | T3     | Implemented |
-| GWM-03         | Establish Global Identity         | T3     | Implemented |
-| GWM-04         | Provision Gym Workspaces          | T8     | Implemented |
-| GWM-05         | Provision Gym Workspaces          | T6     | Implemented |
-| GWM-06         | Provision Gym Workspaces          | T6     | Implemented |
-| GWM-07         | Provision Gym Workspaces          | T6     | Implemented |
-| GWM-08         | Provision Gym Workspaces          | T6     | Implemented |
-| GWM-09         | Resolve Active Gym Context        | T7     | Implemented |
-| GWM-10         | Resolve Active Gym Context        | T8     | Implemented |
-| GWM-11         | Resolve Active Gym Context        | T7/T11 | Implemented |
-| GWM-12         | Resolve Active Gym Context        | T7/T11 | Implemented |
-| GWM-13         | Resolve Active Gym Context        | T7/T11 | Implemented |
-| GWM-14         | Resolve Active Gym Context        | T8     | Implemented |
-| GWM-15         | Gym-Owned Records and Audit Store | T9/T10 | Implemented |
-| GWM-16         | Gym-Owned Records and Audit Store | T9/T10 | Implemented |
-| GWM-17         | Gym-Owned Records and Audit Store | T9/T10 | Implemented |
-| GWM-18         | Gym-Owned Records and Audit Store | T5     | Implemented |
-| GWM-19         | Gym-Owned Records and Audit Store | T6     | Implemented |
-| GWM-20         | Gym-Owned Records and Audit Store | T5     | Implemented |
-| GWM-21         | Edge Cases                        | T9/T10 | Implemented |
-| GWM-22         | Edge Cases                        | T7     | Implemented |
+| Requirement ID | Story                             | Phase  | Status   |
+| -------------- | --------------------------------- | ------ | -------- |
+| GWM-01         | Establish Global Identity         | T3     | Verified |
+| GWM-02         | Establish Global Identity         | T3     | Verified |
+| GWM-03         | Establish Global Identity         | T3     | Verified |
+| GWM-04         | Provision Gym Workspaces          | T8     | Verified |
+| GWM-05         | Provision Gym Workspaces          | T6     | Verified |
+| GWM-06         | Provision Gym Workspaces          | T6     | Verified |
+| GWM-07         | Provision Gym Workspaces          | T6     | Verified |
+| GWM-08         | Provision Gym Workspaces          | T6     | Verified |
+| GWM-09         | Resolve Active Gym Context        | T7     | Verified |
+| GWM-10         | Resolve Active Gym Context        | T8     | Verified |
+| GWM-11         | Resolve Active Gym Context        | T7/T11 | Verified |
+| GWM-12         | Resolve Active Gym Context        | T7/T11 | Verified |
+| GWM-13         | Resolve Active Gym Context        | T7/T11 | Verified |
+| GWM-14         | Resolve Active Gym Context        | T8     | Verified |
+| GWM-15         | Gym-Owned Records and Audit Store | T9/T10 | Verified |
+| GWM-16         | Gym-Owned Records and Audit Store | T9/T10 | Verified |
+| GWM-17         | Gym-Owned Records and Audit Store | T9/T10 | Verified |
+| GWM-18         | Gym-Owned Records and Audit Store | T5     | Verified |
+| GWM-19         | Gym-Owned Records and Audit Store | T6     | Verified |
+| GWM-20         | Gym-Owned Records and Audit Store | T5     | Verified |
+| GWM-21         | Edge Cases                        | T9/T10 | Verified |
+| GWM-22         | Edge Cases                        | T7     | Verified |
 
 **Coverage:** 22 total, 22 mapped to draft tasks, 0 unmapped.
 
