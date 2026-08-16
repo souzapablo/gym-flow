@@ -51,3 +51,49 @@ test("creates a workout through the application", async ({ page }) => {
       },
     ]);
 });
+
+test("completes a workout and displays it in history", async ({ page }) => {
+  const workout = await seedWorkoutScenario();
+  await page.goto("/");
+
+  await page.getByRole("button", { name: new RegExp(workout.name) }).click();
+  await page.getByLabel(/^Peso \(opcional\)/).fill("72.5");
+  await page.getByLabel(/^Repetições \(opcional\)/).fill("8");
+  await page.getByRole("button", { name: "Concluir série" }).click();
+  await page.getByRole("button", { name: "Ideal" }).click();
+  await page.getByRole("button", { name: "Na medida" }).click();
+  await page.getByRole("button", { name: "Ver resumo" }).click();
+  await page.getByRole("button", { name: "Voltar às fichas" }).click();
+
+  await page.getByRole("button", { name: "Histórico" }).click();
+  await expect(
+    page.getByRole("gridcell", { name: new RegExp(`${workout.name} concluído`) }),
+  ).toBeVisible();
+
+  await expect
+    .poll(async () => {
+      const result = await e2ePool.query<{
+        workout_id: string;
+        feedback: string;
+        weight: string;
+        reps: number;
+        load_rating: string;
+      }>(
+        `select ws.workout_id, ws.feedback, cs.weight, cs.reps, cs.load_rating
+           from workout_sessions ws
+           join completed_sets cs on cs.session_id = ws.id
+          where ws.owner_id = $1 and ws.workout_id = $2`,
+        ["local-user", workout.id],
+      );
+      return result.rows;
+    })
+    .toEqual([
+      {
+        workout_id: workout.id,
+        feedback: "Na medida",
+        weight: "72.50",
+        reps: 8,
+        load_rating: "Ideal",
+      },
+    ]);
+});

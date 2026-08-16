@@ -560,6 +560,8 @@ the Server Action and route revalidation complete.
 
 ### T18: Cover session completion through the browser
 
+**Status**: Complete
+
 **What**: Add the critical journey that completes a seeded workout and observes
 the completed session in history.
 **Where**: `test/e2e/workout-journeys.spec.ts`
@@ -574,10 +576,10 @@ the completed session in history.
 
 **Done when**:
 
-- [ ] The journey records the workout sets without waiting for real countdowns.
-- [ ] The session persists through the real Server Action.
-- [ ] History visibly identifies the completed workout.
-- [ ] `npm run test:e2e` passes with 3 cumulative journeys.
+- [x] The journey records the workout sets without waiting for real countdowns.
+- [x] The session persists through the real Server Action.
+- [x] History visibly identifies the completed workout.
+- [x] `npm run test:e2e` passes with 3 cumulative journeys.
 
 **Tests**: e2e
 **Gate**: full

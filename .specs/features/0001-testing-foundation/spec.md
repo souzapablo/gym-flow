@@ -236,7 +236,7 @@ and verify the three critical journeys pass without Neon credentials.
 | TEST-01 | P1: Agent testing contract | Documentation | In Progress (T1-T2, T6 complete) |
 | TEST-02 | P1: Executable test infrastructure | Infrastructure | In Progress (T3-T8, T12, T16 complete) |
 | TEST-03 | P1: Current behavior coverage | Tests | Complete (T9-T11, T13-T15) |
-| TEST-04 | P2: Critical browser journeys | E2E | In Progress (T16-T17 complete) |
+| TEST-04 | P2: Critical browser journeys | E2E | Complete (T16-T18) |
 
 **Coverage:** 4 total, 4 mapped to tasks, 0 unmapped.
 
@@ -253,7 +253,7 @@ and verify the three critical journeys pass without Neon credentials.
       database.
 - [x] Current validation, data access, Server Action, and client interaction
       behavior has requirement-linked test coverage.
-- [ ] Three Playwright journeys verify workout loading, workout creation, and
+- [x] Three Playwright journeys verify workout loading, workout creation, and
       workout-session completion through the real application.
 - [ ] The complete local and CI gates use non-watch commands and return a
       non-zero exit code on failure.
