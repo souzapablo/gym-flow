@@ -35,15 +35,20 @@ afterAll(async () => {
 });
 
 it("returns the mapped user when the id exists", async () => {
-  const user = buildUserFixture({ id: "member-1", name: "Pablo" });
+  const user = buildUserFixture({
+    id: "70000000-0000-7000-8000-000000000021",
+    name: "Pablo",
+  });
   await context.database.insert(users).values(user);
 
   await expect(findUserById(user.id)).resolves.toEqual({
-    id: "member-1",
+    id: "70000000-0000-7000-8000-000000000021",
     name: "Pablo",
   });
 });
 
 it("returns null when the user id does not exist", async () => {
-  await expect(findUserById("missing-user")).resolves.toBeNull();
+  await expect(
+    findUserById("70000000-0000-7000-8000-000000000099"),
+  ).resolves.toBeNull();
 });

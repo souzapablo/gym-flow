@@ -121,15 +121,39 @@ it("truncates all mutable tables and accepts valid fixture defaults", async () =
 async function insertWorkoutFixture(pool: Pool) {
   const user = buildUserFixture();
   const workout = buildWorkoutFixture();
+  const gymId = "50000000-0000-7000-8000-000000000001";
+  const membershipId = "60000000-0000-7000-8000-000000000001";
 
-  await pool.query("insert into users (id, name) values ($1, $2)", [
-    user.id,
-    user.name,
-  ]);
-  await pool.query(
-    "insert into workouts (id, owner_id, name, focus, color) values ($1, $2, $3, $4, $5)",
-    [workout.id, workout.ownerId, workout.name, workout.focus, workout.color],
-  );
+  await pool.query("begin");
+  try {
+    await pool.query("insert into users (id, name) values ($1, $2)", [
+      user.id,
+      user.name,
+    ]);
+    await pool.query(
+      "insert into gyms (id, name, owner_user_id) values ($1, $2, $3)",
+      [gymId, "Fixture gym", user.id],
+    );
+    await pool.query(
+      "insert into memberships (id, gym_id, user_id, role, status) values ($1, $2, $3, 'owner', 'active')",
+      [membershipId, gymId, user.id],
+    );
+    await pool.query(
+      "insert into workouts (id, gym_id, created_by_user_id, name, focus, color) values ($1, $2, $3, $4, $5, $6)",
+      [
+        workout.id,
+        gymId,
+        workout.ownerId,
+        workout.name,
+        workout.focus,
+        workout.color,
+      ],
+    );
+    await pool.query("commit");
+  } catch (error) {
+    await pool.query("rollback");
+    throw error;
+  }
 
   for (const exercise of workout.exercises) {
     await pool.query(
@@ -147,24 +171,30 @@ async function insertWorkoutFixture(pool: Pool) {
     );
   }
 
-  return { user, workout };
+  return { user, workout, gymId };
 }
 
 async function insertCompleteSessionFixture(pool: Pool) {
   const fixtures = await insertWorkoutFixture(pool);
-  const sessionId = "30000000-0000-4000-8000-000000000001";
+  const sessionId = "30000000-0000-7000-8000-000000000001";
 
   await pool.query(
-    `insert into workout_sessions (id, workout_id, owner_id, feedback)
-     values ($1, $2, $3, $4)`,
-    [sessionId, fixtures.workout.id, fixtures.user.id, "Good session"],
+    `insert into workout_sessions (id, gym_id, workout_id, created_by_user_id, feedback)
+     values ($1, $2, $3, $4, $5)`,
+    [
+      sessionId,
+      fixtures.gymId,
+      fixtures.workout.id,
+      fixtures.user.id,
+      "Good session",
+    ],
   );
   await pool.query(
     `insert into completed_sets
       (id, session_id, exercise_id, set_number, weight, reps, load_rating)
      values ($1, $2, $3, $4, $5, $6, $7)`,
     [
-      "40000000-0000-4000-8000-000000000001",
+      "40000000-0000-7000-8000-000000000001",
       sessionId,
       fixtures.workout.exercises[0].id,
       1,

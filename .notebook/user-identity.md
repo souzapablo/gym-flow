@@ -1,14 +1,15 @@
 # User Identity
 
-> Persisted, role-neutral identity boundary prepared for future ABAC
+> Better Auth verified global identity, separate from gym membership
 
-Model: `src/lib/user.ts`
-Persistence: `src/data/users.ts:findUserById()` and `migrations/002_users.sql`
-Current identity: `src/lib/owner.ts:getCurrentUser()` resolves the seeded `local-user`
+Entry: `src/modules/identity/account/identity.ts:requireVerifiedIdentity()`
+Provider adapter: `src/modules/identity/account/auth.ts`
+Persistence: `migrations/003_gym_workspaces_memberships.sql` and `migrations/004_better_auth_core.sql`
 
-- Users intentionally have no role or user type yet; all users currently have the same capabilities.
-- Workouts and sessions retain `owner_id` as a resource relationship that future ABAC policies can evaluate.
-- Server Actions resolve the current user on the server and never accept a user ID from the client.
-- Replace the implementation of `getCurrentUser()` when an authentication provider is selected.
+- Stable text user ID survives verified email changes
+- Normalized email uniqueness enforced in PostgreSQL
+- Provider session types stop at the identity module boundary
+- Server Actions resolve verified identity server-side; clients never supply trusted user IDs
+- Gym roles and status live in memberships, not the global user
 
-Updated: 2026-08-15
+Updated: 2026-08-16

@@ -98,8 +98,9 @@ Mock only boundaries that are slow, nondeterministic, unavailable in the test
 environment, or outside this application's control.
 
 - Component integration tests fake the Server Action boundary.
-- Server Action integration tests may mock only the Next.js revalidation
-  boundary.
+- Server Action integration tests may mock the Next.js revalidation boundary
+  and the established `requireVerifiedIdentity()` session-reader boundary.
+  Gym resolution and PostgreSQL behavior remain real.
 - Data integration tests use real PostgreSQL and never mock query results or
   internal collaborators.
 - Control time, randomness, generated identifiers, and external responses when

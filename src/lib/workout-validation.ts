@@ -1,4 +1,5 @@
 import type { MarkerColor, NewWorkout, WorkoutSession } from "@/lib/workout";
+import { isUuidV7 } from "@/lib/uuid";
 
 const MARKER_COLORS = new Set<MarkerColor>([
   "yellow",
@@ -7,8 +8,6 @@ const MARKER_COLORS = new Set<MarkerColor>([
   "green",
   "orange",
 ]);
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LOAD_RATINGS = new Set(["Leve", "Ideal", "Pesada"]);
 const WORKOUT_FEEDBACK = new Set([
   "Muito pesado",
@@ -89,7 +88,7 @@ export function parseWorkoutSession(value: unknown): WorkoutSession {
   if (
     !isRecord(value) ||
     typeof value.workoutId !== "string" ||
-    !UUID_PATTERN.test(value.workoutId)
+    !isUuidV7(value.workoutId)
   ) {
     throw new Error("Workout session is invalid");
   }
@@ -115,7 +114,7 @@ export function parseWorkoutSession(value: unknown): WorkoutSession {
       if (
         !isRecord(completedSet) ||
         typeof completedSet.exercise_id !== "string" ||
-        !UUID_PATTERN.test(completedSet.exercise_id)
+        !isUuidV7(completedSet.exercise_id)
       ) {
         throw new Error("Completed set is invalid");
       }

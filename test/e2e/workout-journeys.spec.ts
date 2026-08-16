@@ -14,12 +14,34 @@ test("loads a seeded workout", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: new RegExp(workout.name) }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Escolha uma academia" }),
+  ).toHaveCount(0);
   await expect(page.getByText(workout.focus)).toBeVisible();
   await expect(page.getByText(workout.exercises[0].name)).not.toBeVisible();
 });
 
+test("selects a gym before loading workouts for a multi-gym account", async ({
+  page,
+}) => {
+  const workout = await seedWorkoutScenario({ multiGym: true });
+
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Escolha uma academia" }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Academia", { exact: true })
+    .selectOption({ label: "Main gym" });
+  await page.getByRole("button", { name: "Continuar" }).click();
+
+  await expect(
+    page.getByRole("button", { name: new RegExp(workout.name) }),
+  ).toBeVisible();
+});
+
 test("creates a workout through the application", async ({ page }) => {
-  await seedWorkoutScenario();
+  const workout = await seedWorkoutScenario();
   await page.goto("/");
 
   await page.getByRole("button", { name: "criar novo treino" }).click();
@@ -40,8 +62,8 @@ test("creates a workout through the application", async ({ page }) => {
         `select w.name, w.focus, e.name as exercise_name
            from workouts w
            join exercises e on e.workout_id = w.id
-          where w.owner_id = $1 and w.name = $2`,
-        ["local-user", "Treino B"],
+          where w.gym_id = $1 and w.name = $2`,
+        [workout.gymId, "Treino B"],
       );
       return result.rows;
     })
@@ -86,8 +108,8 @@ test("completes a workout and displays it in history", async ({ page }) => {
         `select ws.workout_id, ws.feedback, cs.weight, cs.reps, cs.load_rating
            from workout_sessions ws
            join completed_sets cs on cs.session_id = ws.id
-          where ws.owner_id = $1 and ws.workout_id = $2`,
-        ["local-user", workout.id],
+          where ws.gym_id = $1 and ws.workout_id = $2`,
+        [workout.gymId, workout.id],
       );
       return result.rows;
     })

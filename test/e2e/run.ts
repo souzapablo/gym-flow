@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from "node:child_process";
-import { randomUUID } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
@@ -42,6 +42,7 @@ function captureOutput(child: ChildProcess) {
 
 async function waitForServer(
   url: string,
+  cookie: string,
   child: ChildProcess,
   output: () => string,
 ) {
@@ -55,7 +56,7 @@ async function waitForServer(
     }
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { headers: { cookie } });
       if (response.ok) return;
     } catch {
       // The server has not opened its socket yet.
@@ -97,12 +98,21 @@ async function run() {
 
     const port = await availablePort();
     const baseURL = `http://127.0.0.1:${port}`;
+    const authSecret = "gym-flow-e2e-secret-12345678901234567890";
+    const sessionToken = randomUUID();
+    const signature = createHmac("sha256", authSecret)
+      .update(sessionToken)
+      .digest("base64");
+    const sessionCookie = `better-auth.session_token=${sessionToken}.${signature}`;
     const environment = {
       ...process.env,
       DATABASE_URL: "",
       GYM_FLOW_E2E: "1",
       GYM_FLOW_E2E_DATABASE_URL: databaseUri,
       GYM_FLOW_E2E_SUITE_ID: randomUUID(),
+      GYM_FLOW_E2E_SESSION_TOKEN: sessionToken,
+      GYM_FLOW_E2E_SESSION_COOKIE: sessionCookie,
+      BETTER_AUTH_SECRET: authSecret,
       PLAYWRIGHT_BASE_URL: baseURL,
     };
 
@@ -123,8 +133,9 @@ async function run() {
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
+    await seedReadinessScenario(pool, sessionToken);
     const serverOutput = captureOutput(server);
-    await waitForServer(baseURL, server, serverOutput);
+    await waitForServer(baseURL, sessionCookie, server, serverOutput);
 
     const playwright = spawn(
       process.execPath,
@@ -161,6 +172,42 @@ async function run() {
     if (teardownErrors.length) {
       throw new AggregateError(teardownErrors, "E2E teardown failed");
     }
+  }
+}
+
+async function seedReadinessScenario(pool: Pool, sessionToken: string) {
+  await pool.query("begin");
+  try {
+    await pool.query(
+      `insert into users (id, name, email, email_normalized, email_verified)
+       values ('70000000-0000-7000-8000-000000000001', 'Local user', 'local@gym-flow.test', 'local@gym-flow.test', true)
+       on conflict (id) do update set
+         email = excluded.email,
+         email_normalized = excluded.email_normalized,
+         email_verified = excluded.email_verified`,
+    );
+    const gym = await pool.query<{ id: string }>(
+      "insert into gyms (name, owner_user_id) values ('Main gym', '70000000-0000-7000-8000-000000000001') returning id::text",
+    );
+    const membership = await pool.query<{ id: string }>(
+      `insert into memberships (gym_id, user_id, role, status)
+       values ($1, '70000000-0000-7000-8000-000000000001', 'owner', 'active') returning id::text`,
+      [gym.rows[0].id],
+    );
+    await pool.query(
+      `insert into active_gym_selections (user_id, gym_id, membership_id)
+       values ('70000000-0000-7000-8000-000000000001', $1, $2)`,
+      [gym.rows[0].id, membership.rows[0].id],
+    );
+    await pool.query(
+      `insert into sessions (user_id, token, expires_at)
+       values ('70000000-0000-7000-8000-000000000001', $1, now() + interval '1 day')`,
+      [sessionToken],
+    );
+    await pool.query("commit");
+  } catch (error) {
+    await pool.query("rollback");
+    throw error;
   }
 }
 

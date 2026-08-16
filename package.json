@@ -31,6 +31,7 @@
     "*.{json,md,css,scss,yml,yaml}": "prettier --write"
   },
   "dependencies": {
+    "better-auth": "^1.6.29",
     "drizzle-orm": "^0.45.2",
     "next": "16.3.1",
     "pg": "^8.23.0",

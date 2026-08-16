@@ -1,8 +1,11 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   check,
+  foreignKey,
   index,
   integer,
+  jsonb,
   numeric,
   pgTable,
   text,
@@ -15,22 +18,275 @@ import {
 export const users = pgTable(
   "users",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     name: text("name").notNull(),
+    email: text("email").notNull().default(""),
+    emailNormalized: text("email_normalized").notNull().default(""),
+    emailVerified: boolean("email_verified").notNull().default(false),
+    image: text("image"),
     createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
   },
   (table) => [
+    uniqueIndex("users_email_normalized_idx").on(table.emailNormalized),
+    check("users_id_uuidv7_check", sql`uuid_extract_version(${table.id}) = 7`),
     check("users_name_check", sql`char_length(${table.name}) between 1 and 80`),
+    check(
+      "users_email_normalized_check",
+      sql`${table.emailNormalized} = lower(btrim(${table.emailNormalized}))`,
+    ),
+  ],
+);
+
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("sessions_user_id_idx").on(table.userId),
+    check(
+      "sessions_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+  ],
+);
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", {
+      withTimezone: true,
+    }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
+      withTimezone: true,
+    }),
+    scope: text("scope"),
+    idToken: text("id_token"),
+    password: text("password"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("accounts_user_id_idx").on(table.userId),
+    check(
+      "accounts_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    uniqueIndex("accounts_provider_account_idx").on(
+      table.providerId,
+      table.accountId,
+    ),
+  ],
+);
+
+export const verifications = pgTable(
+  "verifications",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("verifications_identifier_idx").on(table.identifier),
+    check(
+      "verifications_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+  ],
+);
+
+export const gyms = pgTable(
+  "gyms",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    name: text("name").notNull(),
+    ownerUserId: uuid("owner_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "restrict" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    check("gyms_id_uuidv7_check", sql`uuid_extract_version(${table.id}) = 7`),
+    check("gyms_name_check", sql`char_length(${table.name}) between 1 and 100`),
+  ],
+);
+
+export const memberships = pgTable(
+  "memberships",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "restrict" }),
+    role: text("role").notNull(),
+    status: text("status").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    check(
+      "memberships_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    unique("memberships_gym_id_user_id_key").on(table.gymId, table.userId),
+    unique("memberships_gym_id_id_key").on(table.gymId, table.id),
+    uniqueIndex("memberships_one_owner_per_gym_idx")
+      .on(table.gymId)
+      .where(sql`${table.role} = 'owner'`),
+    check(
+      "memberships_role_check",
+      sql`${table.role} in ('owner', 'coach', 'member')`,
+    ),
+    check(
+      "memberships_status_check",
+      sql`${table.status} in ('active', 'suspended', 'removed')`,
+    ),
+    check(
+      "memberships_owner_status_check",
+      sql`${table.role} <> 'owner' or ${table.status} = 'active'`,
+    ),
+  ],
+);
+
+export const activeGymSelections = pgTable(
+  "active_gym_selections",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    gymId: uuid("gym_id").notNull(),
+    membershipId: uuid("membership_id").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.gymId, table.membershipId],
+      foreignColumns: [memberships.gymId, memberships.id],
+      name: "active_gym_selections_gym_id_membership_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const securityAuditEvents = pgTable(
+  "security_audit_events",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    eventType: text("event_type").notNull(),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
+    actorUserId: uuid("actor_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    targetType: text("target_type").notNull(),
+    targetId: uuid("target_id").notNull(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    metadata: jsonb("metadata")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default(sql`'{}'::jsonb`),
+  },
+  (table) => [
+    check(
+      "security_audit_events_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    check(
+      "security_audit_events_event_type_check",
+      sql`char_length(${table.eventType}) > 0`,
+    ),
+    check(
+      "security_audit_events_target_type_check",
+      sql`char_length(${table.targetType}) > 0`,
+    ),
+    check(
+      "security_audit_events_target_id_uuidv7_check",
+      sql`uuid_extract_version(${table.targetId}) = 7`,
+    ),
+    check(
+      "security_audit_events_metadata_check",
+      sql`jsonb_typeof(${table.metadata}) = 'object'`,
+    ),
   ],
 );
 
 export const workouts = pgTable(
   "workouts",
   {
-    id: uuid("id").primaryKey(),
-    ownerId: text("owner_id")
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
+    createdByUserId: uuid("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     name: text("name").notNull(),
@@ -41,7 +297,12 @@ export const workouts = pgTable(
       .defaultNow(),
   },
   (table) => [
-    uniqueIndex("workouts_owner_color_idx").on(table.ownerId, table.color),
+    check(
+      "workouts_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    unique("workouts_gym_id_id_key").on(table.gymId, table.id),
+    uniqueIndex("workouts_gym_color_idx").on(table.gymId, table.color),
     check(
       "workouts_name_check",
       sql`char_length(${table.name}) between 1 and 40`,
@@ -60,7 +321,9 @@ export const workouts = pgTable(
 export const exercises = pgTable(
   "exercises",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     workoutId: uuid("workout_id")
       .notNull()
       .references(() => workouts.id, { onDelete: "cascade" }),
@@ -70,6 +333,10 @@ export const exercises = pgTable(
     position: integer("position").notNull(),
   },
   (table) => [
+    check(
+      "exercises_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("exercises_workout_id_position_key").on(
       table.workoutId,
       table.position,
@@ -90,11 +357,16 @@ export const exercises = pgTable(
 export const workoutSessions = pgTable(
   "workout_sessions",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
     workoutId: uuid("workout_id")
       .notNull()
       .references(() => workouts.id, { onDelete: "restrict" }),
-    ownerId: text("owner_id")
+    createdByUserId: uuid("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     feedback: text("feedback"),
@@ -103,8 +375,17 @@ export const workoutSessions = pgTable(
       .defaultNow(),
   },
   (table) => [
-    index("workout_sessions_owner_completed_idx").on(
-      table.ownerId,
+    check(
+      "workout_sessions_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    foreignKey({
+      columns: [table.gymId, table.workoutId],
+      foreignColumns: [workouts.gymId, workouts.id],
+      name: "workout_sessions_gym_workout_fkey",
+    }).onDelete("restrict"),
+    index("workout_sessions_gym_completed_idx").on(
+      table.gymId,
       table.completedAt.desc(),
     ),
   ],
@@ -113,7 +394,9 @@ export const workoutSessions = pgTable(
 export const completedSets = pgTable(
   "completed_sets",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     sessionId: uuid("session_id")
       .notNull()
       .references(() => workoutSessions.id, { onDelete: "cascade" }),
@@ -126,6 +409,10 @@ export const completedSets = pgTable(
     loadRating: text("load_rating"),
   },
   (table) => [
+    check(
+      "completed_sets_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("completed_sets_session_id_exercise_id_set_number_key").on(
       table.sessionId,
       table.exerciseId,
@@ -138,13 +425,93 @@ export const completedSets = pgTable(
 );
 
 export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  accounts: many(accounts),
+  ownedGyms: many(gyms),
+  memberships: many(memberships),
+  activeGymSelections: many(activeGymSelections),
+  securityAuditEvents: many(securityAuditEvents),
   workouts: many(workouts),
   workoutSessions: many(workoutSessions),
 }));
 
-export const workoutsRelations = relations(workouts, ({ many, one }) => ({
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const gymsRelations = relations(gyms, ({ many, one }) => ({
   owner: one(users, {
-    fields: [workouts.ownerId],
+    fields: [gyms.ownerUserId],
+    references: [users.id],
+  }),
+  memberships: many(memberships),
+  activeGymSelections: many(activeGymSelections),
+  securityAuditEvents: many(securityAuditEvents),
+  workouts: many(workouts),
+  workoutSessions: many(workoutSessions),
+}));
+
+export const membershipsRelations = relations(memberships, ({ many, one }) => ({
+  gym: one(gyms, {
+    fields: [memberships.gymId],
+    references: [gyms.id],
+  }),
+  user: one(users, {
+    fields: [memberships.userId],
+    references: [users.id],
+  }),
+  activeGymSelections: many(activeGymSelections),
+}));
+
+export const activeGymSelectionsRelations = relations(
+  activeGymSelections,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [activeGymSelections.userId],
+      references: [users.id],
+    }),
+    gym: one(gyms, {
+      fields: [activeGymSelections.gymId],
+      references: [gyms.id],
+    }),
+    membership: one(memberships, {
+      fields: [activeGymSelections.membershipId],
+      references: [memberships.id],
+    }),
+  }),
+);
+
+export const securityAuditEventsRelations = relations(
+  securityAuditEvents,
+  ({ one }) => ({
+    gym: one(gyms, {
+      fields: [securityAuditEvents.gymId],
+      references: [gyms.id],
+    }),
+    actor: one(users, {
+      fields: [securityAuditEvents.actorUserId],
+      references: [users.id],
+    }),
+  }),
+);
+
+export const workoutsRelations = relations(workouts, ({ many, one }) => ({
+  gym: one(gyms, {
+    fields: [workouts.gymId],
+    references: [gyms.id],
+  }),
+  creator: one(users, {
+    fields: [workouts.createdByUserId],
     references: [users.id],
   }),
   exercises: many(exercises),
@@ -166,8 +533,12 @@ export const workoutSessionsRelations = relations(
       fields: [workoutSessions.workoutId],
       references: [workouts.id],
     }),
-    owner: one(users, {
-      fields: [workoutSessions.ownerId],
+    gym: one(gyms, {
+      fields: [workoutSessions.gymId],
+      references: [gyms.id],
+    }),
+    creator: one(users, {
+      fields: [workoutSessions.createdByUserId],
       references: [users.id],
     }),
     completedSets: many(completedSets),

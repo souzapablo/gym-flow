@@ -16,6 +16,7 @@ import type {
   Workout,
   WorkoutSession,
 } from "@/lib/workout";
+import type { GymContextDto } from "@/modules/gym-access";
 
 type WorkoutRow = {
   workoutId: string;
@@ -28,7 +29,7 @@ type WorkoutRow = {
   targetReps: number;
 };
 
-export async function listWorkouts(ownerId: string): Promise<Workout[]> {
+export async function listWorkouts(context: GymContextDto): Promise<Workout[]> {
   const rows: WorkoutRow[] = await database()
     .select({
       workoutId: workouts.id,
@@ -42,7 +43,7 @@ export async function listWorkouts(ownerId: string): Promise<Workout[]> {
     })
     .from(workouts)
     .innerJoin(exercises, eq(exercises.workoutId, workouts.id))
-    .where(eq(workouts.ownerId, ownerId))
+    .where(eq(workouts.gymId, context.gymId))
     .orderBy(asc(workouts.createdAt), asc(exercises.position));
 
   const mappedWorkouts = new Map<string, Workout>();
@@ -69,7 +70,7 @@ export async function listWorkouts(ownerId: string): Promise<Workout[]> {
 }
 
 export async function listCompletedWorkouts(
-  ownerId: string,
+  context: GymContextDto,
 ): Promise<CompletedWorkout[]> {
   return database()
     .select({
@@ -81,58 +82,61 @@ export async function listCompletedWorkouts(
     })
     .from(workoutSessions)
     .innerJoin(workouts, eq(workouts.id, workoutSessions.workoutId))
-    .where(eq(workoutSessions.ownerId, ownerId))
+    .where(eq(workoutSessions.gymId, context.gymId))
     .orderBy(desc(workoutSessions.completedAt));
 }
 
 export async function createWorkout(
-  ownerId: string,
+  context: GymContextDto,
   input: NewWorkout,
 ): Promise<Workout> {
-  const workout: Workout = {
-    ...input,
-    id: crypto.randomUUID(),
-    exercises: input.exercises.map((exercise) => ({
-      ...exercise,
-      id: crypto.randomUUID(),
-    })),
-  };
-
-  await database().transaction(async (transaction) => {
-    await transaction.insert(workouts).values({
-      id: workout.id,
-      ownerId,
-      name: workout.name,
-      focus: workout.focus,
-      color: workout.color,
-    });
-    await transaction.insert(exercises).values(
-      workout.exercises.map((exercise, position) => ({
-        id: exercise.id,
-        workoutId: workout.id,
-        name: exercise.name,
-        sets: exercise.sets,
-        targetReps: exercise.targetReps,
-        position,
+  return database().transaction(async (transaction) => {
+    const [createdWorkout] = await transaction
+      .insert(workouts)
+      .values({
+        gymId: context.gymId,
+        createdByUserId: context.userId,
+        name: input.name,
+        focus: input.focus,
+        color: input.color,
+      })
+      .returning({ id: workouts.id });
+    const createdExercises = await transaction
+      .insert(exercises)
+      .values(
+        input.exercises.map((exercise, position) => ({
+          workoutId: createdWorkout.id,
+          name: exercise.name,
+          sets: exercise.sets,
+          targetReps: exercise.targetReps,
+          position,
+        })),
+      )
+      .returning({ id: exercises.id });
+    return {
+      ...input,
+      id: createdWorkout.id,
+      exercises: input.exercises.map((exercise, index) => ({
+        ...exercise,
+        id: createdExercises[index].id,
       })),
-    );
+    };
   });
-
-  return workout;
 }
 
 export async function saveWorkoutSession(
-  ownerId: string,
+  context: GymContextDto,
   input: WorkoutSession,
 ): Promise<void> {
-  const sessionId = crypto.randomUUID();
-
   await database().transaction(async (transaction) => {
     const [ownedWorkout] = await transaction
       .select({ id: workouts.id })
       .from(workouts)
       .where(
-        and(eq(workouts.id, input.workoutId), eq(workouts.ownerId, ownerId)),
+        and(
+          eq(workouts.id, input.workoutId),
+          eq(workouts.gymId, context.gymId),
+        ),
       )
       .limit(1);
     const exerciseIds = [
@@ -154,18 +158,20 @@ export async function saveWorkoutSession(
       throw new Error("Workout not found or access denied");
     }
 
-    await transaction.insert(workoutSessions).values({
-      id: sessionId,
-      workoutId: input.workoutId,
-      ownerId,
-      feedback: input.feedback,
-    });
+    const [session] = await transaction
+      .insert(workoutSessions)
+      .values({
+        gymId: context.gymId,
+        workoutId: input.workoutId,
+        createdByUserId: context.userId,
+        feedback: input.feedback,
+      })
+      .returning({ id: workoutSessions.id });
 
     if (input.sets.length) {
       await transaction.insert(completedSets).values(
         input.sets.map((completedSet) => ({
-          id: crypto.randomUUID(),
-          sessionId,
+          sessionId: session.id,
           exerciseId: completedSet.exercise_id,
           setNumber: completedSet.set_number,
           weight:

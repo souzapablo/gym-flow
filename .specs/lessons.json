@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 2,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::exercise every authorization predicate through the public selection boundary including inactive memberships",
+      "text": "Exercise every authorization predicate through the public selection boundary, including inactive memberships.",
+      "signal": "surviving_mutant",
+      "scope": "gym-access",
+      "status": "candidate",
+      "features": ["0002-gym-workspaces-memberships"],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": ["validation.md:M2 (gym-access)"],
+      "created": "2026-08-16T18:53:27Z",
+      "last_seen": "2026-08-16T18:53:27Z"
+    }
+  ]
+}

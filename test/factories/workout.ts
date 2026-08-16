@@ -18,7 +18,7 @@ export type WorkoutFixture = {
 };
 
 const defaultExercise: ExerciseFixture = {
-  id: "10000000-0000-4000-8000-000000000001",
+  id: "10000000-0000-7000-8000-000000000001",
   name: "Back squat",
   sets: 3,
   targetReps: 8,
@@ -31,8 +31,8 @@ export function buildWorkoutFixture(
   } = {},
 ): WorkoutFixture {
   return {
-    id: "20000000-0000-4000-8000-000000000001",
-    ownerId: "local-user",
+    id: "20000000-0000-7000-8000-000000000001",
+    ownerId: "70000000-0000-7000-8000-000000000001",
     name: "Strength day",
     focus: "Lower body",
     color: "yellow",
