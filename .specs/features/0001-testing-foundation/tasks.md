@@ -365,6 +365,8 @@ generated IDs, ordering, mapping, uniqueness, and owner isolation.
 
 ### T11: Migrate workout sessions with coverage
 
+**Status**: Complete
+
 **What**: Move session persistence and completed-workout listing to Drizzle
 while preserving atomicity, nullable values, ownership, and ordering.
 **Where**: `src/data/workouts.ts`
@@ -379,11 +381,11 @@ while preserving atomicity, nullable values, ownership, and ordering.
 
 **Done when**:
 
-- [ ] Valid sessions persist all sets and nullable values.
-- [ ] Foreign workout and exercise IDs fail without partial persistence.
-- [ ] Completed workouts are owner-scoped and newest first.
-- [ ] Eight session integration tests pass.
-- [ ] Full gate passes with 8 new tests.
+- [x] Valid sessions persist all sets and nullable values.
+- [x] Foreign workout and exercise IDs fail without partial persistence.
+- [x] Completed workouts are owner-scoped and newest first.
+- [x] Eight session integration tests pass.
+- [x] Full gate passes with 8 new tests.
 
 **Tests**: integration
 **Gate**: full
