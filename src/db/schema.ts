@@ -246,8 +246,13 @@ export const securityAuditEvents = pgTable(
 export const workouts = pgTable(
   "workouts",
   {
-    id: uuid("id").primaryKey(),
-    ownerId: text("owner_id")
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
+    createdByUserId: text("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     name: text("name").notNull(),
@@ -258,7 +263,8 @@ export const workouts = pgTable(
       .defaultNow(),
   },
   (table) => [
-    uniqueIndex("workouts_owner_color_idx").on(table.ownerId, table.color),
+    unique("workouts_gym_id_id_key").on(table.gymId, table.id),
+    uniqueIndex("workouts_gym_color_idx").on(table.gymId, table.color),
     check(
       "workouts_name_check",
       sql`char_length(${table.name}) between 1 and 40`,
@@ -277,7 +283,9 @@ export const workouts = pgTable(
 export const exercises = pgTable(
   "exercises",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     workoutId: uuid("workout_id")
       .notNull()
       .references(() => workouts.id, { onDelete: "cascade" }),
@@ -307,11 +315,16 @@ export const exercises = pgTable(
 export const workoutSessions = pgTable(
   "workout_sessions",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    gymId: uuid("gym_id")
+      .notNull()
+      .references(() => gyms.id, { onDelete: "restrict" }),
     workoutId: uuid("workout_id")
       .notNull()
       .references(() => workouts.id, { onDelete: "restrict" }),
-    ownerId: text("owner_id")
+    createdByUserId: text("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     feedback: text("feedback"),
@@ -320,8 +333,13 @@ export const workoutSessions = pgTable(
       .defaultNow(),
   },
   (table) => [
-    index("workout_sessions_owner_completed_idx").on(
-      table.ownerId,
+    foreignKey({
+      columns: [table.gymId, table.workoutId],
+      foreignColumns: [workouts.gymId, workouts.id],
+      name: "workout_sessions_gym_workout_fkey",
+    }).onDelete("restrict"),
+    index("workout_sessions_gym_completed_idx").on(
+      table.gymId,
       table.completedAt.desc(),
     ),
   ],
@@ -330,7 +348,9 @@ export const workoutSessions = pgTable(
 export const completedSets = pgTable(
   "completed_sets",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     sessionId: uuid("session_id")
       .notNull()
       .references(() => workoutSessions.id, { onDelete: "cascade" }),
@@ -436,8 +456,12 @@ export const securityAuditEventsRelations = relations(
 );
 
 export const workoutsRelations = relations(workouts, ({ many, one }) => ({
-  owner: one(users, {
-    fields: [workouts.ownerId],
+  gym: one(gyms, {
+    fields: [workouts.gymId],
+    references: [gyms.id],
+  }),
+  creator: one(users, {
+    fields: [workouts.createdByUserId],
     references: [users.id],
   }),
   exercises: many(exercises),
@@ -459,8 +483,12 @@ export const workoutSessionsRelations = relations(
       fields: [workoutSessions.workoutId],
       references: [workouts.id],
     }),
-    owner: one(users, {
-      fields: [workoutSessions.ownerId],
+    gym: one(gyms, {
+      fields: [workoutSessions.gymId],
+      references: [gyms.id],
+    }),
+    creator: one(users, {
+      fields: [workoutSessions.createdByUserId],
       references: [users.id],
     }),
     completedSets: many(completedSets),

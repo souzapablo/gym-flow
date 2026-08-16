@@ -265,6 +265,9 @@ and active-context resolution without exporting repositories or entities.
 
 ### T9: Scope Training Records to the Active Gym
 
+> Combined with T10 as one atomic implementation because making `GymContext`
+> mandatory requires updating every server caller in the same green commit.
+
 **What**: Migrate workout/session storage from creator ownership to gym
 ownership, map that schema in Drizzle, and require mandatory validated gym
 context while retaining creator attribution.  
@@ -281,16 +284,19 @@ context while retaining creator attribution.
 
 **Done when**:
 
-- [ ] Every workout and session read/write requires `GymContext`.
-- [ ] Training entity UUIDs use PostgreSQL 18 `uuidv7()` database defaults.
-- [ ] Records persist `gym_id` plus creator attribution.
-- [ ] Cross-gym and missing-gym relationships are rejected without leakage.
-- [ ] Integration tests cover creation, listing, sessions, creator preservation, and cross-gym denial; the Full gate passes.
+- [x] Every workout and session read/write requires `GymContext`.
+- [x] Training entity UUIDs use PostgreSQL 18 `uuidv7()` database defaults.
+- [x] Records persist `gym_id` plus creator attribution.
+- [x] Cross-gym and missing-gym relationships are rejected without leakage.
+- [x] Integration tests cover creation, listing, sessions, creator preservation, and cross-gym denial; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full
 
 ### T10: Wire Identity and Gym Context into Server Actions
+
+> Combined with T9 as one atomic implementation; all original acceptance
+> criteria remain required.
 
 **What**: Resolve verified identity and exactly one active gym before each
 gym-scoped action, and expose an explicit gym-selection action.  
@@ -306,9 +312,9 @@ gym-scoped action, and expose an explicit gym-selection action.
 
 **Done when**:
 
-- [ ] Workout actions never accept a client-supplied trusted gym context.
-- [ ] Selection validates membership before persistence and revalidation.
-- [ ] Integration tests cover authenticated success, selection required, malformed/unknown selection, inactive membership, and cross-gym denial; the Full gate passes.
+- [x] Workout actions never accept a client-supplied trusted gym context.
+- [x] Selection validates membership before persistence and revalidation.
+- [x] Integration tests cover authenticated success, selection required, malformed/unknown selection, inactive membership, and cross-gym denial; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full

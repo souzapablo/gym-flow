@@ -1,9 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL;
+const sessionCookie = process.env.GYM_FLOW_E2E_SESSION_COOKIE;
 
-if (!baseURL) {
-  throw new Error("PLAYWRIGHT_BASE_URL is set by test/e2e/run.ts");
+if (!baseURL || !sessionCookie) {
+  throw new Error("Playwright lifecycle environment is incomplete");
 }
 
 export default defineConfig({
@@ -15,6 +16,7 @@ export default defineConfig({
   use: {
     ...devices["Desktop Chrome"],
     baseURL,
+    extraHTTPHeaders: { Cookie: sessionCookie },
     trace: "on-first-retry",
   },
 });

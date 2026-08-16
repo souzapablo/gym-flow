@@ -2,14 +2,16 @@ import { connection } from "next/server";
 import { createWorkoutAction, saveWorkoutSessionAction } from "@/app/actions";
 import { WorkoutApp } from "@/components/workout-app";
 import { listCompletedWorkouts, listWorkouts } from "@/data/workouts";
-import { getCurrentUser } from "@/lib/owner";
+import { gymAccess } from "@/modules/gym-access";
+import { requireVerifiedIdentity } from "@/modules/identity/account";
 
 export default async function Home() {
   await connection();
-  const user = await getCurrentUser();
+  const identity = await requireVerifiedIdentity();
+  const gymContext = await gymAccess.resolveActiveGym(identity.userId);
   const [workouts, completedWorkouts] = await Promise.all([
-    listWorkouts(user.id),
-    listCompletedWorkouts(user.id),
+    listWorkouts(gymContext),
+    listCompletedWorkouts(gymContext),
   ]);
 
   return (
