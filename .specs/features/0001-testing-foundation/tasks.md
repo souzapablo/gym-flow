@@ -281,6 +281,8 @@ migration runner with an integration smoke test.
 
 ### T8: Guard database reset and provide fixtures
 
+**Status**: Complete
+
 **What**: Add destructive-reset proof checks, deterministic cleanup, and minimal
 user and workout fixture builders.
 **Where**: `test/database/reset.ts`
@@ -295,12 +297,12 @@ user and workout fixture builders.
 
 **Done when**:
 
-- [ ] Reset requires the suite proof, exact `gym_flow_test` database name, and
+- [x] Reset requires the suite proof, exact `gym_flow_test` database name, and
       a URI different from production `DATABASE_URL`.
-- [ ] Reset truncates all mutable tables with cascade semantics.
-- [ ] Fixture defaults satisfy every current PostgreSQL constraint.
-- [ ] Four reset safety and isolation integration tests pass.
-- [ ] `npm run test:integration` passes with at least 6 cumulative tests.
+- [x] Reset truncates all mutable tables with cascade semantics.
+- [x] Fixture defaults satisfy every current PostgreSQL constraint.
+- [x] Four reset safety and isolation integration tests pass.
+- [x] `npm run test:integration` passes with at least 6 cumulative tests.
 
 **Tests**: integration
 **Gate**: full, limited to the available database project
