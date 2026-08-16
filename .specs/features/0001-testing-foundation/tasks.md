@@ -461,12 +461,12 @@ rule in both workout parsers.
 
 **Done when**:
 
-- [ ] Text, collection, color, integer, UUID, nullable, finite-number, rating,
+- [x] Text, collection, color, integer, UUID, nullable, finite-number, rating,
       and feedback boundaries are covered.
-- [ ] Tests assert normalized successful output and exact failure classes or
+- [x] Tests assert normalized successful output and exact failure classes or
       messages where part of existing behavior.
-- [ ] At least 20 unit cases pass.
-- [ ] Quick gate passes with at least 23 cumulative unit tests.
+- [x] At least 20 unit cases pass.
+- [x] Quick gate passes with at least 23 cumulative unit tests.
 
 **Tests**: unit
 **Gate**: quick
