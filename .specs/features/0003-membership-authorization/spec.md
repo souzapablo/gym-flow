@@ -99,10 +99,10 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 
 | Requirement ID | Story                         | Phase                 | Status      |
 | -------------- | ----------------------------- | --------------------- | ----------- |
-| AUTHZ-01       | Enforce the Membership Policy | T2/T4/T6/T7           | Planned     |
-| AUTHZ-02       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | Planned     |
-| AUTHZ-03       | Enforce the Membership Policy | T2/T4/T6/T8/T9/T10    | Planned     |
-| AUTHZ-04       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | Planned     |
+| AUTHZ-01       | Enforce the Membership Policy | T2/T4/T6/T7           | In Progress |
+| AUTHZ-02       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
+| AUTHZ-03       | Enforce the Membership Policy | T2/T4/T6/T8/T9/T10    | In Progress |
+| AUTHZ-04       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
 | AUTHZ-05       | Enforce the Membership Policy | T5/T6/T9/T10          | Planned     |
 | AUTHZ-06       | Define Role Capabilities      | T1/T2/T8/T9/T10       | In Progress |
 | AUTHZ-07       | Define Role Capabilities      | T1/T2/T8/T9/T10       | In Progress |
@@ -111,7 +111,7 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 | AUTHZ-10       | Define Role Capabilities      | T1/T2/T4/T6/T8/T9/T10 | In Progress |
 | AUTHZ-11       | Define Role Capabilities      | T3/T6/T7/T10          | Planned     |
 | AUTHZ-12       | Edge Cases                    | T1/T2/T4/T6           | In Progress |
-| AUTHZ-13       | Edge Cases                    | T2/T3/T4/T6/T8/T9/T10 | Planned     |
+| AUTHZ-13       | Edge Cases                    | T2/T3/T4/T6/T8/T9/T10 | In Progress |
 
 **Coverage:** 13 total, 13 mapped to draft tasks, 0 unmapped.
 

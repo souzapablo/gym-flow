@@ -99,7 +99,7 @@ T8 -> T9 -> T10
 **Gate**: full
 **Commit**: `feat(authz): establish membership roles`
 
-### T2: Implement the Pure Membership Policy
+### T2: Implement the Pure Membership Policy ✅
 
 **What**: Define runtime-validated authorization facts, operation/resource vocabularies, decisions, reason codes, and the deny-by-default role-and-attribute evaluator.
 **Where**: `src/modules/gym-access/authorization/`
@@ -114,12 +114,12 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] The evaluator is pure and returns a typed allow or internal deny decision.
-- [ ] Every required fact is runtime-validated; missing or unknown values deny.
-- [ ] Cross-gym and inactive membership facts deny before role capability evaluation.
-- [ ] The complete owner/admin/coach/trainee capability matrix matches the approved design.
-- [ ] At least 38 table-driven policy cases cover every matrix cell and all fact-validation branches.
-- [ ] Quick gate passes.
+- [x] The evaluator is pure and returns a typed allow or internal deny decision.
+- [x] Every required fact is runtime-validated; missing or unknown values deny.
+- [x] Cross-gym and inactive membership facts deny before role capability evaluation.
+- [x] The complete owner/admin/coach/trainee capability matrix matches the approved design.
+- [x] At least 38 table-driven policy cases cover every matrix cell and all fact-validation branches.
+- [x] Quick gate passes.
 
 **Tests**: unit
 **Gate**: quick
