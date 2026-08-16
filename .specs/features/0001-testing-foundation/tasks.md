@@ -503,6 +503,8 @@ using action fakes and accessible user interactions.
 
 ### T16: Build the deterministic Playwright lifecycle
 
+**Status**: Complete
+
 **What**: Add a single-worker Playwright configuration and runner that owns
 PostgreSQL, migrations, Next.js, browser execution, and teardown, plus the
 seeded-load journey.
@@ -518,12 +520,12 @@ seeded-load journey.
 
 **Done when**:
 
-- [ ] Startup order is container, migrations, seed, Next.js readiness, then
+- [x] Startup order is container, migrations, seed, Next.js readiness, then
       Playwright.
-- [ ] Both success and failure paths stop the server, pool, and container.
-- [ ] Playwright uses one worker and scenario-specific reset/seed hooks.
-- [ ] The browser displays a seeded workout through the async home page.
-- [ ] `npm run test:e2e` passes with 1 journey.
+- [x] Both success and failure paths stop the server, pool, and container.
+- [x] Playwright uses one worker and scenario-specific reset/seed hooks.
+- [x] The browser displays a seeded workout through the async home page.
+- [x] `npm run test:e2e` passes with 1 journey.
 
 **Tests**: e2e
 **Gate**: full

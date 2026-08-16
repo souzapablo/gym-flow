@@ -12,7 +12,7 @@
     "test:unit": "vitest run --project unit --passWithNoTests",
     "test:component": "vitest run --project component --passWithNoTests",
     "test:integration": "vitest run --project database --passWithNoTests",
-    "test:e2e": "playwright test test/e2e --pass-with-no-tests",
+    "test:e2e": "tsx test/e2e/run.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm test && npm run build"
