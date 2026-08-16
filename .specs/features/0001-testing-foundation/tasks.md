@@ -393,6 +393,8 @@ while preserving atomicity, nullable values, ownership, and ordering.
 
 ### T12: Remove the superseded Neon HTTP path
 
+**Status**: Complete
+
 **What**: Delete the unused Neon HTTP database factory and dependency after all
 data functions use Drizzle node-postgres.
 **Where**: `src/lib/db.ts`
@@ -407,10 +409,10 @@ data functions use Drizzle node-postgres.
 
 **Done when**:
 
-- [ ] No source import references `src/lib/db.ts` or
+- [x] No source import references `src/lib/db.ts` or
       `@neondatabase/serverless`.
-- [ ] The obsolete file and package dependency are removed.
-- [ ] Full gate passes without reducing the cumulative test count.
+- [x] The obsolete file and package dependency are removed.
+- [x] Full gate passes without reducing the cumulative test count.
 
 **Tests**: none, cleanup after behavior-covered migration
 **Gate**: full
