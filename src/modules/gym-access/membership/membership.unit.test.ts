@@ -3,9 +3,14 @@ import { describe, expect, it } from "vitest";
 import { GymId, MembershipId, UserId } from "./identifiers";
 import {
   InactiveMembershipError,
+  MEMBERSHIP_ROLES,
   Membership,
   OwnerMembershipImmutableError,
 } from "./membership";
+
+it("defines exactly the canonical membership roles", () => {
+  expect(MEMBERSHIP_ROLES).toEqual(["owner", "admin", "coach", "trainee"]);
+});
 
 describe("owner membership", () => {
   it.each([
@@ -66,7 +71,7 @@ it("produces one active gym context from an active membership", () => {
 
 function membership(
   overrides: Partial<{
-    role: "owner" | "coach" | "member";
+    role: "owner" | "admin" | "coach" | "trainee";
     status: "active" | "suspended" | "removed";
   }> = {},
 ) {
@@ -74,7 +79,7 @@ function membership(
     id: new MembershipId("71000000-0000-7000-8000-000000000011"),
     gymId: new GymId("72000000-0000-7000-8000-000000000011"),
     userId: new UserId("70000000-0000-7000-8000-000000000011"),
-    role: "member",
+    role: "trainee",
     status: "active",
     ...overrides,
   });

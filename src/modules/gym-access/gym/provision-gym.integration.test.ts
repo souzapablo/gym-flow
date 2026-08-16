@@ -184,7 +184,49 @@ async function insertUser(id: string) {
 
 async function insertMember(gymId: string, userId: string) {
   await context.pool.query(
-    "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'member', 'active')",
+    "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'trainee', 'active')",
     [gymId, userId],
   );
 }
+
+it.each(["owner", "admin", "coach", "trainee"])(
+  "accepts the canonical %s role",
+  async (role) => {
+    const gym = await provisionGym(
+      identity("70000000-0000-7000-8000-000000000031"),
+      { name: "Downtown Gym" },
+    );
+    if (role === "owner") {
+      const result = await context.pool.query(
+        "select role from memberships where gym_id = $1",
+        [gym.id],
+      );
+      expect(result.rows[0].role).toBe("owner");
+      return;
+    }
+    await insertUser("70000000-0000-7000-8000-000000000021");
+    await context.pool.query(
+      "insert into memberships (gym_id, user_id, role, status) values ($1, $2, $3, 'active')",
+      [gym.id, "70000000-0000-7000-8000-000000000021", role],
+    );
+    const result = await context.pool.query(
+      "select role from memberships where user_id = $1",
+      ["70000000-0000-7000-8000-000000000021"],
+    );
+    expect(result.rows[0].role).toBe(role);
+  },
+);
+
+it.each(["member", "unknown"])("rejects the non-canonical %s role", async (role) => {
+  const gym = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000031"),
+    { name: "Downtown Gym" },
+  );
+  await insertUser("70000000-0000-7000-8000-000000000021");
+  await expect(
+    context.pool.query(
+      "insert into memberships (gym_id, user_id, role, status) values ($1, $2, $3, 'active')",
+      [gym.id, "70000000-0000-7000-8000-000000000021", role],
+    ),
+  ).rejects.toMatchObject({ constraint: "memberships_role_check" });
+});

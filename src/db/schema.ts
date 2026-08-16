@@ -196,7 +196,7 @@ export const memberships = pgTable(
       .where(sql`${table.role} = 'owner'`),
     check(
       "memberships_role_check",
-      sql`${table.role} in ('owner', 'coach', 'member')`,
+      sql`${table.role} in ('owner', 'admin', 'coach', 'trainee')`,
     ),
     check(
       "memberships_status_check",

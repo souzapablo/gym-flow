@@ -1,6 +1,6 @@
 import { GymId, MembershipId, UserId } from "./identifiers";
 
-export const MEMBERSHIP_ROLES = ["owner", "coach", "member"] as const;
+export const MEMBERSHIP_ROLES = ["owner", "admin", "coach", "trainee"] as const;
 export type MembershipRole = (typeof MEMBERSHIP_ROLES)[number];
 
 export const MEMBERSHIP_STATUSES = ["active", "suspended", "removed"] as const;

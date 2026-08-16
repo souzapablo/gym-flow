@@ -188,7 +188,7 @@ async function gymWithMember(ownerId: string, memberId: string) {
   await insertUser(ownerId);
   const gym = await provisionGym(identity(ownerId), { name: `${ownerId} Gym` });
   await context.pool.query(
-    "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'member', 'active')",
+    "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'trainee', 'active')",
     [gym.id, memberId],
   );
   return gym.id;

@@ -73,7 +73,7 @@ T8 -> T9 -> T10
 
 ### Phase 1: Policy Foundation
 
-### T1: Establish the Canonical Membership Roles
+### T1: Establish the Canonical Membership Roles ✅
 
 **What**: Replace `member` with `trainee`, add `admin`, align domain and persistence constraints, and preserve owner immutability.
 **Where**: Membership role domain and persistence boundary
@@ -88,12 +88,12 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] `MembershipRole` contains exactly `owner`, `admin`, `coach`, and `trainee`.
-- [ ] A lexical migration converts existing `member` rows to `trainee` before replacing the role constraint.
-- [ ] Drizzle schema and database constraint accept the four canonical roles and reject `member` and unknown roles.
-- [ ] Owner immutability and active-owner constraints remain unchanged.
-- [ ] At least 4 role-persistence cases and all existing membership unit cases pass without silent deletion.
-- [ ] Full gate passes.
+- [x] `MembershipRole` contains exactly `owner`, `admin`, `coach`, and `trainee`.
+- [x] A lexical migration converts existing `member` rows to `trainee` before replacing the role constraint.
+- [x] Drizzle schema and database constraint accept the four canonical roles and reject `member` and unknown roles.
+- [x] Owner immutability and active-owner constraints remain unchanged.
+- [x] At least 4 role-persistence cases and all existing membership unit cases pass without silent deletion.
+- [x] Full gate passes.
 
 **Tests**: unit + integration
 **Gate**: full
