@@ -233,10 +233,10 @@ and verify the three critical journeys pass without Neon credentials.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| TEST-01 | P1: Agent testing contract | Documentation | Complete (T1-T2, T6, T19) |
-| TEST-02 | P1: Executable test infrastructure | Infrastructure | Complete (T3-T8, T12, T16, T19) |
-| TEST-03 | P1: Current behavior coverage | Tests | Complete (T9-T11, T13-T15) |
-| TEST-04 | P2: Critical browser journeys | E2E | Complete (T16-T18) |
+| TEST-01 | P1: Agent testing contract | Documentation | Verified (T1-T2, T6, T19) |
+| TEST-02 | P1: Executable test infrastructure | Infrastructure | Verified (T3-T8, T12, T16, T19) |
+| TEST-03 | P1: Current behavior coverage | Tests | Verified (T9-T11, T13-T15) |
+| TEST-04 | P2: Critical browser journeys | E2E | Verified (T16-T18) |
 
 **Coverage:** 4 total, 4 mapped to tasks, 0 unmapped.
 
