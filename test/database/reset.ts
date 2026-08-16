@@ -6,10 +6,7 @@ export type TestDatabaseProof = {
   connectionUri: string;
 };
 
-export async function resetTestDatabase(
-  pool: Pool,
-  proof: TestDatabaseProof,
-) {
+export async function resetTestDatabase(pool: Pool, proof: TestDatabaseProof) {
   if (!proof.suiteId.trim()) {
     throw new Error("Database reset requires a non-empty suite proof");
   }

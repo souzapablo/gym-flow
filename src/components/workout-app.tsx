@@ -15,7 +15,8 @@ type Entry = {
   reps: string;
 };
 
-type Screen = "list" | "create" | "focus" | "evaluate" | "rest" | "done" | "summary";
+type Screen =
+  "list" | "create" | "focus" | "evaluate" | "rest" | "done" | "summary";
 type Tab = "workouts" | "calendar";
 
 const TEST_REST_SECONDS = 5;
@@ -55,7 +56,9 @@ export function WorkoutApp({
   saveWorkoutSessionAction: (input: unknown) => Promise<void>;
 }) {
   const [workouts, setWorkouts] = useState<Workout[]>(initialWorkouts);
-  const [completedWorkouts, setCompletedWorkouts] = useState(initialCompletedWorkouts);
+  const [completedWorkouts, setCompletedWorkouts] = useState(
+    initialCompletedWorkouts,
+  );
   const [tab, setTab] = useState<Tab>("workouts");
   const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
   const [screen, setScreen] = useState<Screen>("list");
@@ -65,21 +68,24 @@ export function WorkoutApp({
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [restSeconds, setRestSeconds] = useState(TEST_REST_SECONDS);
-  const [evaluationSeconds, setEvaluationSeconds] = useState(EVALUATION_SECONDS);
-  const [exerciseRatings, setExerciseRatings] = useState<Record<number, string>>({});
+  const [evaluationSeconds, setEvaluationSeconds] =
+    useState(EVALUATION_SECONDS);
+  const [exerciseRatings, setExerciseRatings] = useState<
+    Record<number, string>
+  >({});
   const [workoutFeedback, setWorkoutFeedback] = useState<string | null>(null);
   const [mutationError, setMutationError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const exercise = activeWorkout?.exercises[exerciseIndex];
-  const totalSets = activeWorkout?.exercises.reduce(
-    (total, item) => total + item.sets,
-    0,
-  ) ?? 0;
-  const completedSets = activeWorkout?.exercises
-    .slice(0, exerciseIndex)
-    .reduce((total, item) => total + item.sets, 0) ?? 0;
-  const progress = totalSets === 0 ? 0 : ((completedSets + setIndex) / totalSets) * 100;
+  const totalSets =
+    activeWorkout?.exercises.reduce((total, item) => total + item.sets, 0) ?? 0;
+  const completedSets =
+    activeWorkout?.exercises
+      .slice(0, exerciseIndex)
+      .reduce((total, item) => total + item.sets, 0) ?? 0;
+  const progress =
+    totalSets === 0 ? 0 : ((completedSets + setIndex) / totalSets) * 100;
 
   const finishExercise = useCallback(() => {
     if (!activeWorkout) return;
@@ -280,7 +286,10 @@ export function WorkoutApp({
         exerciseName={exercise.name}
         seconds={evaluationSeconds}
         onSelect={(rating) => {
-          setExerciseRatings((current) => ({ ...current, [exerciseIndex]: rating }));
+          setExerciseRatings((current) => ({
+            ...current,
+            [exerciseIndex]: rating,
+          }));
           finishExercise();
         }}
         onSkip={finishExercise}
@@ -321,7 +330,10 @@ export function WorkoutApp({
           onStart={startWorkout}
         />
       ) : (
-        <CalendarTab workouts={workouts} completedWorkouts={completedWorkouts} />
+        <CalendarTab
+          workouts={workouts}
+          completedWorkouts={completedWorkouts}
+        />
       )}
     </AppTabs>
   );
@@ -329,7 +341,16 @@ export function WorkoutApp({
 
 function DumbbellIcon() {
   return (
-    <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      className="tab-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11" />
     </svg>
   );
@@ -337,7 +358,16 @@ function DumbbellIcon() {
 
 function HistoryIcon() {
   return (
-    <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      className="tab-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
       <path d="M3 3v5h5M12 7v5l3 2" />
     </svg>
@@ -379,8 +409,18 @@ function AppTabs({
 }
 
 const MONTHS = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 function CalendarTab({
@@ -401,7 +441,10 @@ function CalendarTab({
     view.year === today.getFullYear() && view.month === today.getMonth();
   const completedInMonth = completedWorkouts.filter((completedWorkout) => {
     const completedAt = new Date(completedWorkout.completedAt);
-    return completedAt.getFullYear() === view.year && completedAt.getMonth() === view.month;
+    return (
+      completedAt.getFullYear() === view.year &&
+      completedAt.getMonth() === view.month
+    );
   });
   const completedByDay = new Map<number, CompletedWorkout>();
   for (const completedWorkout of completedInMonth) {
@@ -439,20 +482,45 @@ function CalendarTab({
         </div>
 
         <div className="month-switcher">
-          <button type="button" onClick={() => shiftMonth(-1)} aria-label="Mês anterior">←</button>
+          <button
+            type="button"
+            onClick={() => shiftMonth(-1)}
+            aria-label="Mês anterior"
+          >
+            ←
+          </button>
           <div aria-live="polite">
-            <strong>{MONTHS[view.month]} {view.year}</strong>
+            <strong>
+              {MONTHS[view.month]} {view.year}
+            </strong>
             <span>{completedInMonth.length} treinos concluídos</span>
           </div>
-          <button type="button" onClick={() => shiftMonth(1)} aria-label="Próximo mês">→</button>
+          <button
+            type="button"
+            onClick={() => shiftMonth(1)}
+            aria-label="Próximo mês"
+          >
+            →
+          </button>
         </div>
 
-        <div className="calendar-grid" role="grid" aria-label={`${MONTHS[view.month]} de ${view.year}`}>
+        <div
+          className="calendar-grid"
+          role="grid"
+          aria-label={`${MONTHS[view.month]} de ${view.year}`}
+        >
           {WEEKDAYS.map((weekday, index) => (
-            <span className="weekday" role="columnheader" key={`${weekday}-${index}`}>{weekday}</span>
+            <span
+              className="weekday"
+              role="columnheader"
+              key={`${weekday}-${index}`}
+            >
+              {weekday}
+            </span>
           ))}
           {cells.map((day, index) => {
-            if (day === null) return <span role="gridcell" key={`empty-${index}`} />;
+            if (day === null)
+              return <span role="gridcell" key={`empty-${index}`} />;
 
             const completedWorkout = completedByDay.get(day);
             const isToday = isCurrentMonth && day === today.getDate();
@@ -460,7 +528,11 @@ function CalendarTab({
               <span
                 className={`calendar-day${completedWorkout ? ` marker-color-${completedWorkout.color} is-complete` : ""}${isToday ? " is-today" : ""}`}
                 role="gridcell"
-                aria-label={completedWorkout ? `${day}, ${completedWorkout.workoutName} concluído` : String(day)}
+                aria-label={
+                  completedWorkout
+                    ? `${day}, ${completedWorkout.workoutName} concluído`
+                    : String(day)
+                }
                 key={day}
               >
                 {day}
@@ -473,8 +545,14 @@ function CalendarTab({
           <h2>Legenda</h2>
           {workouts.map((workout, index) => (
             <div key={`${workout.name}-${index}`}>
-              <span className={`legend-marker marker-color-${workout.color}`} aria-hidden="true" />
-              <p><strong>{workout.name}</strong><span> — {workout.focus}</span></p>
+              <span
+                className={`legend-marker marker-color-${workout.color}`}
+                aria-hidden="true"
+              />
+              <p>
+                <strong>{workout.name}</strong>
+                <span> — {workout.focus}</span>
+              </p>
             </div>
           ))}
         </div>
@@ -518,7 +596,8 @@ function RestScreen({
             00:{String(seconds).padStart(2, "0")}
           </strong>
           <p>
-            A próxima é a série {setIndex + 1} de {exercise.sets} em {exercise.name}.
+            A próxima é a série {setIndex + 1} de {exercise.sets} em{" "}
+            {exercise.name}.
           </p>
         </div>
       </section>
@@ -546,7 +625,10 @@ function EvaluationScreen({
         <h1>Como sentiu a carga?</h1>
         <p>{exerciseName}</p>
 
-        <div className="load-rating-options" aria-label="Avalie a carga do exercício">
+        <div
+          className="load-rating-options"
+          aria-label="Avalie a carga do exercício"
+        >
           {LOAD_RATINGS.map(({ emoji, label }) => (
             <button
               className="load-rating-option"
@@ -586,7 +668,9 @@ function CreateWorkoutScreen({
   const [name, setName] = useState("");
   const [focus, setFocus] = useState("");
   const [color, setColor] = useState<MarkerColor | null>(
-    () => MARKER_COLORS.find((option) => !usedColors.includes(option.value))?.value ?? null,
+    () =>
+      MARKER_COLORS.find((option) => !usedColors.includes(option.value))
+        ?.value ?? null,
   );
   const [exercises, setExercises] = useState<ExerciseDraft[]>([
     { id: crypto.randomUUID(), name: "", sets: 3, targetReps: 10 },
@@ -626,11 +710,13 @@ function CreateWorkoutScreen({
               name: name.trim(),
               focus: focus.trim(),
               color,
-              exercises: exercises.map(({ name: exerciseName, sets, targetReps }) => ({
-                name: exerciseName.trim(),
-                sets,
-                targetReps,
-              })),
+              exercises: exercises.map(
+                ({ name: exerciseName, sets, targetReps }) => ({
+                  name: exerciseName.trim(),
+                  sets,
+                  targetReps,
+                }),
+              ),
             });
           }}
         >
@@ -684,14 +770,14 @@ function CreateWorkoutScreen({
                       onChange={() => setColor(option.value)}
                     />
                     <span aria-hidden="true" />
-                    <small>{isUsed ? `${option.label} · em uso` : option.label}</small>
+                    <small>
+                      {isUsed ? `${option.label} · em uso` : option.label}
+                    </small>
                   </label>
                 );
               })}
             </div>
-            {color === null ? (
-              <p>Todas as cores já estão em uso.</p>
-            ) : null}
+            {color === null ? <p>Todas as cores já estão em uso.</p> : null}
           </fieldset>
 
           <div className="exercise-editor">
@@ -725,7 +811,9 @@ function CreateWorkoutScreen({
                     max="20"
                     value={exercise.sets}
                     onChange={(event) =>
-                      updateExercise(exercise.id, { sets: Number(event.target.value) })
+                      updateExercise(exercise.id, {
+                        sets: Number(event.target.value),
+                      })
                     }
                   />
                 </label>
@@ -782,7 +870,11 @@ function CreateWorkoutScreen({
           </div>
 
           {error ? <p role="alert">{error}</p> : null}
-          <button className="complete-button" type="submit" disabled={color === null || isSaving}>
+          <button
+            className="complete-button"
+            type="submit"
+            disabled={color === null || isSaving}
+          >
             <span>{isSaving ? "Salvando…" : "Salvar treino"}</span>
             <span aria-hidden="true">→</span>
           </button>
@@ -850,7 +942,11 @@ function WorkoutList({
           })}
         </div>
 
-        <button className="create-workout-button" type="button" onClick={onCreate}>
+        <button
+          className="create-workout-button"
+          type="button"
+          onClick={onCreate}
+        >
           <span aria-hidden="true">＋</span>
           criar novo treino
         </button>
@@ -909,7 +1005,10 @@ function FocusScreen({
           </span>
         </header>
 
-        <div className="progress-track" aria-label={`${Math.round(progress)}% concluído`}>
+        <div
+          className="progress-track"
+          aria-label={`${Math.round(progress)}% concluído`}
+        >
           <span style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
 
@@ -918,7 +1017,8 @@ function FocusScreen({
             <p>Exercício atual</p>
             <h1>{exercise.name}</h1>
             <span>
-              Série {setIndex + 1} de {exercise.sets} · alvo {exercise.targetReps} reps
+              Série {setIndex + 1} de {exercise.sets} · alvo{" "}
+              {exercise.targetReps} reps
             </span>
           </div>
 
@@ -1030,7 +1130,9 @@ function DoneScreen({
             ))}
           </div>
           <p className="feedback-status" aria-live="polite">
-            {feedback ? "Valeu pelo feedback!" : "Toque em uma opção para responder."}
+            {feedback
+              ? "Valeu pelo feedback!"
+              : "Toque em uma opção para responder."}
           </p>
         </fieldset>
 
@@ -1080,7 +1182,9 @@ function SummaryScreen({
         <div className="summary-exercises">
           {workout.exercises.map((exercise, exerciseIndex) => {
             const rating = exerciseRatings[exerciseIndex];
-            const ratingEmoji = LOAD_RATINGS.find((option) => option.label === rating)?.emoji;
+            const ratingEmoji = LOAD_RATINGS.find(
+              (option) => option.label === rating,
+            )?.emoji;
 
             return (
               <section className="summary-exercise" key={exercise.id}>
@@ -1088,7 +1192,10 @@ function SummaryScreen({
                   <span>{String(exerciseIndex + 1).padStart(2, "0")}</span>
                   <h2>{exercise.name}</h2>
                   {ratingEmoji && (
-                    <span className="summary-rating" aria-label={`Carga ${rating}`}>
+                    <span
+                      className="summary-rating"
+                      aria-label={`Carga ${rating}`}
+                    >
                       {ratingEmoji}
                     </span>
                   )}
@@ -1100,8 +1207,12 @@ function SummaryScreen({
                     return (
                       <li key={setIndex}>
                         <span>Série {setIndex + 1}</span>
-                        <strong>{entry?.weight ? `${entry.weight} kg` : "—"}</strong>
-                        <strong>{entry?.reps ? `${entry.reps} reps` : "—"}</strong>
+                        <strong>
+                          {entry?.weight ? `${entry.weight} kg` : "—"}
+                        </strong>
+                        <strong>
+                          {entry?.reps ? `${entry.reps} reps` : "—"}
+                        </strong>
                       </li>
                     );
                   })}
@@ -1114,7 +1225,12 @@ function SummaryScreen({
         {feedback && <p className="summary-feedback">Como foi: {feedback}</p>}
 
         {error ? <p role="alert">{error}</p> : null}
-        <button className="complete-button" type="button" onClick={onClose} disabled={isSaving}>
+        <button
+          className="complete-button"
+          type="button"
+          onClick={onClose}
+          disabled={isSaving}
+        >
           <span>{isSaving ? "Salvando…" : "Voltar às fichas"}</span>
           <span aria-hidden="true">→</span>
         </button>

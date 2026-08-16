@@ -11,7 +11,9 @@ test("loads a seeded workout", async ({ page }) => {
 
   await page.goto("/");
 
-  await expect(page.getByRole("button", { name: new RegExp(workout.name) })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: new RegExp(workout.name) }),
+  ).toBeVisible();
   await expect(page.getByText(workout.focus)).toBeVisible();
   await expect(page.getByText(workout.exercises[0].name)).not.toBeVisible();
 });
@@ -67,7 +69,9 @@ test("completes a workout and displays it in history", async ({ page }) => {
 
   await page.getByRole("button", { name: "Histórico" }).click();
   await expect(
-    page.getByRole("gridcell", { name: new RegExp(`${workout.name} concluído`) }),
+    page.getByRole("gridcell", {
+      name: new RegExp(`${workout.name} concluído`),
+    }),
   ).toBeVisible();
 
   await expect

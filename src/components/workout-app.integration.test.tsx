@@ -80,13 +80,15 @@ describe("WorkoutApp", () => {
       ],
     });
 
-    expect(screen.getByRole("button", { name: /Treino A/ }).textContent).toContain(
-      "Pernas",
-    );
+    expect(
+      screen.getByRole("button", { name: /Treino A/ }).textContent,
+    ).toContain("Pernas");
 
     await user.click(screen.getByRole("button", { name: "Histórico" }));
 
-    expect(screen.getByRole("gridcell", { name: /Treino A concluído/ })).toBeTruthy();
+    expect(
+      screen.getByRole("gridcell", { name: /Treino A concluído/ }),
+    ).toBeTruthy();
     expect(screen.getByText("1 treinos concluídos")).toBeTruthy();
   });
 
@@ -115,7 +117,9 @@ describe("WorkoutApp", () => {
       color: "pink",
       exercises: [{ name: "Remada", sets: 3, targetReps: 10 }],
     });
-    expect(await screen.findByRole("button", { name: /Treino B/ })).toBeTruthy();
+    expect(
+      await screen.findByRole("button", { name: /Treino B/ }),
+    ).toBeTruthy();
   });
 
   it("keeps the create form visible and reports a save failure", async () => {
@@ -148,13 +152,14 @@ describe("WorkoutApp", () => {
     await user.type(screen.getByLabelText("Exercício"), "Remada");
     await user.click(screen.getByRole("button", { name: "Salvar treino" }));
 
-    expect(await screen.findByRole("button", { name: "Salvando…" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(
+      await screen.findByRole("button", { name: "Salvando…" }),
+    ).toHaveProperty("disabled", true);
 
     pending.resolve({ ...workout, name: "Treino B" });
-    expect(await screen.findByRole("button", { name: /Treino B/ })).toBeTruthy();
+    expect(
+      await screen.findByRole("button", { name: /Treino B/ }),
+    ).toBeTruthy();
   });
 
   it("advances from rest to the next set without a real countdown", async () => {
@@ -180,11 +185,15 @@ describe("WorkoutApp", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Treino A/ }));
     fireEvent.click(screen.getByRole("button", { name: "Concluir série" }));
-    expect(screen.getByRole("button", { name: /Pular · continua em 5s/ })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: /Pular · continua em 5s/ }),
+    ).toBeTruthy();
 
     await act(() => vi.advanceTimersByTimeAsync(5_000));
 
-    expect(screen.getByRole("heading", { name: "Treino concluído." })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Treino concluído." }),
+    ).toBeTruthy();
   });
 
   it("saves a completed session and adds it to visible history", async () => {
@@ -213,7 +222,9 @@ describe("WorkoutApp", () => {
       ],
     });
     await user.click(await screen.findByRole("button", { name: "Histórico" }));
-    expect(screen.getByRole("gridcell", { name: /Treino A concluído/ })).toBeTruthy();
+    expect(
+      screen.getByRole("gridcell", { name: /Treino A concluído/ }),
+    ).toBeTruthy();
   });
 
   it("reports a session failure and preserves the summary for retry", async () => {
@@ -223,10 +234,9 @@ describe("WorkoutApp", () => {
     await reachSummary(user);
 
     await user.click(screen.getByRole("button", { name: "Voltar às fichas" }));
-    expect(await screen.findByRole("button", { name: "Salvando…" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(
+      await screen.findByRole("button", { name: "Salvando…" }),
+    ).toHaveProperty("disabled", true);
 
     pending.reject(new Error("database unavailable"));
 
@@ -234,7 +244,9 @@ describe("WorkoutApp", () => {
       "Não foi possível salvar a sessão.",
     );
     expect(
-      within(screen.getByRole("main")).getByRole("heading", { name: "Treino A" }),
+      within(screen.getByRole("main")).getByRole("heading", {
+        name: "Treino A",
+      }),
     ).toBeTruthy();
   });
 });

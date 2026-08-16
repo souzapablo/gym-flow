@@ -24,7 +24,10 @@ export function database(): NodePgDatabase<typeof schema> {
     throw new Error("E2E database composition requires its runner proof");
   }
 
-  if (decodeURIComponent(new URL(connectionString).pathname.slice(1)) !== "gym_flow_test") {
+  if (
+    decodeURIComponent(new URL(connectionString).pathname.slice(1)) !==
+    "gym_flow_test"
+  ) {
     throw new Error("E2E database composition is restricted to gym_flow_test");
   }
 

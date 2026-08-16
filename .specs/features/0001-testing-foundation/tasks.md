@@ -22,27 +22,27 @@ atomic commits, verification, and final independent verifier.
 > installed Next.js testing guides, and the absence of existing tests or test
 > configuration.
 
-| Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
-| ---------- | ------------------ | -------------------- | ---------------- | ----------- |
-| Documentation | none | Every approved tool, command, boundary, lifecycle, and safety rule is stated consistently. | `README.md`, `TESTING.md` | `npm run lint` |
-| Database schema and runner config | none | Type-check and build gate; schema parity is exercised by database integration setup. | `src/db/schema.ts`, `*.config.ts` | `npm run typecheck` |
-| Database configuration and safety helpers | unit | Every accepted configuration and every destructive-operation rejection branch. | `**/*.unit.test.ts` | `npm run test:unit` |
-| Validation and pure business rules | unit | All branches, accepted boundaries, and rejection rules in the approved spec. | `src/**/*.unit.test.ts` | `npm run test:unit` |
-| Data functions and migration lifecycle | integration | Real PostgreSQL happy, empty, ownership, ordering, atomicity, constraint, and failure paths. | `src/**/*.integration.test.ts`, `test/**/*.integration.test.ts` | `npm run test:integration` |
-| Server Actions | integration | Validation, owner resolution, real persistence, return values, failures, and revalidation boundary. | `src/app/*.integration.test.ts` | `npm run test:integration` |
-| Interactive client component | integration | Observable create, completion, timer, pending, success, and failure behavior through accessible queries. | `src/components/*.integration.test.tsx` | `npm run test:component` |
-| Async Server Component and application wiring | e2e | Three critical journeys only: load, create with revalidation, and complete with history. | `test/e2e/*.spec.ts` | `npm run test:e2e` |
-| CI and package wiring | none | Complete non-watch quality gate succeeds from the public command. | `.github/workflows/*.yml`, `package.json` | `npm run check` |
+| Code Layer                                    | Required Test Type | Coverage Expectation                                                                                     | Location Pattern                                                | Run Command                |
+| --------------------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------- |
+| Documentation                                 | none               | Every approved tool, command, boundary, lifecycle, and safety rule is stated consistently.               | `README.md`, `TESTING.md`                                       | `npm run lint`             |
+| Database schema and runner config             | none               | Type-check and build gate; schema parity is exercised by database integration setup.                     | `src/db/schema.ts`, `*.config.ts`                               | `npm run typecheck`        |
+| Database configuration and safety helpers     | unit               | Every accepted configuration and every destructive-operation rejection branch.                           | `**/*.unit.test.ts`                                             | `npm run test:unit`        |
+| Validation and pure business rules            | unit               | All branches, accepted boundaries, and rejection rules in the approved spec.                             | `src/**/*.unit.test.ts`                                         | `npm run test:unit`        |
+| Data functions and migration lifecycle        | integration        | Real PostgreSQL happy, empty, ownership, ordering, atomicity, constraint, and failure paths.             | `src/**/*.integration.test.ts`, `test/**/*.integration.test.ts` | `npm run test:integration` |
+| Server Actions                                | integration        | Validation, owner resolution, real persistence, return values, failures, and revalidation boundary.      | `src/app/*.integration.test.ts`                                 | `npm run test:integration` |
+| Interactive client component                  | integration        | Observable create, completion, timer, pending, success, and failure behavior through accessible queries. | `src/components/*.integration.test.tsx`                         | `npm run test:component`   |
+| Async Server Component and application wiring | e2e                | Three critical journeys only: load, create with revalidation, and complete with history.                 | `test/e2e/*.spec.ts`                                            | `npm run test:e2e`         |
+| CI and package wiring                         | none               | Complete non-watch quality gate succeeds from the public command.                                        | `.github/workflows/*.yml`, `package.json`                       | `npm run check`            |
 
 ## Gate Check Commands
 
 > These commands become available as their infrastructure tasks complete.
 
-| Gate Level | When to Use | Command |
-| ---------- | ----------- | ------- |
-| Quick | Documentation, configuration, and unit-test tasks | `npm run lint && npm run typecheck && npm run test:unit` |
-| Full | Database, Server Action, component, and E2E behavior tasks | `npm run lint && npm run typecheck && npm test` |
-| Build | Phase completion and CI/package wiring | `npm run check` |
+| Gate Level | When to Use                                                | Command                                                  |
+| ---------- | ---------------------------------------------------------- | -------------------------------------------------------- |
+| Quick      | Documentation, configuration, and unit-test tasks          | `npm run lint && npm run typecheck && npm run test:unit` |
+| Full       | Database, Server Action, component, and E2E behavior tasks | `npm run lint && npm run typecheck && npm test`          |
+| Build      | Phase completion and CI/package wiring                     | `npm run check`                                          |
 
 ---
 
@@ -631,27 +631,27 @@ for any approved sub-agent delegation.
 
 ## Task Granularity Check
 
-| Task | Scope | Status |
-| ---- | ----- | ------ |
-| T1 | One policy document | OK |
-| T2 | One developer document | OK |
-| T3 | One package toolchain manifest | OK |
-| T4 | One schema module | OK |
-| T5 | One database client component plus its unit tests | OK |
-| T6 | One runner configuration | OK |
-| T7 | One container lifecycle component plus smoke tests | OK |
-| T8 | One reset/fixture boundary plus safety tests | OK |
-| T9 | One user repository migration plus tests | OK |
-| T10 | One workout create/list behavior group plus tests | OK |
-| T11 | One session behavior group plus tests | OK |
-| T12 | One obsolete database path removal | OK |
-| T13 | One Server Action boundary test suite | OK |
-| T14 | One validation boundary test suite | OK |
-| T15 | One client component test suite | OK |
-| T16 | One E2E lifecycle plus first proving journey | OK |
-| T17 | One browser journey | OK |
-| T18 | One browser journey | OK |
-| T19 | One CI workflow | OK |
+| Task | Scope                                              | Status |
+| ---- | -------------------------------------------------- | ------ |
+| T1   | One policy document                                | OK     |
+| T2   | One developer document                             | OK     |
+| T3   | One package toolchain manifest                     | OK     |
+| T4   | One schema module                                  | OK     |
+| T5   | One database client component plus its unit tests  | OK     |
+| T6   | One runner configuration                           | OK     |
+| T7   | One container lifecycle component plus smoke tests | OK     |
+| T8   | One reset/fixture boundary plus safety tests       | OK     |
+| T9   | One user repository migration plus tests           | OK     |
+| T10  | One workout create/list behavior group plus tests  | OK     |
+| T11  | One session behavior group plus tests              | OK     |
+| T12  | One obsolete database path removal                 | OK     |
+| T13  | One Server Action boundary test suite              | OK     |
+| T14  | One validation boundary test suite                 | OK     |
+| T15  | One client component test suite                    | OK     |
+| T16  | One E2E lifecycle plus first proving journey       | OK     |
+| T17  | One browser journey                                | OK     |
+| T18  | One browser journey                                | OK     |
+| T19  | One CI workflow                                    | OK     |
 
 ---
 
@@ -659,48 +659,48 @@ for any approved sub-agent delegation.
 
 | Task | Depends On | Diagram Shows | Status |
 | ---- | ---------- | ------------- | ------ |
-| T1 | None | Start | Match |
-| T2 | T1 | T1 -> T2 | Match |
-| T3 | T2 | T2 -> T3 | Match |
-| T4 | T3 | T3 -> T4 | Match |
-| T6 | T4 | T4 -> T6 | Match |
-| T5 | T6 | T6 -> T5 | Match |
-| T7 | T5 | T5 -> T7 | Match |
-| T8 | T7 | T7 -> T8 | Match |
-| T9 | T8 | T8 -> T9 | Match |
-| T10 | T9 | T9 -> T10 | Match |
-| T11 | T10 | T10 -> T11 | Match |
-| T12 | T11 | T11 -> T12 | Match |
-| T13 | T12 | T12 -> T13 | Match |
-| T14 | T13 | T13 -> T14 | Match |
-| T15 | T14 | T14 -> T15 | Match |
-| T16 | T15 | T15 -> T16 | Match |
-| T17 | T16 | T16 -> T17 | Match |
-| T18 | T17 | T17 -> T18 | Match |
-| T19 | T18 | T18 -> T19 | Match |
+| T1   | None       | Start         | Match  |
+| T2   | T1         | T1 -> T2      | Match  |
+| T3   | T2         | T2 -> T3      | Match  |
+| T4   | T3         | T3 -> T4      | Match  |
+| T6   | T4         | T4 -> T6      | Match  |
+| T5   | T6         | T6 -> T5      | Match  |
+| T7   | T5         | T5 -> T7      | Match  |
+| T8   | T7         | T7 -> T8      | Match  |
+| T9   | T8         | T8 -> T9      | Match  |
+| T10  | T9         | T9 -> T10     | Match  |
+| T11  | T10        | T10 -> T11    | Match  |
+| T12  | T11        | T11 -> T12    | Match  |
+| T13  | T12        | T12 -> T13    | Match  |
+| T14  | T13        | T13 -> T14    | Match  |
+| T15  | T14        | T14 -> T15    | Match  |
+| T16  | T15        | T15 -> T16    | Match  |
+| T17  | T16        | T16 -> T17    | Match  |
+| T18  | T17        | T17 -> T18    | Match  |
+| T19  | T18        | T18 -> T19    | Match  |
 
 ---
 
 ## Test Co-location Validation
 
-| Task | Code Layer Created/Modified | Matrix Requires | Task Says | Status |
-| ---- | --------------------------- | --------------- | --------- | ------ |
-| T1 | Documentation | none | none | OK |
-| T2 | Documentation | none | none | OK |
-| T3 | Package/config | none | none | OK |
-| T4 | Schema | none | none | OK |
-| T5 | Database configuration | unit | unit | OK |
-| T6 | Runner config | none | none | OK |
-| T7 | Migration lifecycle | integration | integration | OK |
-| T8 | Reset safety | integration | integration | OK |
-| T9 | User data | integration | integration | OK |
-| T10 | Workout data | integration | integration | OK |
-| T11 | Session data | integration | integration | OK |
-| T12 | Covered cleanup | none | none | OK |
-| T13 | Server Actions | integration | integration | OK |
-| T14 | Validation | unit | unit | OK |
-| T15 | Client component | integration | integration | OK |
-| T16 | Application wiring | e2e | e2e | OK |
-| T17 | Application wiring | e2e | e2e | OK |
-| T18 | Application wiring | e2e | e2e | OK |
-| T19 | CI wiring | none | none | OK |
+| Task | Code Layer Created/Modified | Matrix Requires | Task Says   | Status |
+| ---- | --------------------------- | --------------- | ----------- | ------ |
+| T1   | Documentation               | none            | none        | OK     |
+| T2   | Documentation               | none            | none        | OK     |
+| T3   | Package/config              | none            | none        | OK     |
+| T4   | Schema                      | none            | none        | OK     |
+| T5   | Database configuration      | unit            | unit        | OK     |
+| T6   | Runner config               | none            | none        | OK     |
+| T7   | Migration lifecycle         | integration     | integration | OK     |
+| T8   | Reset safety                | integration     | integration | OK     |
+| T9   | User data                   | integration     | integration | OK     |
+| T10  | Workout data                | integration     | integration | OK     |
+| T11  | Session data                | integration     | integration | OK     |
+| T12  | Covered cleanup             | none            | none        | OK     |
+| T13  | Server Actions              | integration     | integration | OK     |
+| T14  | Validation                  | unit            | unit        | OK     |
+| T15  | Client component            | integration     | integration | OK     |
+| T16  | Application wiring          | e2e             | e2e         | OK     |
+| T17  | Application wiring          | e2e             | e2e         | OK     |
+| T18  | Application wiring          | e2e             | e2e         | OK     |
+| T19  | CI wiring                   | none            | none        | OK     |

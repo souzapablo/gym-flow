@@ -1,19 +1,9 @@
 import { Pool } from "pg";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  expect,
-  inject,
-  it,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, expect, inject, it } from "vitest";
 
 import { buildUserFixture } from "../factories/user";
 import { buildWorkoutFixture } from "../factories/workout";
-import {
-  resetTestDatabase,
-  type TestDatabaseProof,
-} from "./reset";
+import { resetTestDatabase, type TestDatabaseProof } from "./reset";
 
 const originalDatabaseUrl = process.env.DATABASE_URL;
 const databaseUri = inject("databaseUri");

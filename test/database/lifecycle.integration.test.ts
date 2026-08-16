@@ -36,7 +36,9 @@ it("provides a PostgreSQL database with every real migration applied", async () 
 
 it("applies migrations lexically and reports the failing filename and cause", async () => {
   const pool = new Pool({ connectionString: inject("databaseUri") });
-  const migrationsDirectory = await mkdtemp(join(tmpdir(), "gym-flow-migrations-"));
+  const migrationsDirectory = await mkdtemp(
+    join(tmpdir(), "gym-flow-migrations-"),
+  );
 
   await writeFile(
     join(migrationsDirectory, "002_failure.sql"),
@@ -58,9 +60,9 @@ it("applies migrations lexically and reports the failing filename and cause", as
 
     expect(migrationError).toBeInstanceOf(Error);
     expect((migrationError as Error).message).toContain("002_failure.sql");
-    expect((migrationError as Error & { cause?: unknown }).cause).toBeInstanceOf(
-      Error,
-    );
+    expect(
+      (migrationError as Error & { cause?: unknown }).cause,
+    ).toBeInstanceOf(Error);
 
     const result = await pool.query<{ step: number }>(
       "select step from lifecycle_migration_order order by step",

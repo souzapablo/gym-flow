@@ -8,10 +8,7 @@ import type { TestProject } from "vitest/node";
 const POSTGRES_IMAGE = "postgres:18-alpine";
 const TEST_DATABASE_NAME = "gym_flow_test";
 
-export async function applyMigrations(
-  pool: Pool,
-  migrationsDirectory: string,
-) {
+export async function applyMigrations(pool: Pool, migrationsDirectory: string) {
   const migrationFiles = (await readdir(migrationsDirectory))
     .filter((fileName) => fileName.endsWith(".sql"))
     .sort((left, right) => left.localeCompare(right));

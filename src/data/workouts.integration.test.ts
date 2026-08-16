@@ -99,7 +99,10 @@ describe("createWorkout", () => {
       }),
     ).rejects.toThrow();
 
-    const counts = await context.pool.query<{ workouts: string; exercises: string }>(`
+    const counts = await context.pool.query<{
+      workouts: string;
+      exercises: string;
+    }>(`
       select
         (select count(*) from workouts) as workouts,
         (select count(*) from exercises) as exercises
@@ -138,8 +141,18 @@ describe("listWorkouts", () => {
         focus: workout.focus,
         color: workout.color,
         exercises: [
-          { id: workout.exercises[1].id, name: "Back squat", sets: 3, targetReps: 8 },
-          { id: workout.exercises[0].id, name: "Bench press", sets: 4, targetReps: 6 },
+          {
+            id: workout.exercises[1].id,
+            name: "Back squat",
+            sets: 3,
+            targetReps: 8,
+          },
+          {
+            id: workout.exercises[0].id,
+            name: "Bench press",
+            sets: 4,
+            targetReps: 6,
+          },
         ],
       },
     ]);
@@ -464,7 +477,8 @@ describe("listCompletedWorkouts", () => {
   });
 });
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function newWorkout(): NewWorkout {
   return {

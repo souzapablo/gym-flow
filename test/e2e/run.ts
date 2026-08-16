@@ -17,7 +17,8 @@ async function availablePort() {
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
   const address = server.address();
-  const port = typeof address === "object" && address ? address.port : undefined;
+  const port =
+    typeof address === "object" && address ? address.port : undefined;
   await new Promise<void>((resolveClose, reject) =>
     server.close((error) => (error ? reject(error) : resolveClose())),
   );
@@ -39,12 +40,18 @@ function captureOutput(child: ChildProcess) {
   return () => output;
 }
 
-async function waitForServer(url: string, child: ChildProcess, output: () => string) {
+async function waitForServer(
+  url: string,
+  child: ChildProcess,
+  output: () => string,
+) {
   const deadline = Date.now() + 120_000;
 
   while (Date.now() < deadline) {
     if (child.exitCode !== null) {
-      throw new Error(`Next.js exited before readiness (${child.exitCode})\n${output()}`);
+      throw new Error(
+        `Next.js exited before readiness (${child.exitCode})\n${output()}`,
+      );
     }
 
     try {
@@ -66,7 +73,10 @@ async function stopChild(child: ChildProcess | undefined) {
   await Promise.race([
     once(child, "close"),
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Next.js did not stop within 10s")), 10_000),
+      setTimeout(
+        () => reject(new Error("Next.js did not stop within 10s")),
+        10_000,
+      ),
     ),
   ]);
 }
@@ -107,7 +117,11 @@ async function run() {
         "--port",
         String(port),
       ],
-      { cwd: process.cwd(), env: environment, stdio: ["ignore", "pipe", "pipe"] },
+      {
+        cwd: process.cwd(),
+        env: environment,
+        stdio: ["ignore", "pipe", "pipe"],
+      },
     );
     const serverOutput = captureOutput(server);
     await waitForServer(baseURL, server, serverOutput);

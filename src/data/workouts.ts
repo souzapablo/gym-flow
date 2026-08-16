@@ -169,9 +169,7 @@ export async function saveWorkoutSession(
           exerciseId: completedSet.exercise_id,
           setNumber: completedSet.set_number,
           weight:
-            completedSet.weight === null
-              ? null
-              : String(completedSet.weight),
+            completedSet.weight === null ? null : String(completedSet.weight),
           reps: completedSet.reps,
           loadRating: completedSet.load_rating,
         })),

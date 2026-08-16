@@ -153,26 +153,29 @@ Shared database lifecycle, factories, and environment setup belong under
 
 Use these public commands after the testing toolchain is installed:
 
-| Command | Purpose | Docker required |
-| ------- | ------- | --------------- |
-| `npm run test:unit` | Run unit tests once. | No |
-| `npm run test:component` | Run component integration tests once. | No |
-| `npm run test:integration` | Run database integration tests once. | Yes |
-| `npm run test:e2e` | Run the three Playwright journeys once. | Yes |
-| `npm run test:vitest` | Run all non-browser Vitest projects once. | Yes |
-| `npm run test:watch` | Run the local Vitest watch loop. | Depends on project |
-| `npm test` | Run unit, component, database, and browser suites once. | Yes |
-| `npm run lint` | Run ESLint. | No |
-| `npm run typecheck` | Run TypeScript without emitting files. | No |
-| `npm run build` | Build the production application. | No |
-| `npm run check` | Run lint, type checking, all tests, and build. | Yes |
+| Command                    | Purpose                                                 | Docker required    |
+| -------------------------- | ------------------------------------------------------- | ------------------ |
+| `npm run test:unit`        | Run unit tests once.                                    | No                 |
+| `npm run test:component`   | Run component integration tests once.                   | No                 |
+| `npm run test:integration` | Run database integration tests once.                    | Yes                |
+| `npm run test:e2e`         | Run the three Playwright journeys once.                 | Yes                |
+| `npm run test:vitest`      | Run all non-browser Vitest projects once.               | Yes                |
+| `npm run test:watch`       | Run the local Vitest watch loop.                        | Depends on project |
+| `npm test`                 | Run unit, component, database, and browser suites once. | Yes                |
+| `npm run lint`             | Run ESLint.                                             | No                 |
+| `npm run format`           | Format files with Prettier.                             | No                 |
+| `npm run format:check`     | Check formatting without changing files.                | No                 |
+| `npm run typecheck`        | Run TypeScript without emitting files.                  | No                 |
+| `npm run build`            | Build the production application.                       | No                 |
+| `npm run check`            | Run lint, type checking, all tests, and build.          | Yes                |
 
 All CI and complete-suite commands must run in non-watch mode and exit non-zero
 on failure.
 
 ## Continuous integration
 
-Continuous integration runs from a clean install with Docker available. It
-installs the required Playwright browser and system dependencies, then runs
-`npm run check`. CI does not require Neon credentials because database and
-browser tests use the isolated Testcontainer URI.
+Continuous integration runs lint, formatting, type checking, tests, and the
+production build as separate jobs. The test job installs the required
+Playwright browser and system dependencies and runs with Docker available. CI
+does not require Neon credentials because database and browser tests use the
+isolated Testcontainer URI.

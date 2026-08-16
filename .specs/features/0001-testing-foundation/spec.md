@@ -21,13 +21,13 @@ and focused unit tests only where isolation improves coverage or diagnosis.
 
 ## Out of Scope
 
-| Feature | Reason |
-| ------- | ------ |
-| Production database migration execution | Local implementation must not change an external database. |
-| Replacing Neon | Neon remains the production PostgreSQL provider. |
-| New product behavior | The adoption verifies existing behavior only. |
-| Coverage percentage threshold | Behavioral coverage is required before selecting a numeric target. |
-| Parallel database integration tests | Sequential execution is the safe initial isolation model. |
+| Feature                                 | Reason                                                             |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| Production database migration execution | Local implementation must not change an external database.         |
+| Replacing Neon                          | Neon remains the production PostgreSQL provider.                   |
+| New product behavior                    | The adoption verifies existing behavior only.                      |
+| Coverage percentage threshold           | Behavioral coverage is required before selecting a numeric target. |
+| Parallel database integration tests     | Sequential execution is the safe initial isolation model.          |
 
 ---
 
@@ -35,17 +35,17 @@ and focused unit tests only where isolation improves coverage or diagnosis.
 
 Every ambiguity is resolved or recorded here.
 
-| Assumption / decision | Chosen default | Rationale | Confirmed? |
-| --------------------- | -------------- | --------- | ---------- |
-| Delivery order | Documentation, infrastructure, then current-project tests | The user explicitly selected this sequence. | Yes |
-| Query layer | Use Drizzle for production and integration database access | One query layer provides typed access across both supported transports. | Yes |
-| Production transport | Use Drizzle's node-postgres adapter over TCP with Neon's pooled connection URL | It provides full PostgreSQL behavior and matches the integration-test driver. | Yes |
-| Integration transport | Use Drizzle's node-postgres adapter with Testcontainers | A PostgreSQL Testcontainer exposes TCP, not Neon's HTTP protocol. | Yes |
-| Migration ownership | Keep the existing ordered SQL files as the source of truth | This avoids rewriting migration history during test adoption. | Yes |
-| Integration isolation | Use one container per suite, sequential tests, and database reset before each test | This is deterministic and avoids cross-connection transaction assumptions. | Yes |
-| PostgreSQL image | Pin Testcontainers to `postgres:18-alpine` | PostgreSQL 18 matches the deployed Neon major version confirmed by the user. | Yes |
-| Test framework | Use Vitest projects with Testing Library for client behavior | This matches the installed Next.js guidance and supports separate environments. | Yes |
-| End-to-end scope | Use Playwright for three critical user journeys after integration coverage exists | A thin browser layer verifies Next.js wiring without duplicating lower-level coverage. | Yes |
+| Assumption / decision | Chosen default                                                                     | Rationale                                                                              | Confirmed? |
+| --------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------- |
+| Delivery order        | Documentation, infrastructure, then current-project tests                          | The user explicitly selected this sequence.                                            | Yes        |
+| Query layer           | Use Drizzle for production and integration database access                         | One query layer provides typed access across both supported transports.                | Yes        |
+| Production transport  | Use Drizzle's node-postgres adapter over TCP with Neon's pooled connection URL     | It provides full PostgreSQL behavior and matches the integration-test driver.          | Yes        |
+| Integration transport | Use Drizzle's node-postgres adapter with Testcontainers                            | A PostgreSQL Testcontainer exposes TCP, not Neon's HTTP protocol.                      | Yes        |
+| Migration ownership   | Keep the existing ordered SQL files as the source of truth                         | This avoids rewriting migration history during test adoption.                          | Yes        |
+| Integration isolation | Use one container per suite, sequential tests, and database reset before each test | This is deterministic and avoids cross-connection transaction assumptions.             | Yes        |
+| PostgreSQL image      | Pin Testcontainers to `postgres:18-alpine`                                         | PostgreSQL 18 matches the deployed Neon major version confirmed by the user.           | Yes        |
+| Test framework        | Use Vitest projects with Testing Library for client behavior                       | This matches the installed Next.js guidance and supports separate environments.        | Yes        |
+| End-to-end scope      | Use Playwright for three critical user journeys after integration coverage exists  | A thin browser layer verifies Next.js wiring without duplicating lower-level coverage. | Yes        |
 
 **Open questions:** none.
 
@@ -113,9 +113,9 @@ runner lifecycles are controlled.
 9. IF Docker is unavailable or a migration fails THEN the integration suite
    SHALL fail with the originating setup error and execute no tests.
 10. IF the integration database URI was not created by suite setup THEN the
-   reset helper SHALL refuse to modify the database.
+    reset helper SHALL refuse to modify the database.
 11. WHILE integration tests share one database container, the test runner SHALL
-   execute them without file-level parallelism.
+    execute them without file-level parallelism.
 12. WHEN a developer runs the complete test command THEN the system SHALL run
     unit, integration, and end-to-end tests in non-watch mode.
 13. WHEN continuous integration runs the quality gate THEN the system SHALL run
@@ -231,12 +231,12 @@ and verify the three critical journeys pass without Neon credentials.
 
 ## Requirement Traceability
 
-| Requirement ID | Story | Phase | Status |
-| -------------- | ----- | ----- | ------ |
-| TEST-01 | P1: Agent testing contract | Documentation | Verified (T1-T2, T6, T19) |
-| TEST-02 | P1: Executable test infrastructure | Infrastructure | Verified (T3-T8, T12, T16, T19) |
-| TEST-03 | P1: Current behavior coverage | Tests | Verified (T9-T11, T13-T15) |
-| TEST-04 | P2: Critical browser journeys | E2E | Verified (T16-T18) |
+| Requirement ID | Story                              | Phase          | Status                          |
+| -------------- | ---------------------------------- | -------------- | ------------------------------- |
+| TEST-01        | P1: Agent testing contract         | Documentation  | Verified (T1-T2, T6, T19)       |
+| TEST-02        | P1: Executable test infrastructure | Infrastructure | Verified (T3-T8, T12, T16, T19) |
+| TEST-03        | P1: Current behavior coverage      | Tests          | Verified (T9-T11, T13-T15)      |
+| TEST-04        | P2: Critical browser journeys      | E2E            | Verified (T16-T18)              |
 
 **Coverage:** 4 total, 4 mapped to tasks, 0 unmapped.
 

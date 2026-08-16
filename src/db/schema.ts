@@ -22,10 +22,7 @@ export const users = pgTable(
       .defaultNow(),
   },
   (table) => [
-    check(
-      "users_name_check",
-      sql`char_length(${table.name}) between 1 and 80`,
-    ),
+    check("users_name_check", sql`char_length(${table.name}) between 1 and 80`),
   ],
 );
 

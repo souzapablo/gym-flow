@@ -52,23 +52,25 @@ development `DATABASE_URL` separate from test configuration.
 
 Use the command that matches the change:
 
-| Command | Runs |
-| ------- | ---- |
-| `npm run test:unit` | Unit tests without Docker. |
-| `npm run test:component` | Client component integration tests without Docker. |
-| `npm run test:integration` | Database integration tests with Docker. |
-| `npm run test:e2e` | Playwright browser journeys with Docker. |
-| `npm run test:vitest` | All non-browser Vitest projects. |
-| `npm run test:watch` | The local Vitest watch loop. |
-| `npm test` | The complete non-watch test suite. |
-| `npm run lint` | ESLint. |
-| `npm run typecheck` | TypeScript checks without output. |
-| `npm run build` | The production Next.js build. |
-| `npm run check` | Lint, type checking, all tests, and the production build. |
+| Command                    | Runs                                                      |
+| -------------------------- | --------------------------------------------------------- |
+| `npm run test:unit`        | Unit tests without Docker.                                |
+| `npm run test:component`   | Client component integration tests without Docker.        |
+| `npm run test:integration` | Database integration tests with Docker.                   |
+| `npm run test:e2e`         | Playwright browser journeys with Docker.                  |
+| `npm run test:vitest`      | All non-browser Vitest projects.                          |
+| `npm run test:watch`       | The local Vitest watch loop.                              |
+| `npm test`                 | The complete non-watch test suite.                        |
+| `npm run lint`             | ESLint.                                                   |
+| `npm run format`           | Format files with Prettier.                               |
+| `npm run format:check`     | Check formatting without changing files.                  |
+| `npm run typecheck`        | TypeScript checks without output.                         |
+| `npm run build`            | The production Next.js build.                             |
+| `npm run check`            | Lint, type checking, all tests, and the production build. |
 
-Continuous integration performs a clean install, installs Playwright Chromium,
-uses Docker for isolated PostgreSQL, and runs `npm run check`. It does not need
-a Neon credential.
+Continuous integration runs lint, formatting, type checking, tests, and the
+production build as separate jobs. The test job installs Playwright Chromium
+and uses Docker for isolated PostgreSQL. CI does not need a Neon credential.
 
 Read the authoritative [testing strategy](TESTING.md) before adding or changing
 application behavior. It defines test selection, naming, placement, database

@@ -1,12 +1,4 @@
-import {
-  afterAll,
-  beforeEach,
-  describe,
-  expect,
-  inject,
-  it,
-  vi,
-} from "vitest";
+import { afterAll, beforeEach, describe, expect, inject, it, vi } from "vitest";
 
 import { revalidatePath } from "next/cache";
 import { users } from "@/db/schema";
@@ -21,10 +13,7 @@ import {
 import { buildUserFixture } from "../../test/factories/user";
 import { buildWorkoutFixture } from "../../test/factories/workout";
 
-import {
-  createWorkoutAction,
-  saveWorkoutSessionAction,
-} from "./actions";
+import { createWorkoutAction, saveWorkoutSessionAction } from "./actions";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
@@ -55,9 +44,7 @@ describe("createWorkoutAction", () => {
       name: "  Strength day  ",
       focus: "  Lower body  ",
       color: "yellow",
-      exercises: [
-        { name: "  Back squat  ", sets: 3, targetReps: 8 },
-      ],
+      exercises: [{ name: "  Back squat  ", sets: 3, targetReps: 8 }],
     });
 
     expect(created).toEqual({
@@ -229,7 +216,8 @@ describe("saveWorkoutSessionAction", () => {
   });
 });
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 async function insertUser(overrides = {}) {
   const user = buildUserFixture(overrides);
@@ -241,13 +229,7 @@ async function insertWorkout(workout = buildWorkoutFixture()) {
   await context.pool.query(
     `insert into workouts (id, owner_id, name, focus, color)
      values ($1, $2, $3, $4, $5)`,
-    [
-      workout.id,
-      workout.ownerId,
-      workout.name,
-      workout.focus,
-      workout.color,
-    ],
+    [workout.id, workout.ownerId, workout.name, workout.focus, workout.color],
   );
   for (const exercise of workout.exercises) {
     await context.pool.query(

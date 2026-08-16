@@ -64,7 +64,13 @@ describe("parseNewWorkout", () => {
     [{}, "Workout is invalid"],
     [{ ...validWorkout(), exercises: [] }, "Workout exercises are invalid"],
     [
-      { ...validWorkout(), exercises: Array.from({ length: 51 }, () => validWorkout().exercises[0]) },
+      {
+        ...validWorkout(),
+        exercises: Array.from(
+          { length: 51 },
+          () => validWorkout().exercises[0],
+        ),
+      },
       "Workout exercises are invalid",
     ],
     [{ ...validWorkout(), color: "purple" }, "Workout color is invalid"],
@@ -73,36 +79,60 @@ describe("parseNewWorkout", () => {
     [{ ...validWorkout(), focus: "f".repeat(61) }, "Workout focus is invalid"],
     [{ ...validWorkout(), exercises: [null] }, "Exercise is invalid"],
     [
-      { ...validWorkout(), exercises: [{ name: "e".repeat(61), sets: 3, targetReps: 8 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "e".repeat(61), sets: 3, targetReps: 8 }],
+      },
       "Exercise name is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 0, targetReps: 8 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 0, targetReps: 8 }],
+      },
       "Exercise sets is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 21, targetReps: 8 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 21, targetReps: 8 }],
+      },
       "Exercise sets is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 1.5, targetReps: 8 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 1.5, targetReps: 8 }],
+      },
       "Exercise sets is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 3, targetReps: 0 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 3, targetReps: 0 }],
+      },
       "Exercise reps is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 3, targetReps: 101 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 3, targetReps: 101 }],
+      },
       "Exercise reps is invalid",
     ],
     [
-      { ...validWorkout(), exercises: [{ name: "Squat", sets: 3, targetReps: 1.5 }] },
+      {
+        ...validWorkout(),
+        exercises: [{ name: "Squat", sets: 3, targetReps: 1.5 }],
+      },
       "Exercise reps is invalid",
     ],
-  ])("rejects invalid workout input %# with the field error", (value, message) => {
-    expect(() => parseNewWorkout(value)).toThrowError(message as string);
-  });
+  ])(
+    "rejects invalid workout input %# with the field error",
+    (value, message) => {
+      expect(() => parseNewWorkout(value)).toThrowError(message as string);
+    },
+  );
 });
 
 describe("parseWorkoutSession", () => {
@@ -110,9 +140,27 @@ describe("parseWorkoutSession", () => {
     const session = validSession();
     session.feedback = "Na medida";
     session.sets = [
-      { ...session.sets[0], set_number: 1, weight: 0, reps: 1, load_rating: "Leve" },
-      { ...session.sets[0], set_number: 20, weight: 82.5, reps: 1000, load_rating: "Pesada" },
-      { ...session.sets[0], set_number: 2, weight: null, reps: 8, load_rating: "Ideal" },
+      {
+        ...session.sets[0],
+        set_number: 1,
+        weight: 0,
+        reps: 1,
+        load_rating: "Leve",
+      },
+      {
+        ...session.sets[0],
+        set_number: 20,
+        weight: 82.5,
+        reps: 1000,
+        load_rating: "Pesada",
+      },
+      {
+        ...session.sets[0],
+        set_number: 2,
+        weight: null,
+        reps: 8,
+        load_rating: "Ideal",
+      },
     ];
 
     expect(parseWorkoutSession(session)).toEqual(session);
@@ -121,23 +169,37 @@ describe("parseWorkoutSession", () => {
   it.each(["Muito pesado", "Puxado", "Na medida", "Mandou bem"])(
     "accepts the %s feedback value",
     (feedback) => {
-      expect(parseWorkoutSession({ ...validSession(), feedback }).feedback).toBe(feedback);
+      expect(
+        parseWorkoutSession({ ...validSession(), feedback }).feedback,
+      ).toBe(feedback);
     },
   );
 
   it.each([
     [null, "Workout session is invalid"],
-    [{ ...validSession(), workoutId: "not-a-uuid" }, "Workout session is invalid"],
-    [{ ...validSession(), workoutId: "123e4567-e89b-02d3-a456-426614174000" }, "Workout session is invalid"],
+    [
+      { ...validSession(), workoutId: "not-a-uuid" },
+      "Workout session is invalid",
+    ],
+    [
+      { ...validSession(), workoutId: "123e4567-e89b-02d3-a456-426614174000" },
+      "Workout session is invalid",
+    ],
     [{ ...validSession(), sets: [] }, "Completed sets are invalid"],
     [
-      { ...validSession(), sets: Array.from({ length: 1001 }, () => validSession().sets[0]) },
+      {
+        ...validSession(),
+        sets: Array.from({ length: 1001 }, () => validSession().sets[0]),
+      },
       "Completed sets are invalid",
     ],
     [{ ...validSession(), feedback: "Easy" }, "Feedback is invalid"],
     [{ ...validSession(), sets: [null] }, "Completed set is invalid"],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], exercise_id: "not-a-uuid" }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], exercise_id: "not-a-uuid" }],
+      },
       "Completed set is invalid",
     ],
     [
@@ -145,27 +207,45 @@ describe("parseWorkoutSession", () => {
       "Completed set weight is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], weight: Number.POSITIVE_INFINITY }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], weight: Number.POSITIVE_INFINITY }],
+      },
       "Completed set weight is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], weight: "80" }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], weight: "80" }],
+      },
       "Completed set weight is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], load_rating: "Moderate" }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], load_rating: "Moderate" }],
+      },
       "Load rating is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], set_number: 0 }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], set_number: 0 }],
+      },
       "Set number is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], set_number: 21 }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], set_number: 21 }],
+      },
       "Set number is invalid",
     ],
     [
-      { ...validSession(), sets: [{ ...validSession().sets[0], set_number: 1.5 }] },
+      {
+        ...validSession(),
+        sets: [{ ...validSession().sets[0], set_number: 1.5 }],
+      },
       "Set number is invalid",
     ],
     [
@@ -180,7 +260,10 @@ describe("parseWorkoutSession", () => {
       { ...validSession(), sets: [{ ...validSession().sets[0], reps: 1.5 }] },
       "Completed reps is invalid",
     ],
-  ])("rejects invalid session input %# with the field error", (value, message) => {
-    expect(() => parseWorkoutSession(value)).toThrowError(message as string);
-  });
+  ])(
+    "rejects invalid session input %# with the field error",
+    (value, message) => {
+      expect(() => parseWorkoutSession(value)).toThrowError(message as string);
+    },
+  );
 });

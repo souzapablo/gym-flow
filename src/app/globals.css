@@ -43,7 +43,11 @@ button {
   min-height: 100vh;
   min-height: 100svh;
   background:
-    radial-gradient(circle at 30% 20%, oklch(93% 0.014 86 / 55%), transparent 30rem),
+    radial-gradient(
+      circle at 30% 20%,
+      oklch(93% 0.014 86 / 55%),
+      transparent 30rem
+    ),
     var(--desk);
 }
 
@@ -119,7 +123,12 @@ button {
 }
 
 .tab-bar button[aria-current="page"] {
-  background: linear-gradient(transparent 45%, var(--marker-yellow) 45%, var(--marker-yellow) 78%, transparent 78%);
+  background: linear-gradient(
+    transparent 45%,
+    var(--marker-yellow) 45%,
+    var(--marker-yellow) 78%,
+    transparent 78%
+  );
   color: var(--ink);
 }
 
@@ -352,7 +361,9 @@ input:focus-visible {
   cursor: pointer;
 }
 
-.month-switcher button:last-child { justify-self: end; }
+.month-switcher button:last-child {
+  justify-self: end;
+}
 
 .month-switcher div {
   display: grid;
@@ -393,7 +404,9 @@ input:focus-visible {
   font-weight: 600;
 }
 
-.calendar-day { position: relative; }
+.calendar-day {
+  position: relative;
+}
 
 .calendar-day.is-complete::before {
   position: absolute;
@@ -407,10 +420,20 @@ input:focus-visible {
   transform: rotate(-3deg);
 }
 
-.calendar-day.is-complete { font-weight: 700; }
-.calendar-day.is-complete { isolation: isolate; }
-.calendar-day.is-complete::before { z-index: -1; }
-.calendar-day.is-today { outline: 2px solid var(--ink); outline-offset: -0.3rem; border-radius: 50%; }
+.calendar-day.is-complete {
+  font-weight: 700;
+}
+.calendar-day.is-complete {
+  isolation: isolate;
+}
+.calendar-day.is-complete::before {
+  z-index: -1;
+}
+.calendar-day.is-today {
+  outline: 2px solid var(--ink);
+  outline-offset: -0.3rem;
+  border-radius: 50%;
+}
 
 .calendar-legend {
   border: 1px solid var(--ink);
@@ -430,9 +453,16 @@ input:focus-visible {
   gap: 0.75rem;
 }
 
-.calendar-legend > div + div { margin-top: 0.65rem; }
-.calendar-legend p { margin: 0; font-size: 0.82rem; }
-.calendar-legend p span { color: var(--pencil); }
+.calendar-legend > div + div {
+  margin-top: 0.65rem;
+}
+.calendar-legend p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+.calendar-legend p span {
+  color: var(--pencil);
+}
 
 .legend-marker {
   --workout-color: var(--marker-yellow);
@@ -1048,7 +1078,9 @@ input:focus-visible {
   margin-top: 2rem;
   padding: 0.8rem 1.15rem;
   text-transform: uppercase;
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .complete-button:not(:disabled):active {
@@ -1191,7 +1223,12 @@ input:focus-visible {
 .summary-feedback {
   display: inline-block;
   margin: 1.5rem 0 0;
-  background: linear-gradient(transparent 45%, var(--training-accent) 45%, var(--training-accent) 88%, transparent 88%);
+  background: linear-gradient(
+    transparent 45%,
+    var(--training-accent) 45%,
+    var(--training-accent) 88%,
+    transparent 88%
+  );
   font-family: var(--font-typewriter), monospace;
   font-size: 0.72rem;
   font-weight: 600;

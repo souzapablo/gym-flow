@@ -38,11 +38,11 @@ flowchart TD
 
 ### Approaches considered
 
-| Approach | Result | Trade-off |
-| -------- | ------ | --------- |
-| Drizzle with node-postgres everywhere | Selected | Provides full PostgreSQL behavior and maximum production/test parity. |
+| Approach                                                        | Result   | Trade-off                                                                                   |
+| --------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| Drizzle with node-postgres everywhere                           | Selected | Provides full PostgreSQL behavior and maximum production/test parity.                       |
 | Drizzle with Neon HTTP in production and node-postgres in tests | Rejected | Optimizes one-shot serverless queries but creates a driver capability and result-shape gap. |
-| Neon HTTP everywhere with a local proxy | Rejected | Adds proxy infrastructure and makes ordinary integration tests more complex. |
+| Neon HTTP everywhere with a local proxy                         | Rejected | Adds proxy infrastructure and makes ordinary integration tests more complex.                |
 
 The selected approach follows the approved specification and project decision
 `AD-003`.
@@ -53,26 +53,26 @@ The selected approach follows the approved specification and project decision
 
 ### Existing components to leverage
 
-| Component | Location | How to use |
-| --------- | -------- | ---------- |
-| SQL migrations | `migrations/*.sql` | Apply unchanged in lexical order to every fresh test database. |
-| Data functions | `src/data/*.ts` | Preserve exported behavior while moving queries to Drizzle. |
-| Domain models | `src/lib/workout.ts`, `src/lib/user.ts` | Keep application-facing types independent from table definitions. |
-| Validation parsers | `src/lib/workout-validation.ts` | Test their accepted boundaries and rejection matrix directly. |
-| Server Actions | `src/app/actions.ts` | Exercise validation, ownership, persistence, and revalidation together. |
-| Client boundary props | `src/components/workout-app.tsx` | Supply action fakes in jsdom component integration tests. |
-| Async home page | `src/app/page.tsx` | Cover through Playwright rather than direct Vitest rendering. |
+| Component             | Location                                | How to use                                                              |
+| --------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
+| SQL migrations        | `migrations/*.sql`                      | Apply unchanged in lexical order to every fresh test database.          |
+| Data functions        | `src/data/*.ts`                         | Preserve exported behavior while moving queries to Drizzle.             |
+| Domain models         | `src/lib/workout.ts`, `src/lib/user.ts` | Keep application-facing types independent from table definitions.       |
+| Validation parsers    | `src/lib/workout-validation.ts`         | Test their accepted boundaries and rejection matrix directly.           |
+| Server Actions        | `src/app/actions.ts`                    | Exercise validation, ownership, persistence, and revalidation together. |
+| Client boundary props | `src/components/workout-app.tsx`        | Supply action fakes in jsdom component integration tests.               |
+| Async home page       | `src/app/page.tsx`                      | Cover through Playwright rather than direct Vitest rendering.           |
 
 ### Integration points
 
-| System | Integration method |
-| ------ | ------------------ |
-| Neon | Drizzle `node-postgres` adapter using a pooled TCP `DATABASE_URL`. |
-| Test PostgreSQL | Drizzle `node-postgres` adapter using a Testcontainers URI. |
-| Next.js | Existing Server Component and Server Action boundaries remain intact. |
-| Vitest | Named `unit`, `component`, and `database` projects. |
-| Playwright | Custom E2E runner supplies the database URI to Next.js and Playwright. |
-| Docker-compatible runtime | Testcontainers starts and destroys PostgreSQL. |
+| System                    | Integration method                                                     |
+| ------------------------- | ---------------------------------------------------------------------- |
+| Neon                      | Drizzle `node-postgres` adapter using a pooled TCP `DATABASE_URL`.     |
+| Test PostgreSQL           | Drizzle `node-postgres` adapter using a Testcontainers URI.            |
+| Next.js                   | Existing Server Component and Server Action boundaries remain intact.  |
+| Vitest                    | Named `unit`, `component`, and `database` projects.                    |
+| Playwright                | Custom E2E runner supplies the database URI to Next.js and Playwright. |
+| Docker-compatible runtime | Testcontainers starts and destroys PostgreSQL.                         |
 
 ---
 
@@ -261,49 +261,49 @@ foreign keys or checks.
 
 ## Error Handling Strategy
 
-| Error scenario | Handling | User impact |
-| -------------- | -------- | ----------- |
-| Missing production `DATABASE_URL` | Throw before constructing the pool. | Application startup or request fails with the existing configuration error. |
-| Unpooled Neon production URL | Reject a Neon hostname without `-pooler`. | Deployment fails with a connection-pooling configuration error. |
-| Docker unavailable | Preserve the Testcontainers startup error and abort setup. | Integration or E2E command exits non-zero before tests run. |
-| Migration failure | Add the migration filename and preserve the original cause. | The suite stops before executing behavior tests. |
-| Unsafe reset target | Reject before opening a destructive statement. | The test fails without modifying the database. |
-| Next.js E2E server fails | Capture child stderr and abort Playwright. | E2E command exits non-zero with server diagnostics. |
-| Playwright fails | Preserve its exit code and trace on first retry in CI. | The quality gate fails and retains browser evidence. |
-| Teardown also fails | Report teardown after preserving the primary failure. | The original defect remains visible with cleanup diagnostics. |
+| Error scenario                    | Handling                                                    | User impact                                                                 |
+| --------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Missing production `DATABASE_URL` | Throw before constructing the pool.                         | Application startup or request fails with the existing configuration error. |
+| Unpooled Neon production URL      | Reject a Neon hostname without `-pooler`.                   | Deployment fails with a connection-pooling configuration error.             |
+| Docker unavailable                | Preserve the Testcontainers startup error and abort setup.  | Integration or E2E command exits non-zero before tests run.                 |
+| Migration failure                 | Add the migration filename and preserve the original cause. | The suite stops before executing behavior tests.                            |
+| Unsafe reset target               | Reject before opening a destructive statement.              | The test fails without modifying the database.                              |
+| Next.js E2E server fails          | Capture child stderr and abort Playwright.                  | E2E command exits non-zero with server diagnostics.                         |
+| Playwright fails                  | Preserve its exit code and trace on first retry in CI.      | The quality gate fails and retains browser evidence.                        |
+| Teardown also fails               | Report teardown after preserving the primary failure.       | The original defect remains visible with cleanup diagnostics.               |
 
 ---
 
 ## Risks & Concerns
 
-| Concern | Location | Impact | Mitigation |
-| ------- | -------- | ------ | ---------- |
-| Current database factory returns a Neon HTTP-specific tagged template. | `src/lib/db.ts:3` | Production and Testcontainers cannot share the current query boundary. | Replace it with one Drizzle node-postgres composition pattern. |
-| Complex writes depend on a single CTE. | `src/data/workouts.ts:82`, `src/data/workouts.ts:129` | A careless ORM translation can lose atomicity. | Preserve atomic SQL where clearer or use a Drizzle transaction, with persistence and failure tests in the same change. |
-| Serverless instances can multiply application pools. | `src/db/client.ts` | Unbounded pools can exhaust database connections. | Use Neon's pooled URL and set the module-scoped `pg.Pool` maximum to five connections. |
-| node-postgres is unavailable in Edge runtime code. | database import graph | Moving a database caller to Edge would fail at runtime or build time. | Keep database-dependent routes and Server Components on the default Node.js runtime and document the constraint. |
-| Owner resolution is fixed to `local-user`. | `src/lib/owner.ts:8` | Server Action tests need deterministic ownership and cross-owner coverage. | Seed `local-user` for action tests and exercise alternate owners at the data layer. Authentication remains out of scope. |
-| The home page is an async Server Component. | `src/app/page.tsx:7` | Vitest cannot prove the full render and framework lifecycle. | Cover it through the three Playwright journeys. |
-| Component timers make completion flows slow or flaky. | `src/components/workout-app.tsx:67` | Real-time waits would slow component integration tests. | Use fake timers in component tests and user choices that bypass countdowns in E2E. |
-| The repository has no CI workflow. | repository root | A documented quality gate may not run remotely. | Add a minimal Docker-capable GitHub Actions workflow that invokes `npm run check`. |
-| Future Neon major upgrades can diverge from the pinned test image. | `test/database/container.ts` | Integration behavior may stop matching production. | Document the parity rule and update the pinned `postgres:18-alpine` tag whenever Neon changes major version. |
+| Concern                                                                | Location                                              | Impact                                                                     | Mitigation                                                                                                               |
+| ---------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Current database factory returns a Neon HTTP-specific tagged template. | `src/lib/db.ts:3`                                     | Production and Testcontainers cannot share the current query boundary.     | Replace it with one Drizzle node-postgres composition pattern.                                                           |
+| Complex writes depend on a single CTE.                                 | `src/data/workouts.ts:82`, `src/data/workouts.ts:129` | A careless ORM translation can lose atomicity.                             | Preserve atomic SQL where clearer or use a Drizzle transaction, with persistence and failure tests in the same change.   |
+| Serverless instances can multiply application pools.                   | `src/db/client.ts`                                    | Unbounded pools can exhaust database connections.                          | Use Neon's pooled URL and set the module-scoped `pg.Pool` maximum to five connections.                                   |
+| node-postgres is unavailable in Edge runtime code.                     | database import graph                                 | Moving a database caller to Edge would fail at runtime or build time.      | Keep database-dependent routes and Server Components on the default Node.js runtime and document the constraint.         |
+| Owner resolution is fixed to `local-user`.                             | `src/lib/owner.ts:8`                                  | Server Action tests need deterministic ownership and cross-owner coverage. | Seed `local-user` for action tests and exercise alternate owners at the data layer. Authentication remains out of scope. |
+| The home page is an async Server Component.                            | `src/app/page.tsx:7`                                  | Vitest cannot prove the full render and framework lifecycle.               | Cover it through the three Playwright journeys.                                                                          |
+| Component timers make completion flows slow or flaky.                  | `src/components/workout-app.tsx:67`                   | Real-time waits would slow component integration tests.                    | Use fake timers in component tests and user choices that bypass countdowns in E2E.                                       |
+| The repository has no CI workflow.                                     | repository root                                       | A documented quality gate may not run remotely.                            | Add a minimal Docker-capable GitHub Actions workflow that invokes `npm run check`.                                       |
+| Future Neon major upgrades can diverge from the pinned test image.     | `test/database/container.ts`                          | Integration behavior may stop matching production.                         | Document the parity rule and update the pinned `postgres:18-alpine` tag whenever Neon changes major version.             |
 
 ---
 
 ## Tech Decisions
 
-| Decision | Choice | Rationale |
-| -------- | ------ | --------- |
-| Query layer | Drizzle with `drizzle-orm/node-postgres` everywhere | Shares driver, schema, result shapes, and transaction semantics. |
-| Production connection | Module-scoped `pg.Pool` with `max: 5` using Neon's pooled TCP URL | Controls connection growth in the Node.js deployment runtime. |
-| Test connection | Lifecycle-scoped `pg.Pool` using the Testcontainer URI | Connects directly to ephemeral PostgreSQL and closes deterministically. |
-| PostgreSQL image | `postgres:18-alpine` | Matches the deployed Neon PostgreSQL major version. |
-| Migration source | Existing ordered SQL files | Avoids rewriting history and verifies deployable artifacts. |
-| Integration lifecycle | One container per suite, reset per test, sequential files | Maximizes determinism before optimizing runtime. |
-| Component environment | Vitest with jsdom and Testing Library | Tests interactive behavior without duplicating browser journeys. |
-| Browser environment | Playwright with one worker and a custom lifecycle runner | Guarantees the database exists before Next.js starts. |
-| Async Server Component coverage | Playwright only | Follows the installed Next.js testing constraint. |
-| ORM usage | Typed query builder plus explicit SQL for complex atomic CTEs | Preserves readable PostgreSQL behavior without ORM ceremony. |
+| Decision                        | Choice                                                            | Rationale                                                               |
+| ------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Query layer                     | Drizzle with `drizzle-orm/node-postgres` everywhere               | Shares driver, schema, result shapes, and transaction semantics.        |
+| Production connection           | Module-scoped `pg.Pool` with `max: 5` using Neon's pooled TCP URL | Controls connection growth in the Node.js deployment runtime.           |
+| Test connection                 | Lifecycle-scoped `pg.Pool` using the Testcontainer URI            | Connects directly to ephemeral PostgreSQL and closes deterministically. |
+| PostgreSQL image                | `postgres:18-alpine`                                              | Matches the deployed Neon PostgreSQL major version.                     |
+| Migration source                | Existing ordered SQL files                                        | Avoids rewriting history and verifies deployable artifacts.             |
+| Integration lifecycle           | One container per suite, reset per test, sequential files         | Maximizes determinism before optimizing runtime.                        |
+| Component environment           | Vitest with jsdom and Testing Library                             | Tests interactive behavior without duplicating browser journeys.        |
+| Browser environment             | Playwright with one worker and a custom lifecycle runner          | Guarantees the database exists before Next.js starts.                   |
+| Async Server Component coverage | Playwright only                                                   | Follows the installed Next.js testing constraint.                       |
+| ORM usage                       | Typed query builder plus explicit SQL for complex atomic CTEs     | Preserves readable PostgreSQL behavior without ORM ceremony.            |
 
 Project-level choices are recorded in `.specs/STATE.md` as `AD-002` and
 `AD-003`. `AD-003` supersedes the earlier dual-driver decision in `AD-001`.
