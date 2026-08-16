@@ -160,9 +160,9 @@ expressive transition errors protecting owner membership.
 
 **Done when**:
 
-- [ ] The aggregate rejects suspend, remove, and role-change operations for an owner.
-- [ ] An inactive membership cannot produce an active gym context.
-- [ ] Unit tests cover every owner/non-owner transition branch and the Quick gate passes.
+- [x] The aggregate rejects suspend, remove, and role-change operations for an owner.
+- [x] An inactive membership cannot produce an active gym context.
+- [x] Unit tests cover every owner/non-owner transition branch and the Quick gate passes.
 
 **Tests**: unit  
 **Gate**: quick
