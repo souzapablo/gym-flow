@@ -20,7 +20,7 @@ const provisionGym = createGymProvisioningService({ db: context.database });
 
 beforeEach(async () => {
   await resetTestDatabase(context.pool, proof);
-  await insertUser("owner-1");
+  await insertUser("70000000-0000-7000-8000-000000000031");
 });
 
 afterAll(async () => {
@@ -28,9 +28,12 @@ afterAll(async () => {
 });
 
 it("atomically provisions a gym with one owner membership and audit event", async () => {
-  const result = await provisionGym(identity("owner-1"), {
-    name: "Downtown Gym",
-  });
+  const result = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000031"),
+    {
+      name: "Downtown Gym",
+    },
+  );
   const persisted = await context.pool.query<{
     gym_id: string;
     owner_user_id: string;
@@ -54,7 +57,7 @@ it("atomically provisions a gym with one owner membership and audit event", asyn
     name: "Downtown Gym",
     ownerMembership: {
       id: expect.any(String),
-      userId: "owner-1",
+      userId: "70000000-0000-7000-8000-000000000031",
       role: "owner",
       status: "active",
     },
@@ -62,7 +65,7 @@ it("atomically provisions a gym with one owner membership and audit event", asyn
   expect(persisted.rows).toEqual([
     {
       gym_id: result.id,
-      owner_user_id: "owner-1",
+      owner_user_id: "70000000-0000-7000-8000-000000000031",
       membership_count: "1",
       role: "owner",
       status: "active",
@@ -72,10 +75,16 @@ it("atomically provisions a gym with one owner membership and audit event", asyn
 });
 
 it("allows one verified user to provision multiple independent gyms", async () => {
-  const first = await provisionGym(identity("owner-1"), { name: "First Gym" });
-  const second = await provisionGym(identity("owner-1"), {
-    name: "Second Gym",
-  });
+  const first = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000031"),
+    { name: "First Gym" },
+  );
+  const second = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000031"),
+    {
+      name: "Second Gym",
+    },
+  );
 
   expect(second.id).not.toBe(first.id);
   const result = await context.pool.query<{
@@ -94,12 +103,15 @@ it("allows one verified user to provision multiple independent gyms", async () =
 });
 
 it("rejects concurrent duplicate memberships through the unique constraint", async () => {
-  const gym = await provisionGym(identity("owner-1"), { name: "Downtown Gym" });
-  await insertUser("member-1");
+  const gym = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000031"),
+    { name: "Downtown Gym" },
+  );
+  await insertUser("70000000-0000-7000-8000-000000000021");
 
   const attempts = await Promise.allSettled([
-    insertMember(gym.id, "member-1"),
-    insertMember(gym.id, "member-1"),
+    insertMember(gym.id, "70000000-0000-7000-8000-000000000021"),
+    insertMember(gym.id, "70000000-0000-7000-8000-000000000021"),
   ]);
 
   expect(attempts.map((attempt) => attempt.status).sort()).toEqual([
@@ -108,7 +120,7 @@ it("rejects concurrent duplicate memberships through the unique constraint", asy
   ]);
   const result = await context.pool.query<{ count: string }>(
     "select count(*) from memberships where gym_id = $1 and user_id = $2",
-    [gym.id, "member-1"],
+    [gym.id, "70000000-0000-7000-8000-000000000021"],
   );
   expect(result.rows[0].count).toBe("1");
 });
@@ -122,7 +134,9 @@ describe("owner immutability backstop", () => {
     ],
     ["removal", "delete from memberships where role = 'owner'"],
   ])("rejects owner %s mutation", async (_operation, statement) => {
-    await provisionGym(identity("owner-1"), { name: "Downtown Gym" });
+    await provisionGym(identity("70000000-0000-7000-8000-000000000031"), {
+      name: "Downtown Gym",
+    });
 
     await expect(context.pool.query(statement)).rejects.toMatchObject({
       message: "owner membership is immutable",
@@ -139,7 +153,9 @@ it("rolls back the gym and membership when the required audit write fails", asyn
   });
 
   await expect(
-    failingProvision(identity("owner-1"), { name: "Downtown Gym" }),
+    failingProvision(identity("70000000-0000-7000-8000-000000000031"), {
+      name: "Downtown Gym",
+    }),
   ).rejects.toThrow("audit unavailable");
   const result = await context.pool.query<{
     gyms: string;

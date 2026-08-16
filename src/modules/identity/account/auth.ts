@@ -12,6 +12,11 @@ export function createGymFlowAuth(
   db: ReturnType<typeof database> = database(),
 ) {
   return betterAuth({
+    advanced: {
+      database: {
+        generateId: false,
+      },
+    },
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: {

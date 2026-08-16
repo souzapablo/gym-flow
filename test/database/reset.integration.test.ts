@@ -121,8 +121,8 @@ it("truncates all mutable tables and accepts valid fixture defaults", async () =
 async function insertWorkoutFixture(pool: Pool) {
   const user = buildUserFixture();
   const workout = buildWorkoutFixture();
-  const gymId = "50000000-0000-4000-8000-000000000001";
-  const membershipId = "60000000-0000-4000-8000-000000000001";
+  const gymId = "50000000-0000-7000-8000-000000000001";
+  const membershipId = "60000000-0000-7000-8000-000000000001";
 
   await pool.query("begin");
   try {
@@ -176,7 +176,7 @@ async function insertWorkoutFixture(pool: Pool) {
 
 async function insertCompleteSessionFixture(pool: Pool) {
   const fixtures = await insertWorkoutFixture(pool);
-  const sessionId = "30000000-0000-4000-8000-000000000001";
+  const sessionId = "30000000-0000-7000-8000-000000000001";
 
   await pool.query(
     `insert into workout_sessions (id, gym_id, workout_id, created_by_user_id, feedback)
@@ -194,7 +194,7 @@ async function insertCompleteSessionFixture(pool: Pool) {
       (id, session_id, exercise_id, set_number, weight, reps, load_rating)
      values ($1, $2, $3, $4, $5, $6, $7)`,
     [
-      "40000000-0000-4000-8000-000000000001",
+      "40000000-0000-7000-8000-000000000001",
       sessionId,
       fixtures.workout.exercises[0].id,
       1,

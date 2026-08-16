@@ -118,7 +118,7 @@ describe("createWorkout", () => {
       context.pool.query(
         `insert into workouts (gym_id, created_by_user_id, name, focus, color)
          values ($1, $2, 'Strength day', 'Lower body', 'yellow')`,
-        ["50000000-0000-4000-8000-000000000099", creator.id],
+        ["50000000-0000-7000-8000-000000000099", creator.id],
       ),
     ).rejects.toMatchObject({ code: "23503" });
   });
@@ -130,14 +130,14 @@ describe("listWorkouts", () => {
     const workout = buildWorkoutFixture({
       exercises: [
         {
-          id: "10000000-0000-4000-8000-000000000002",
+          id: "10000000-0000-7000-8000-000000000002",
           name: "Bench press",
           sets: 4,
           targetReps: 6,
           position: 1,
         },
         {
-          id: "10000000-0000-4000-8000-000000000001",
+          id: "10000000-0000-7000-8000-000000000001",
           name: "Back squat",
           sets: 3,
           targetReps: 8,
@@ -175,12 +175,12 @@ describe("listWorkouts", () => {
     const gymContext = await insertGymContext();
     const older = buildWorkoutFixture({ name: "Older" });
     const newer = buildWorkoutFixture({
-      id: "20000000-0000-4000-8000-000000000002",
+      id: "20000000-0000-7000-8000-000000000002",
       name: "Newer",
       color: "pink",
       exercises: [
         {
-          id: "10000000-0000-4000-8000-000000000002",
+          id: "10000000-0000-7000-8000-000000000002",
           name: "Deadlift",
           sets: 2,
           targetReps: 5,
@@ -198,7 +198,10 @@ describe("listWorkouts", () => {
 
   it("returns all gym workouts regardless of creator and excludes another gym", async () => {
     const gymContext = await insertGymContext();
-    const otherCreator = await insertUser({ id: "other-user", name: "Other" });
+    const otherCreator = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const otherGymContext = await insertGymContext({
       userId: otherCreator.id,
       gymName: "Other gym",
@@ -207,12 +210,12 @@ describe("listWorkouts", () => {
     await insertWorkout(
       gymContext,
       buildWorkoutFixture({
-        id: "20000000-0000-4000-8000-000000000002",
+        id: "20000000-0000-7000-8000-000000000002",
         ownerId: otherCreator.id,
         color: "pink",
         exercises: [
           {
-            id: "10000000-0000-4000-8000-000000000002",
+            id: "10000000-0000-7000-8000-000000000002",
             name: "Deadlift",
             sets: 2,
             targetReps: 5,
@@ -224,12 +227,12 @@ describe("listWorkouts", () => {
     await insertWorkout(
       otherGymContext,
       buildWorkoutFixture({
-        id: "20000000-0000-4000-8000-000000000003",
+        id: "20000000-0000-7000-8000-000000000003",
         ownerId: otherCreator.id,
         color: "blue",
         exercises: [
           {
-            id: "10000000-0000-4000-8000-000000000003",
+            id: "10000000-0000-7000-8000-000000000003",
             name: "Press",
             sets: 3,
             targetReps: 8,
@@ -242,8 +245,8 @@ describe("listWorkouts", () => {
     const listed = await listWorkouts(gymContext);
 
     expect(listed.map((workout) => workout.id)).toEqual([
-      "20000000-0000-4000-8000-000000000001",
-      "20000000-0000-4000-8000-000000000002",
+      "20000000-0000-7000-8000-000000000001",
+      "20000000-0000-7000-8000-000000000002",
     ]);
   });
 
@@ -346,13 +349,16 @@ describe("saveWorkoutSession", () => {
 
   it("rejects a foreign workout without partial persistence", async () => {
     const gymContext = await insertGymContext();
-    const otherUser = await insertUser({ id: "other-user", name: "Other" });
+    const otherUser = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const otherGymContext = await insertGymContext({
       userId: otherUser.id,
       gymName: "Other gym",
     });
     const otherWorkout = buildWorkoutFixture({
-      id: "20000000-0000-4000-8000-000000000099",
+      id: "20000000-0000-7000-8000-000000000099",
       ownerId: otherUser.id,
     });
     await insertWorkout(otherGymContext, otherWorkout);
@@ -363,7 +369,7 @@ describe("saveWorkoutSession", () => {
         feedback: null,
         sets: [
           {
-            exercise_id: "10000000-0000-4000-8000-000000000099",
+            exercise_id: "10000000-0000-7000-8000-000000000099",
             set_number: 1,
             weight: null,
             reps: 8,
@@ -386,7 +392,7 @@ describe("saveWorkoutSession", () => {
         feedback: null,
         sets: [
           {
-            exercise_id: "10000000-0000-4000-8000-000000000099",
+            exercise_id: "10000000-0000-7000-8000-000000000099",
             set_number: 1,
             weight: null,
             reps: 8,
@@ -402,11 +408,11 @@ describe("saveWorkoutSession", () => {
     const gymContext = await insertGymContext();
     const workout = buildWorkoutFixture();
     const otherWorkout = buildWorkoutFixture({
-      id: "20000000-0000-4000-8000-000000000002",
+      id: "20000000-0000-7000-8000-000000000002",
       color: "pink",
       exercises: [
         {
-          id: "10000000-0000-4000-8000-000000000002",
+          id: "10000000-0000-7000-8000-000000000002",
           name: "Deadlift",
           sets: 2,
           targetReps: 5,
@@ -449,13 +455,13 @@ describe("listCompletedWorkouts", () => {
     const workout = buildWorkoutFixture();
     await insertWorkout(gymContext, workout);
     await insertCompletedSession({
-      id: "30000000-0000-4000-8000-000000000001",
+      id: "30000000-0000-7000-8000-000000000001",
       workoutId: workout.id,
       gymContext,
       completedAt: "2026-08-14T12:00:00.000Z",
     });
     await insertCompletedSession({
-      id: "30000000-0000-4000-8000-000000000002",
+      id: "30000000-0000-7000-8000-000000000002",
       workoutId: workout.id,
       gymContext,
       completedAt: "2026-08-15T12:00:00.000Z",
@@ -463,14 +469,14 @@ describe("listCompletedWorkouts", () => {
 
     await expect(listCompletedWorkouts(gymContext)).resolves.toEqual([
       {
-        id: "30000000-0000-4000-8000-000000000002",
+        id: "30000000-0000-7000-8000-000000000002",
         workoutId: workout.id,
         workoutName: workout.name,
         color: workout.color,
         completedAt: "2026-08-15 12:00:00+00",
       },
       {
-        id: "30000000-0000-4000-8000-000000000001",
+        id: "30000000-0000-7000-8000-000000000001",
         workoutId: workout.id,
         workoutName: workout.name,
         color: workout.color,
@@ -481,19 +487,22 @@ describe("listCompletedWorkouts", () => {
 
   it("returns gym history regardless of creator and excludes another gym", async () => {
     const gymContext = await insertGymContext();
-    const otherOwner = await insertUser({ id: "other-user", name: "Other" });
+    const otherOwner = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const otherGymContext = await insertGymContext({
       userId: otherOwner.id,
       gymName: "Other gym",
     });
     const workout = buildWorkoutFixture();
     const otherWorkout = buildWorkoutFixture({
-      id: "20000000-0000-4000-8000-000000000002",
+      id: "20000000-0000-7000-8000-000000000002",
       ownerId: otherOwner.id,
       color: "pink",
       exercises: [
         {
-          id: "10000000-0000-4000-8000-000000000002",
+          id: "10000000-0000-7000-8000-000000000002",
           name: "Deadlift",
           sets: 2,
           targetReps: 5,
@@ -504,12 +513,12 @@ describe("listCompletedWorkouts", () => {
     await insertWorkout(gymContext, workout);
     await insertWorkout(otherGymContext, otherWorkout);
     await insertCompletedSession({
-      id: "30000000-0000-4000-8000-000000000001",
+      id: "30000000-0000-7000-8000-000000000001",
       workoutId: workout.id,
       gymContext,
     });
     await insertCompletedSession({
-      id: "30000000-0000-4000-8000-000000000002",
+      id: "30000000-0000-7000-8000-000000000002",
       workoutId: otherWorkout.id,
       gymContext: otherGymContext,
     });
@@ -517,7 +526,7 @@ describe("listCompletedWorkouts", () => {
     const completed = await listCompletedWorkouts(gymContext);
 
     expect(completed.map((session) => session.id)).toEqual([
-      "30000000-0000-4000-8000-000000000001",
+      "30000000-0000-7000-8000-000000000001",
     ]);
   });
 
@@ -547,14 +556,14 @@ function twoExerciseWorkout() {
   return buildWorkoutFixture({
     exercises: [
       {
-        id: "10000000-0000-4000-8000-000000000001",
+        id: "10000000-0000-7000-8000-000000000001",
         name: "Back squat",
         sets: 3,
         targetReps: 8,
         position: 0,
       },
       {
-        id: "10000000-0000-4000-8000-000000000002",
+        id: "10000000-0000-7000-8000-000000000002",
         name: "Deadlift",
         sets: 2,
         targetReps: 5,
@@ -571,14 +580,14 @@ async function insertUser(overrides = {}) {
 }
 
 async function insertGymContext({
-  userId = "local-user",
+  userId = "70000000-0000-7000-8000-000000000001",
   gymName = "Main gym",
 }: {
   userId?: string;
   gymName?: string;
 } = {}) {
   const user =
-    userId === "local-user"
+    userId === "70000000-0000-7000-8000-000000000001"
       ? await insertUser()
       : buildUserFixture({ id: userId });
   return context.database.transaction(async (transaction) => {

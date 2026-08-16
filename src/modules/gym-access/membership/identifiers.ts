@@ -1,11 +1,13 @@
+import { isUuidV7 } from "@/lib/uuid";
+
 abstract class Identifier {
   readonly value: string;
 
   protected constructor(value: string, label: string) {
     const normalized = value.trim();
 
-    if (!normalized) {
-      throw new Error(`${label} is required`);
+    if (!isUuidV7(normalized)) {
+      throw new Error(`${label} must be a UUIDv7`);
     }
 
     this.value = normalized;

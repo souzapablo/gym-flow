@@ -39,7 +39,7 @@ const requireVerifiedIdentityMock = vi.mocked(requireVerifiedIdentity);
 beforeEach(async () => {
   revalidatePathMock.mockClear();
   requireVerifiedIdentityMock.mockResolvedValue({
-    userId: "local-user",
+    userId: "70000000-0000-7000-8000-000000000001",
     email: "local@example.com",
   });
   await resetTestDatabase(context.pool, proof);
@@ -55,7 +55,7 @@ describe("createWorkoutAction", () => {
     const gym = await insertGymContext();
 
     const created = await createWorkoutAction({
-      gymId: "20000000-0000-4000-8000-000000000099",
+      gymId: "20000000-0000-7000-8000-000000000099",
       name: "  Strength day  ",
       focus: "  Lower body  ",
       color: "yellow",
@@ -83,7 +83,7 @@ describe("createWorkoutAction", () => {
     expect(persisted.rows).toEqual([
       {
         gym_id: gym.gymId,
-        created_by_user_id: "local-user",
+        created_by_user_id: "70000000-0000-7000-8000-000000000001",
         name: "Strength day",
         focus: "Lower body",
         color: "yellow",
@@ -153,7 +153,10 @@ describe("createWorkoutAction", () => {
 
   it("rejects an inactive membership without persistence or revalidation", async () => {
     await insertUser();
-    const owner = await insertUser({ id: "other-user", name: "Other" });
+    const owner = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const gym = await insertGymContext({
       userId: owner.id,
       gymName: "Other gym",
@@ -163,7 +166,7 @@ describe("createWorkoutAction", () => {
       .insert(memberships)
       .values({
         gymId: gym.gymId,
-        userId: "local-user",
+        userId: "70000000-0000-7000-8000-000000000001",
         role: "coach",
         status: "active",
       })
@@ -215,7 +218,7 @@ describe("saveWorkoutSessionAction", () => {
     expect(persisted.rows).toEqual([
       {
         gym_id: gym.gymId,
-        created_by_user_id: "local-user",
+        created_by_user_id: "70000000-0000-7000-8000-000000000001",
         feedback: "Na medida",
         weight: "80.00",
         reps: 8,
@@ -257,7 +260,10 @@ describe("saveWorkoutSessionAction", () => {
 
   it("rejects a workout in another gym without partial persistence or revalidation", async () => {
     await insertGymContext();
-    const otherOwner = await insertUser({ id: "other-user", name: "Other" });
+    const otherOwner = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const otherGym = await insertGymContext({
       userId: otherOwner.id,
       gymName: "Other gym",
@@ -309,7 +315,7 @@ describe("selectActiveGymAction", () => {
     expect(revalidatePathMock).toHaveBeenCalledWith("/");
   });
 
-  it.each(["not-a-uuid", "20000000-0000-4000-8000-000000000099"])(
+  it.each(["not-a-uuid", "20000000-0000-7000-8000-000000000099"])(
     "rejects malformed or unknown gym %s without revalidation",
     async (gymId) => {
       await insertGymContext();
@@ -323,7 +329,10 @@ describe("selectActiveGymAction", () => {
 
   it("rejects an inactive membership without selection or revalidation", async () => {
     await insertUser();
-    const owner = await insertUser({ id: "other-user", name: "Other" });
+    const owner = await insertUser({
+      id: "70000000-0000-7000-8000-000000000002",
+      name: "Other",
+    });
     const gym = await insertGymContext({
       userId: owner.id,
       gymName: "Other gym",
@@ -331,7 +340,7 @@ describe("selectActiveGymAction", () => {
     });
     await context.database.insert(memberships).values({
       gymId: gym.gymId,
-      userId: "local-user",
+      userId: "70000000-0000-7000-8000-000000000001",
       role: "coach",
       status: "suspended",
     });
@@ -340,7 +349,7 @@ describe("selectActiveGymAction", () => {
       "Gym access is forbidden",
     );
     const selection = await context.pool.query<{ count: string }>(
-      "select count(*) from active_gym_selections where user_id = 'local-user'",
+      "select count(*) from active_gym_selections where user_id = '70000000-0000-7000-8000-000000000001'",
     );
     expect(selection.rows[0].count).toBe("0");
     expect(revalidatePathMock).not.toHaveBeenCalled();
@@ -357,7 +366,7 @@ async function insertUser(overrides = {}) {
 }
 
 async function insertGymContext({
-  userId = "local-user",
+  userId = "70000000-0000-7000-8000-000000000001",
   gymName = "Main gym",
   reuseUser = false,
 }: {

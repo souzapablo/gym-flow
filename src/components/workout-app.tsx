@@ -9,6 +9,7 @@ import {
   type Workout,
   type WorkoutSession,
 } from "@/lib/workout";
+import { createUuidV7 } from "@/lib/uuid";
 
 type Entry = {
   weight: string;
@@ -177,7 +178,7 @@ export function WorkoutApp({
     if (!activeWorkout) return;
 
     const completedWorkout: CompletedWorkout = {
-      id: crypto.randomUUID(),
+      id: createUuidV7(),
       workoutId: activeWorkout.id,
       workoutName: activeWorkout.name,
       color: activeWorkout.color,
@@ -673,7 +674,7 @@ function CreateWorkoutScreen({
         ?.value ?? null,
   );
   const [exercises, setExercises] = useState<ExerciseDraft[]>([
-    { id: crypto.randomUUID(), name: "", sets: 3, targetReps: 10 },
+    { id: createUuidV7(), name: "", sets: 3, targetReps: 10 },
   ]);
 
   function updateExercise(
@@ -857,7 +858,7 @@ function CreateWorkoutScreen({
                 setExercises((current) => [
                   ...current,
                   {
-                    id: crypto.randomUUID(),
+                    id: createUuidV7(),
                     name: "",
                     sets: 3,
                     targetReps: 10,

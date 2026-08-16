@@ -18,7 +18,9 @@ import {
 export const users = pgTable(
   "users",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     name: text("name").notNull(),
     email: text("email").notNull().default(""),
     emailNormalized: text("email_normalized").notNull().default(""),
@@ -33,6 +35,7 @@ export const users = pgTable(
   },
   (table) => [
     uniqueIndex("users_email_normalized_idx").on(table.emailNormalized),
+    check("users_id_uuidv7_check", sql`uuid_extract_version(${table.id}) = 7`),
     check("users_name_check", sql`char_length(${table.name}) between 1 and 80`),
     check(
       "users_email_normalized_check",
@@ -44,8 +47,10 @@ export const users = pgTable(
 export const sessions = pgTable(
   "sessions",
   {
-    id: text("id").primaryKey(),
-    userId: text("user_id")
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     token: text("token").notNull().unique(),
@@ -59,14 +64,22 @@ export const sessions = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("sessions_user_id_idx").on(table.userId)],
+  (table) => [
+    index("sessions_user_id_idx").on(table.userId),
+    check(
+      "sessions_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+  ],
 );
 
 export const accounts = pgTable(
   "accounts",
   {
-    id: text("id").primaryKey(),
-    userId: text("user_id")
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     accountId: text("account_id").notNull(),
@@ -91,6 +104,10 @@ export const accounts = pgTable(
   },
   (table) => [
     index("accounts_user_id_idx").on(table.userId),
+    check(
+      "accounts_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     uniqueIndex("accounts_provider_account_idx").on(
       table.providerId,
       table.accountId,
@@ -101,7 +118,9 @@ export const accounts = pgTable(
 export const verifications = pgTable(
   "verifications",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuidv7()`),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
@@ -112,7 +131,13 @@ export const verifications = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("verifications_identifier_idx").on(table.identifier)],
+  (table) => [
+    index("verifications_identifier_idx").on(table.identifier),
+    check(
+      "verifications_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+  ],
 );
 
 export const gyms = pgTable(
@@ -122,7 +147,7 @@ export const gyms = pgTable(
       .primaryKey()
       .default(sql`uuidv7()`),
     name: text("name").notNull(),
-    ownerUserId: text("owner_user_id")
+    ownerUserId: uuid("owner_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -133,6 +158,7 @@ export const gyms = pgTable(
       .defaultNow(),
   },
   (table) => [
+    check("gyms_id_uuidv7_check", sql`uuid_extract_version(${table.id}) = 7`),
     check("gyms_name_check", sql`char_length(${table.name}) between 1 and 100`),
   ],
 );
@@ -146,7 +172,7 @@ export const memberships = pgTable(
     gymId: uuid("gym_id")
       .notNull()
       .references(() => gyms.id, { onDelete: "restrict" }),
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     role: text("role").notNull(),
@@ -159,6 +185,10 @@ export const memberships = pgTable(
       .defaultNow(),
   },
   (table) => [
+    check(
+      "memberships_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("memberships_gym_id_user_id_key").on(table.gymId, table.userId),
     unique("memberships_gym_id_id_key").on(table.gymId, table.id),
     uniqueIndex("memberships_one_owner_per_gym_idx")
@@ -182,7 +212,7 @@ export const memberships = pgTable(
 export const activeGymSelections = pgTable(
   "active_gym_selections",
   {
-    userId: text("user_id")
+    userId: uuid("user_id")
       .primaryKey()
       .references(() => users.id, { onDelete: "cascade" }),
     gymId: uuid("gym_id").notNull(),
@@ -210,11 +240,11 @@ export const securityAuditEvents = pgTable(
     gymId: uuid("gym_id")
       .notNull()
       .references(() => gyms.id, { onDelete: "restrict" }),
-    actorUserId: text("actor_user_id").references(() => users.id, {
+    actorUserId: uuid("actor_user_id").references(() => users.id, {
       onDelete: "set null",
     }),
     targetType: text("target_type").notNull(),
-    targetId: text("target_id").notNull(),
+    targetId: uuid("target_id").notNull(),
     occurredAt: timestamp("occurred_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -225,6 +255,10 @@ export const securityAuditEvents = pgTable(
   },
   (table) => [
     check(
+      "security_audit_events_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
+    check(
       "security_audit_events_event_type_check",
       sql`char_length(${table.eventType}) > 0`,
     ),
@@ -233,8 +267,8 @@ export const securityAuditEvents = pgTable(
       sql`char_length(${table.targetType}) > 0`,
     ),
     check(
-      "security_audit_events_target_id_check",
-      sql`char_length(${table.targetId}) > 0`,
+      "security_audit_events_target_id_uuidv7_check",
+      sql`uuid_extract_version(${table.targetId}) = 7`,
     ),
     check(
       "security_audit_events_metadata_check",
@@ -252,7 +286,7 @@ export const workouts = pgTable(
     gymId: uuid("gym_id")
       .notNull()
       .references(() => gyms.id, { onDelete: "restrict" }),
-    createdByUserId: text("created_by_user_id")
+    createdByUserId: uuid("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     name: text("name").notNull(),
@@ -263,6 +297,10 @@ export const workouts = pgTable(
       .defaultNow(),
   },
   (table) => [
+    check(
+      "workouts_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("workouts_gym_id_id_key").on(table.gymId, table.id),
     uniqueIndex("workouts_gym_color_idx").on(table.gymId, table.color),
     check(
@@ -295,6 +333,10 @@ export const exercises = pgTable(
     position: integer("position").notNull(),
   },
   (table) => [
+    check(
+      "exercises_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("exercises_workout_id_position_key").on(
       table.workoutId,
       table.position,
@@ -324,7 +366,7 @@ export const workoutSessions = pgTable(
     workoutId: uuid("workout_id")
       .notNull()
       .references(() => workouts.id, { onDelete: "restrict" }),
-    createdByUserId: text("created_by_user_id")
+    createdByUserId: uuid("created_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     feedback: text("feedback"),
@@ -333,6 +375,10 @@ export const workoutSessions = pgTable(
       .defaultNow(),
   },
   (table) => [
+    check(
+      "workout_sessions_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     foreignKey({
       columns: [table.gymId, table.workoutId],
       foreignColumns: [workouts.gymId, workouts.id],
@@ -363,6 +409,10 @@ export const completedSets = pgTable(
     loadRating: text("load_rating"),
   },
   (table) => [
+    check(
+      "completed_sets_id_uuidv7_check",
+      sql`uuid_extract_version(${table.id}) = 7`,
+    ),
     unique("completed_sets_session_id_exercise_id_set_number_key").on(
       table.sessionId,
       table.exerciseId,

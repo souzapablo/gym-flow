@@ -180,28 +180,28 @@ async function seedReadinessScenario(pool: Pool, sessionToken: string) {
   try {
     await pool.query(
       `insert into users (id, name, email, email_normalized, email_verified)
-       values ('local-user', 'Local user', 'local@gym-flow.test', 'local@gym-flow.test', true)
+       values ('70000000-0000-7000-8000-000000000001', 'Local user', 'local@gym-flow.test', 'local@gym-flow.test', true)
        on conflict (id) do update set
          email = excluded.email,
          email_normalized = excluded.email_normalized,
          email_verified = excluded.email_verified`,
     );
     const gym = await pool.query<{ id: string }>(
-      "insert into gyms (name, owner_user_id) values ('Main gym', 'local-user') returning id::text",
+      "insert into gyms (name, owner_user_id) values ('Main gym', '70000000-0000-7000-8000-000000000001') returning id::text",
     );
     const membership = await pool.query<{ id: string }>(
       `insert into memberships (gym_id, user_id, role, status)
-       values ($1, 'local-user', 'owner', 'active') returning id::text`,
+       values ($1, '70000000-0000-7000-8000-000000000001', 'owner', 'active') returning id::text`,
       [gym.rows[0].id],
     );
     await pool.query(
       `insert into active_gym_selections (user_id, gym_id, membership_id)
-       values ('local-user', $1, $2)`,
+       values ('70000000-0000-7000-8000-000000000001', $1, $2)`,
       [gym.rows[0].id, membership.rows[0].id],
     );
     await pool.query(
-      `insert into sessions (id, user_id, token, expires_at)
-       values ($1, 'local-user', $1, now() + interval '1 day')`,
+      `insert into sessions (user_id, token, expires_at)
+       values ('70000000-0000-7000-8000-000000000001', $1, now() + interval '1 day')`,
       [sessionToken],
     );
     await pool.query("commit");

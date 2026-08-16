@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { WorkoutSession } from "./workout";
 import { parseNewWorkout, parseWorkoutSession } from "./workout-validation";
 
-const WORKOUT_ID = "123e4567-e89b-42d3-a456-426614174000";
-const EXERCISE_ID = "123e4567-e89b-42d3-a456-426614174001";
+const WORKOUT_ID = "123e4567-e89b-72d3-a456-426614174000";
+const EXERCISE_ID = "123e4567-e89b-72d3-a456-426614174001";
 
 function validWorkout() {
   return {

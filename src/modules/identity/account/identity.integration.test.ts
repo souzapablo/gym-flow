@@ -32,13 +32,13 @@ afterAll(async () => {
 describe("requireVerifiedIdentity", () => {
   it("returns stable provider-neutral identity for a verified session", async () => {
     const boundary = createIdentityBoundary(async () => ({
-      id: "user-1",
+      id: "70000000-0000-7000-8000-000000000011",
       email: "  Pablo@Example.COM ",
       emailVerified: true,
     }));
 
     await expect(boundary.requireVerifiedIdentity()).resolves.toEqual({
-      userId: "user-1",
+      userId: "70000000-0000-7000-8000-000000000011",
       email: "pablo@example.com",
     });
   });
@@ -53,7 +53,7 @@ describe("requireVerifiedIdentity", () => {
 
   it("rejects an unverified session", async () => {
     const boundary = createIdentityBoundary(async () => ({
-      id: "user-1",
+      id: "70000000-0000-7000-8000-000000000011",
       email: "pablo@example.com",
       emailVerified: false,
     }));
@@ -66,7 +66,7 @@ describe("requireVerifiedIdentity", () => {
 
 it("rejects duplicate normalized verified email identities", async () => {
   await context.database.insert(users).values({
-    id: "user-1",
+    id: "70000000-0000-7000-8000-000000000011",
     name: "Pablo",
     email: "Pablo@Example.com",
     emailVerified: true,
@@ -74,7 +74,7 @@ it("rejects duplicate normalized verified email identities", async () => {
 
   await expect(
     context.database.insert(users).values({
-      id: "user-2",
+      id: "70000000-0000-7000-8000-000000000012",
       name: "Another Pablo",
       email: " pablo@example.COM ",
       emailVerified: true,
@@ -89,7 +89,7 @@ it("rejects duplicate normalized verified email identities", async () => {
 
 it("preserves user id and memberships after a verified email change", async () => {
   await context.database.insert(users).values({
-    id: "user-1",
+    id: "70000000-0000-7000-8000-000000000011",
     name: "Pablo",
     email: "before@example.com",
     emailVerified: true,
@@ -99,11 +99,11 @@ it("preserves user id and memberships after a verified email change", async () =
   try {
     const gym = await context.pool.query<{ id: string }>(
       "insert into gyms (name, owner_user_id) values ($1, $2) returning id",
-      ["Downtown Gym", "user-1"],
+      ["Downtown Gym", "70000000-0000-7000-8000-000000000011"],
     );
     await context.pool.query(
       "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'owner', 'active')",
-      [gym.rows[0].id, "user-1"],
+      [gym.rows[0].id, "70000000-0000-7000-8000-000000000011"],
     );
     await context.pool.query("commit");
   } catch (error) {
@@ -113,7 +113,7 @@ it("preserves user id and memberships after a verified email change", async () =
 
   await context.pool.query(
     "update users set email = $1, email_verified = true where id = $2",
-    ["after@example.com", "user-1"],
+    ["after@example.com", "70000000-0000-7000-8000-000000000011"],
   );
   const result = await context.pool.query<{
     id: string;
@@ -123,14 +123,14 @@ it("preserves user id and memberships after a verified email change", async () =
     select users.id, users.email_normalized, memberships.user_id as membership_user_id
     from users
     join memberships on memberships.user_id = users.id
-    where users.id = 'user-1'
+    where users.id = '70000000-0000-7000-8000-000000000011'
   `);
 
   expect(result.rows).toEqual([
     {
-      id: "user-1",
+      id: "70000000-0000-7000-8000-000000000011",
       email_normalized: "after@example.com",
-      membership_user_id: "user-1",
+      membership_user_id: "70000000-0000-7000-8000-000000000011",
     },
   ]);
 });

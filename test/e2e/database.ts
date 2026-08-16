@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 import { Pool } from "pg";
 
 import { resetTestDatabase, type TestDatabaseProof } from "../database/reset";
@@ -27,10 +25,9 @@ export async function seedWorkoutScenario({ multiGym = false } = {}) {
 
   const user = buildUserFixture();
   const workout = buildWorkoutFixture({
-    id: randomUUID(),
     exercises: [
       {
-        id: randomUUID(),
+        id: "10000000-0000-7000-8000-000000000001",
         name: "Agachamento livre",
         sets: 1,
         targetReps: 8,
@@ -75,8 +72,8 @@ export async function seedWorkoutScenario({ multiGym = false } = {}) {
       );
     }
     await e2ePool.query(
-      `insert into sessions (id, user_id, token, expires_at)
-       values ($1, $2, $1, now() + interval '1 day')`,
+      `insert into sessions (user_id, token, expires_at)
+       values ($2, $1, now() + interval '1 day')`,
       [sessionToken, user.id],
     );
     await e2ePool.query(

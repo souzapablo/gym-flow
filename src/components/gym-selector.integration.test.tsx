@@ -6,15 +6,15 @@ import { GymSelector } from "./gym-selector";
 
 const memberships = [
   {
-    id: "membership-a",
-    gymId: "gym-a",
+    id: "71000000-0000-7000-8000-000000000001",
+    gymId: "72000000-0000-7000-8000-000000000001",
     gymName: "Academia A",
     role: "owner",
     status: "active",
   },
   {
-    id: "membership-b",
-    gymId: "gym-b",
+    id: "71000000-0000-7000-8000-000000000002",
+    gymId: "72000000-0000-7000-8000-000000000002",
     gymName: "Academia B",
     role: "coach",
     status: "active",
@@ -32,10 +32,15 @@ describe("GymSelector", () => {
       />,
     );
 
-    await user.selectOptions(screen.getByLabelText("Academia"), "gym-b");
+    await user.selectOptions(
+      screen.getByLabelText("Academia"),
+      "72000000-0000-7000-8000-000000000002",
+    );
     await user.click(screen.getByRole("button", { name: "Continuar" }));
 
-    expect(selectGymAction).toHaveBeenCalledWith("gym-b");
+    expect(selectGymAction).toHaveBeenCalledWith(
+      "72000000-0000-7000-8000-000000000002",
+    );
     expect((await screen.findByText("Academia selecionada.")).textContent).toBe(
       "Academia selecionada.",
     );

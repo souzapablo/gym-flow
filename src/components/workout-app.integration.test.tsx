@@ -5,13 +5,13 @@ import type { CompletedWorkout, Workout, WorkoutSession } from "@/lib/workout";
 import { WorkoutApp } from "./workout-app";
 
 const workout: Workout = {
-  id: "20000000-0000-4000-8000-000000000001",
+  id: "20000000-0000-7000-8000-000000000001",
   name: "Treino A",
   focus: "Pernas",
   color: "yellow",
   exercises: [
     {
-      id: "10000000-0000-4000-8000-000000000001",
+      id: "10000000-0000-7000-8000-000000000001",
       name: "Agachamento",
       sets: 1,
       targetReps: 8,
@@ -71,7 +71,7 @@ describe("WorkoutApp", () => {
     renderApp({
       completedWorkouts: [
         {
-          id: "30000000-0000-4000-8000-000000000001",
+          id: "30000000-0000-7000-8000-000000000001",
           workoutId: workout.id,
           workoutName: workout.name,
           color: workout.color,
@@ -96,7 +96,7 @@ describe("WorkoutApp", () => {
     const user = userEvent.setup();
     const createdWorkout: Workout = {
       ...workout,
-      id: "20000000-0000-4000-8000-000000000002",
+      id: "20000000-0000-7000-8000-000000000002",
       name: "Treino B",
       focus: "Costas",
       color: "pink",

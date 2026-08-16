@@ -28,7 +28,7 @@ const provisionGym = createGymProvisioningService({ db: context.database });
 
 beforeEach(async () => {
   await resetTestDatabase(context.pool, proof);
-  await insertUser("user-1");
+  await insertUser("70000000-0000-7000-8000-000000000011");
 });
 
 afterAll(async () => {
@@ -36,9 +36,14 @@ afterAll(async () => {
 });
 
 it("auto-selects and persists the only active membership", async () => {
-  const gym = await provisionGym(identity("user-1"), { name: "Only Gym" });
+  const gym = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000011"),
+    { name: "Only Gym" },
+  );
 
-  const contextResult = await activeGym.resolveActiveGym("user-1");
+  const contextResult = await activeGym.resolveActiveGym(
+    "70000000-0000-7000-8000-000000000011",
+  );
   const selection = await context.pool.query<{
     user_id: string;
     gym_id: string;
@@ -48,7 +53,7 @@ it("auto-selects and persists the only active membership", async () => {
   expect(contextResult.gymId.value).toBe(gym.id);
   expect(selection.rows).toEqual([
     {
-      user_id: "user-1",
+      user_id: "70000000-0000-7000-8000-000000000011",
       gym_id: gym.id,
       membership_id: gym.ownerMembership.id,
     },
@@ -56,22 +61,36 @@ it("auto-selects and persists the only active membership", async () => {
 });
 
 it("requires explicit selection for multiple active memberships", async () => {
-  await provisionGym(identity("user-1"), { name: "First Gym" });
-  await provisionGym(identity("user-1"), { name: "Second Gym" });
-
-  await expect(activeGym.resolveActiveGym("user-1")).rejects.toBeInstanceOf(
-    GymSelectionRequiredError,
-  );
-});
-
-it("persists an explicit active selection and resolves it again", async () => {
-  await provisionGym(identity("user-1"), { name: "First Gym" });
-  const selectedGym = await provisionGym(identity("user-1"), {
+  await provisionGym(identity("70000000-0000-7000-8000-000000000011"), {
+    name: "First Gym",
+  });
+  await provisionGym(identity("70000000-0000-7000-8000-000000000011"), {
     name: "Second Gym",
   });
 
-  const selected = await activeGym.selectActiveGym("user-1", selectedGym.id);
-  const resolved = await activeGym.resolveActiveGym("user-1");
+  await expect(
+    activeGym.resolveActiveGym("70000000-0000-7000-8000-000000000011"),
+  ).rejects.toBeInstanceOf(GymSelectionRequiredError);
+});
+
+it("persists an explicit active selection and resolves it again", async () => {
+  await provisionGym(identity("70000000-0000-7000-8000-000000000011"), {
+    name: "First Gym",
+  });
+  const selectedGym = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000011"),
+    {
+      name: "Second Gym",
+    },
+  );
+
+  const selected = await activeGym.selectActiveGym(
+    "70000000-0000-7000-8000-000000000011",
+    selectedGym.id,
+  );
+  const resolved = await activeGym.resolveActiveGym(
+    "70000000-0000-7000-8000-000000000011",
+  );
 
   expect(selected.gymId.value).toBe(selectedGym.id);
   expect(resolved.gymId.value).toBe(selectedGym.id);
@@ -79,36 +98,49 @@ it("persists an explicit active selection and resolves it again", async () => {
 });
 
 it("clears an inactive selection and requires another valid context", async () => {
-  await provisionGym(identity("user-1"), { name: "First Gym" });
-  await provisionGym(identity("user-1"), { name: "Second Gym" });
-  const thirdGym = await gymWithMember("owner-2", "user-1");
-  await activeGym.selectActiveGym("user-1", thirdGym);
+  await provisionGym(identity("70000000-0000-7000-8000-000000000011"), {
+    name: "First Gym",
+  });
+  await provisionGym(identity("70000000-0000-7000-8000-000000000011"), {
+    name: "Second Gym",
+  });
+  const thirdGym = await gymWithMember(
+    "70000000-0000-7000-8000-000000000032",
+    "70000000-0000-7000-8000-000000000011",
+  );
+  await activeGym.selectActiveGym(
+    "70000000-0000-7000-8000-000000000011",
+    thirdGym,
+  );
   await context.pool.query(
     "update memberships set status = 'suspended' where gym_id = $1 and user_id = $2",
-    [thirdGym, "user-1"],
+    [thirdGym, "70000000-0000-7000-8000-000000000011"],
   );
 
-  await expect(activeGym.resolveActiveGym("user-1")).rejects.toBeInstanceOf(
-    GymSelectionRequiredError,
-  );
+  await expect(
+    activeGym.resolveActiveGym("70000000-0000-7000-8000-000000000011"),
+  ).rejects.toBeInstanceOf(GymSelectionRequiredError);
   const selection = await context.pool.query<{ count: string }>(
-    "select count(*) from active_gym_selections where user_id = 'user-1'",
+    "select count(*) from active_gym_selections where user_id = '70000000-0000-7000-8000-000000000011'",
   );
   expect(selection.rows[0].count).toBe("0");
 });
 
 it("rejects explicit selection of an inactive membership without persistence", async () => {
-  const gymId = await gymWithMember("owner-2", "user-1");
+  const gymId = await gymWithMember(
+    "70000000-0000-7000-8000-000000000032",
+    "70000000-0000-7000-8000-000000000011",
+  );
   await context.pool.query(
     "update memberships set status = 'suspended' where gym_id = $1 and user_id = $2",
-    [gymId, "user-1"],
+    [gymId, "70000000-0000-7000-8000-000000000011"],
   );
 
-  await expect(activeGym.selectActiveGym("user-1", gymId)).rejects.toEqual(
-    new GymAccessForbiddenError(),
-  );
+  await expect(
+    activeGym.selectActiveGym("70000000-0000-7000-8000-000000000011", gymId),
+  ).rejects.toEqual(new GymAccessForbiddenError());
   const selection = await context.pool.query<{ count: string }>(
-    "select count(*) from active_gym_selections where user_id = 'user-1'",
+    "select count(*) from active_gym_selections where user_id = '70000000-0000-7000-8000-000000000011'",
   );
   expect(selection.rows[0].count).toBe("0");
 });
@@ -119,31 +151,37 @@ it.each([
 ])(
   "returns the same forbidden result for a %s gym id",
   async (_case, gymId) => {
-    await expect(activeGym.selectActiveGym("user-1", gymId)).rejects.toEqual(
-      new GymAccessForbiddenError(),
-    );
+    await expect(
+      activeGym.selectActiveGym("70000000-0000-7000-8000-000000000011", gymId),
+    ).rejects.toEqual(new GymAccessForbiddenError());
   },
 );
 
 it("returns the same forbidden result for another user's gym", async () => {
-  await insertUser("owner-2");
-  const otherGym = await provisionGym(identity("owner-2"), {
-    name: "Private Gym",
-  });
+  await insertUser("70000000-0000-7000-8000-000000000032");
+  const otherGym = await provisionGym(
+    identity("70000000-0000-7000-8000-000000000032"),
+    {
+      name: "Private Gym",
+    },
+  );
 
   await expect(
-    activeGym.selectActiveGym("user-1", otherGym.id),
+    activeGym.selectActiveGym(
+      "70000000-0000-7000-8000-000000000011",
+      otherGym.id,
+    ),
   ).rejects.toEqual(new GymAccessForbiddenError());
   const selection = await context.pool.query<{ count: string }>(
-    "select count(*) from active_gym_selections where user_id = 'user-1'",
+    "select count(*) from active_gym_selections where user_id = '70000000-0000-7000-8000-000000000011'",
   );
   expect(selection.rows[0].count).toBe("0");
 });
 
 it("forbids resolution when the user has no active membership", async () => {
-  await expect(activeGym.resolveActiveGym("user-1")).rejects.toEqual(
-    new GymAccessForbiddenError(),
-  );
+  await expect(
+    activeGym.resolveActiveGym("70000000-0000-7000-8000-000000000011"),
+  ).rejects.toEqual(new GymAccessForbiddenError());
 });
 
 async function gymWithMember(ownerId: string, memberId: string) {

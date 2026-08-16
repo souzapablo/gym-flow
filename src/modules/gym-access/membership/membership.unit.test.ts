@@ -58,9 +58,9 @@ it("produces one active gym context from an active membership", () => {
   const activeMembership = membership();
 
   expect(activeMembership.toGymContext()).toEqual({
-    userId: new UserId("user-1"),
-    gymId: new GymId("gym-1"),
-    membershipId: new MembershipId("membership-1"),
+    userId: new UserId("70000000-0000-7000-8000-000000000011"),
+    gymId: new GymId("72000000-0000-7000-8000-000000000011"),
+    membershipId: new MembershipId("71000000-0000-7000-8000-000000000011"),
   });
 });
 
@@ -71,9 +71,9 @@ function membership(
   }> = {},
 ) {
   return new Membership({
-    id: new MembershipId("membership-1"),
-    gymId: new GymId("gym-1"),
-    userId: new UserId("user-1"),
+    id: new MembershipId("71000000-0000-7000-8000-000000000011"),
+    gymId: new GymId("72000000-0000-7000-8000-000000000011"),
+    userId: new UserId("70000000-0000-7000-8000-000000000011"),
     role: "member",
     status: "active",
     ...overrides,

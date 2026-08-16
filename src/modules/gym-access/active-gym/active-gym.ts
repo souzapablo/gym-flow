@@ -5,6 +5,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 import { database } from "@/db/client";
 import * as schema from "@/db/schema";
+import { isUuidV7 } from "@/lib/uuid";
 import {
   GymId,
   Membership,
@@ -173,8 +174,4 @@ async function clearSelection(db: GymDatabase, userId: string) {
     .where(eq(schema.activeGymSelections.userId, userId));
 }
 
-function isUuid(value: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value,
-  );
-}
+const isUuid = isUuidV7;

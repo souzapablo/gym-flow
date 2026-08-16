@@ -33,7 +33,7 @@ it("appends and reads every structured security event field", async () => {
     await appendSecurityEvent(transaction, {
       eventType: "gym.provisioned",
       gymId,
-      actorUserId: "user-1",
+      actorUserId: "70000000-0000-7000-8000-000000000011",
       targetType: "gym",
       targetId: gymId,
       occurredAt,
@@ -58,7 +58,7 @@ it("appends and reads every structured security event field", async () => {
     {
       event_type: "gym.provisioned",
       gym_id: gymId,
-      actor_user_id: "user-1",
+      actor_user_id: "70000000-0000-7000-8000-000000000011",
       target_type: "gym",
       target_id: gymId,
       occurred_at: occurredAt,
@@ -95,7 +95,7 @@ describe("append-only storage", () => {
 
 async function insertOwnedGym() {
   await context.database.insert(users).values({
-    id: "user-1",
+    id: "70000000-0000-7000-8000-000000000011",
     name: "Pablo",
     email: "pablo@example.com",
     emailVerified: true,
@@ -104,11 +104,11 @@ async function insertOwnedGym() {
   try {
     const gym = await context.pool.query<{ id: string }>(
       "insert into gyms (name, owner_user_id) values ($1, $2) returning id",
-      ["Downtown Gym", "user-1"],
+      ["Downtown Gym", "70000000-0000-7000-8000-000000000011"],
     );
     await context.pool.query(
       "insert into memberships (gym_id, user_id, role, status) values ($1, $2, 'owner', 'active')",
-      [gym.rows[0].id, "user-1"],
+      [gym.rows[0].id, "70000000-0000-7000-8000-000000000011"],
     );
     await context.pool.query("commit");
     return gym.rows[0].id;
