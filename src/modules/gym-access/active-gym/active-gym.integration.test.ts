@@ -97,6 +97,22 @@ it("clears an inactive selection and requires another valid context", async () =
   expect(selection.rows[0].count).toBe("0");
 });
 
+it("rejects explicit selection of an inactive membership without persistence", async () => {
+  const gymId = await gymWithMember("owner-2", "user-1");
+  await context.pool.query(
+    "update memberships set status = 'suspended' where gym_id = $1 and user_id = $2",
+    [gymId, "user-1"],
+  );
+
+  await expect(activeGym.selectActiveGym("user-1", gymId)).rejects.toEqual(
+    new GymAccessForbiddenError(),
+  );
+  const selection = await context.pool.query<{ count: string }>(
+    "select count(*) from active_gym_selections where user_id = 'user-1'",
+  );
+  expect(selection.rows[0].count).toBe("0");
+});
+
 it.each([
   ["malformed", "not-a-uuid"],
   ["unknown", randomUUID()],

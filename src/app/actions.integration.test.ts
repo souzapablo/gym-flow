@@ -320,6 +320,31 @@ describe("selectActiveGymAction", () => {
       expect(revalidatePathMock).not.toHaveBeenCalled();
     },
   );
+
+  it("rejects an inactive membership without selection or revalidation", async () => {
+    await insertUser();
+    const owner = await insertUser({ id: "other-user", name: "Other" });
+    const gym = await insertGymContext({
+      userId: owner.id,
+      gymName: "Other gym",
+      reuseUser: true,
+    });
+    await context.database.insert(memberships).values({
+      gymId: gym.gymId,
+      userId: "local-user",
+      role: "coach",
+      status: "suspended",
+    });
+
+    await expect(selectActiveGymAction(gym.gymId)).rejects.toThrow(
+      "Gym access is forbidden",
+    );
+    const selection = await context.pool.query<{ count: string }>(
+      "select count(*) from active_gym_selections where user_id = 'local-user'",
+    );
+    expect(selection.rows[0].count).toBe("0");
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
 });
 
 const UUID_PATTERN =
