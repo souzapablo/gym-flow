@@ -140,17 +140,17 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 | GWM-01         | Establish Global Identity         | T3     | Implemented |
 | GWM-02         | Establish Global Identity         | T3     | Implemented |
 | GWM-03         | Establish Global Identity         | T3     | Implemented |
-| GWM-04         | Provision Gym Workspaces          | T6     | Implemented |
+| GWM-04         | Provision Gym Workspaces          | T8     | Implemented |
 | GWM-05         | Provision Gym Workspaces          | T6     | Implemented |
 | GWM-06         | Provision Gym Workspaces          | T6     | Implemented |
 | GWM-07         | Provision Gym Workspaces          | T6     | Implemented |
 | GWM-08         | Provision Gym Workspaces          | T6     | Implemented |
 | GWM-09         | Resolve Active Gym Context        | T7     | Implemented |
-| GWM-10         | Resolve Active Gym Context        | T7     | Implemented |
+| GWM-10         | Resolve Active Gym Context        | T8     | Implemented |
 | GWM-11         | Resolve Active Gym Context        | T7     | Implemented |
 | GWM-12         | Resolve Active Gym Context        | T7     | Implemented |
 | GWM-13         | Resolve Active Gym Context        | T7     | Implemented |
-| GWM-14         | Resolve Active Gym Context        | T7     | Implemented |
+| GWM-14         | Resolve Active Gym Context        | T8     | Implemented |
 | GWM-15         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-16         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-17         | Gym-Owned Records and Audit Store | Design | In Design   |

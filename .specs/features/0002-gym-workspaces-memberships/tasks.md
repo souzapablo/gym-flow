@@ -256,9 +256,9 @@ and active-context resolution without exporting repositories or entities.
 
 **Done when**:
 
-- [ ] Only provider-neutral DTOs and facade operations are exported.
-- [ ] No caller can import gym-access repositories through the public entry point.
-- [ ] Module contract integration tests exercise provisioning and context resolution through the facade; the Full gate passes.
+- [x] Only provider-neutral DTOs and facade operations are exported.
+- [x] No caller can import gym-access repositories through the public entry point.
+- [x] Module contract integration tests exercise provisioning and context resolution through the facade; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full
