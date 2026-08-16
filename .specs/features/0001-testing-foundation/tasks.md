@@ -533,6 +533,8 @@ seeded-load journey.
 
 ### T17: Cover workout creation through the browser
 
+**Status**: Complete
+
 **What**: Add the critical journey that creates a workout and observes it after
 the Server Action and route revalidation complete.
 **Where**: `test/e2e/workout-journeys.spec.ts`
@@ -547,10 +549,10 @@ the Server Action and route revalidation complete.
 
 **Done when**:
 
-- [ ] The journey fills the form through labels and submits through role/name.
-- [ ] The created workout is visible after the real Server Action completes.
-- [ ] PostgreSQL contains the created workout and exercises.
-- [ ] `npm run test:e2e` passes with 2 cumulative journeys.
+- [x] The journey fills the form through labels and submits through role/name.
+- [x] The created workout is visible after the real Server Action completes.
+- [x] PostgreSQL contains the created workout and exercises.
+- [x] `npm run test:e2e` passes with 2 cumulative journeys.
 
 **Tests**: e2e
 **Gate**: full
