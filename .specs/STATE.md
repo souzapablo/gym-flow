@@ -46,6 +46,15 @@
 - **Date**: 2026-08-16
 - **Status**: active
 
+### AD-005
+
+- **Decision**: Every gym-scoped server operation will execute through Gym Access's centralized, transaction-aware, deny-by-default authorization boundary.
+- **Reason**: One boundary can reauthorize current membership state near the data operation, enforce tenant and relationship facts consistently, and guarantee required denial auditing.
+- **Trade-off**: Protected reads and mutations gain transaction and policy-coordination overhead, and modules must express their work as authorized operation handlers.
+- **Scope**: All current and future gym-scoped server operations.
+- **Date**: 2026-08-16
+- **Status**: active
+
 ## Handoff
 
 - **Current feature**: `0002-gym-workspaces-memberships`

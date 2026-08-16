@@ -97,23 +97,23 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 
 ## Requirement Traceability
 
-| Requirement ID | Story                         | Phase  | Status  |
-| -------------- | ----------------------------- | ------ | ------- |
-| AUTHZ-01       | Enforce the Membership Policy | Design | Pending |
-| AUTHZ-02       | Enforce the Membership Policy | Design | Pending |
-| AUTHZ-03       | Enforce the Membership Policy | Design | Pending |
-| AUTHZ-04       | Enforce the Membership Policy | Design | Pending |
-| AUTHZ-05       | Enforce the Membership Policy | Design | Pending |
-| AUTHZ-06       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-07       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-08       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-09       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-10       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-11       | Define Role Capabilities      | Design | Pending |
-| AUTHZ-12       | Edge Cases                    | Design | Pending |
-| AUTHZ-13       | Edge Cases                    | Design | Pending |
+| Requirement ID | Story                         | Phase  | Status   |
+| -------------- | ----------------------------- | ------ | -------- |
+| AUTHZ-01       | Enforce the Membership Policy | Design | Designed |
+| AUTHZ-02       | Enforce the Membership Policy | Design | Designed |
+| AUTHZ-03       | Enforce the Membership Policy | Design | Designed |
+| AUTHZ-04       | Enforce the Membership Policy | Design | Designed |
+| AUTHZ-05       | Enforce the Membership Policy | Design | Designed |
+| AUTHZ-06       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-07       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-08       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-09       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-10       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-11       | Define Role Capabilities      | Design | Designed |
+| AUTHZ-12       | Edge Cases                    | Design | Designed |
+| AUTHZ-13       | Edge Cases                    | Design | Designed |
 
-**Coverage:** 13 total, 0 mapped to tasks, 13 pending design.
+**Coverage:** 13 total, 13 covered by the approved design, 0 mapped to tasks.
 
 ---
 
