@@ -183,9 +183,9 @@ security events.
 
 **Done when**:
 
-- [ ] The writer records event type, gym, optional actor, target, timestamp, and structured metadata.
-- [ ] No application update or delete function is exported.
-- [ ] Integration tests prove append/read behavior and database rejection of mutation paths; the Full gate passes.
+- [x] The writer records event type, gym, optional actor, target, timestamp, and structured metadata.
+- [x] No application update or delete function is exported.
+- [x] Integration tests prove append/read behavior and database rejection of mutation paths; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full

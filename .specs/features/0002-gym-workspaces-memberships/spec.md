@@ -154,9 +154,9 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 | GWM-15         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-16         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-17         | Gym-Owned Records and Audit Store | Design | In Design   |
-| GWM-18         | Gym-Owned Records and Audit Store | T2     | In Progress |
-| GWM-19         | Gym-Owned Records and Audit Store | Design | In Design   |
-| GWM-20         | Gym-Owned Records and Audit Store | T1     | In Progress |
+| GWM-18         | Gym-Owned Records and Audit Store | T5     | Implemented |
+| GWM-19         | Gym-Owned Records and Audit Store | T5     | In Progress |
+| GWM-20         | Gym-Owned Records and Audit Store | T5     | Implemented |
 | GWM-21         | Edge Cases                        | T9     | Planned     |
 | GWM-22         | Edge Cases                        | Design | In Design   |
 
