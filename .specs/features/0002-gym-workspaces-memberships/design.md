@@ -197,6 +197,9 @@ event type, gym, actor, target, and timestamp remain typed columns for querying.
 | Table                   | Important fields and constraints                                                                                         |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `users`                 | Better Auth-compatible stable `id`; `email_normalized` unique; `email_verified`; timestamps.                             |
+| `sessions`              | Better Auth session identity, token, expiry, request metadata, and timestamps.                                           |
+| `accounts`              | Better Auth provider account identity and credential/token fields linked to a stable user ID.                            |
+| `verifications`         | Better Auth verification identifier, value, expiry, and timestamps.                                                      |
 | `gyms`                  | Database-generated UUIDv7 `id`; name; immutable `owner_user_id`; timestamps.                                             |
 | `memberships`           | Database-generated UUIDv7 `id`; `gym_id`; `user_id`; `role`; `status`; unique `(gym_id, user_id)`; owner protection.     |
 | `active_gym_selections` | `user_id` primary key; `gym_id`; `membership_id`; updated timestamp; membership relationship validated on resolution.    |

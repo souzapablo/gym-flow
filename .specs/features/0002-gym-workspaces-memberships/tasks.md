@@ -122,7 +122,8 @@ identity, gym, membership, selection, audit, and gym-owned training columns.
 
 **What**: Replace the hard-coded local owner with a Better Auth-backed adapter
 that exposes only a stable verified Gym Flow identity.  
-**Where**: `src/modules/identity/account/`  
+**Where**: `migrations/004_better_auth_core.sql`, `src/db/schema.ts`,
+`src/modules/identity/account/`, `package.json`  
 **Depends on**: T2  
 **Reuses**: `src/lib/owner.ts`, `src/data/users.ts`, existing server-only composition  
 **Requirement**: GWM-01, GWM-02, GWM-03
@@ -134,10 +135,11 @@ that exposes only a stable verified Gym Flow identity.
 
 **Done when**:
 
-- [ ] Better Auth is configured with the existing Drizzle/PostgreSQL composition root.
-- [ ] `requireVerifiedIdentity()` rejects missing and unverified sessions and returns provider-neutral data for verified sessions.
-- [ ] A verified email change preserves the same user ID.
-- [ ] Identity integration tests cover verified, missing, unverified, duplicate normalized email, and email-change outcomes; the Full gate passes.
+- [x] Better Auth is configured with the existing Drizzle/PostgreSQL composition root.
+- [x] Better Auth's required session, account, and verification storage is migrated and mapped.
+- [x] `requireVerifiedIdentity()` rejects missing and unverified sessions and returns provider-neutral data for verified sessions.
+- [x] A verified email change preserves the same user ID.
+- [x] Identity integration tests cover verified, missing, unverified, duplicate normalized email, and email-change outcomes; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full
@@ -266,7 +268,7 @@ and active-context resolution without exporting repositories or entities.
 **What**: Migrate workout/session storage from creator ownership to gym
 ownership, map that schema in Drizzle, and require mandatory validated gym
 context while retaining creator attribution.  
-**Where**: `migrations/004_gym_owned_training.sql`, `src/db/schema.ts`,
+**Where**: `migrations/005_gym_owned_training.sql`, `src/db/schema.ts`,
 `src/data/workouts.ts`  
 **Depends on**: T8  
 **Reuses**: Existing workout mapping, validation, and transaction behavior  

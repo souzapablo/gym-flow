@@ -1,9 +1,23 @@
 import type { User } from "@/lib/user";
 
-export function buildUserFixture(overrides: Partial<User> = {}): User {
+type PersistedUserFixture = User & {
+  email: string;
+  emailNormalized: string;
+  emailVerified: boolean;
+};
+
+export function buildUserFixture(
+  overrides: Partial<PersistedUserFixture> = {},
+): PersistedUserFixture {
+  const id = overrides.id ?? "local-user";
+  const email = `${id}@gym-flow.test`;
+
   return {
-    id: "local-user",
+    id,
     name: "Local user",
+    email,
+    emailNormalized: email,
+    emailVerified: true,
     ...overrides,
   };
 }

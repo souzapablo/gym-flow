@@ -137,9 +137,9 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 
 | Requirement ID | Story                             | Phase  | Status      |
 | -------------- | --------------------------------- | ------ | ----------- |
-| GWM-01         | Establish Global Identity         | T2     | In Progress |
-| GWM-02         | Establish Global Identity         | T2     | In Progress |
-| GWM-03         | Establish Global Identity         | Design | In Design   |
+| GWM-01         | Establish Global Identity         | T3     | Implemented |
+| GWM-02         | Establish Global Identity         | T3     | Implemented |
+| GWM-03         | Establish Global Identity         | T3     | Implemented |
 | GWM-04         | Provision Gym Workspaces          | Design | In Design   |
 | GWM-05         | Provision Gym Workspaces          | Design | In Design   |
 | GWM-06         | Provision Gym Workspaces          | T1     | In Progress |
