@@ -125,7 +125,7 @@ T8 -> T9 -> T10
 **Gate**: quick
 **Commit**: `feat(authz): implement membership policy`
 
-### T3: Add the Deny-by-Default Relationship Port
+### T3: Add the Deny-by-Default Relationship Port ✅
 
 **What**: Define the transaction-scoped relationship query contract and a default resolver that reports absent relationships.
 **Where**: `src/modules/gym-access/authorization/`
@@ -140,11 +140,11 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] The port accepts a transaction and a closed relationship query.
-- [ ] The default resolver returns `absent` for every relationship-dependent request.
-- [ ] The contract requires future adapters to read and lock relevant rows through the supplied transaction.
-- [ ] At least 3 unit cases prove default denial, satisfied-result consumption, and missing-query denial.
-- [ ] Quick gate passes.
+- [x] The port accepts a transaction and a closed relationship query.
+- [x] The default resolver returns `absent` for every relationship-dependent request.
+- [x] The contract requires future adapters to read and lock relevant rows through the supplied transaction.
+- [x] At least 3 unit cases prove default denial, satisfied-result consumption, and missing-query denial.
+- [x] Quick gate passes.
 
 **Tests**: unit
 **Gate**: quick

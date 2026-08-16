@@ -8,3 +8,9 @@ export {
   type GymResourceType,
   type RelationshipResult,
 } from "./membership-policy";
+export {
+  defaultRelationshipResolver,
+  resolveRelationship,
+  type RelationshipQuery,
+  type RelationshipResolver,
+} from "./relationship-policy";
