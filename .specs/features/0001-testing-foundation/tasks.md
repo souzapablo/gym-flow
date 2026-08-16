@@ -434,12 +434,12 @@ resolution, persistence, results, failures, and revalidation.
 
 **Done when**:
 
-- [ ] Valid create and completion paths persist through real PostgreSQL.
-- [ ] Invalid and unauthorized paths leave no partial data.
-- [ ] Only the Next.js revalidation boundary is mocked.
-- [ ] Success revalidates `/`; failure does not.
-- [ ] Six Server Action integration tests pass.
-- [ ] Full gate passes with 6 new tests.
+- [x] Valid create and completion paths persist through real PostgreSQL.
+- [x] Invalid and unauthorized paths leave no partial data.
+- [x] Only the Next.js revalidation boundary is mocked.
+- [x] Success revalidates `/`; failure does not.
+- [x] Six Server Action integration tests pass.
+- [x] Full gate passes with 6 new tests.
 
 **Tests**: integration
 **Gate**: full
