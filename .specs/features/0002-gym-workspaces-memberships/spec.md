@@ -140,11 +140,11 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 | GWM-01         | Establish Global Identity         | T3     | Implemented |
 | GWM-02         | Establish Global Identity         | T3     | Implemented |
 | GWM-03         | Establish Global Identity         | T3     | Implemented |
-| GWM-04         | Provision Gym Workspaces          | Design | In Design   |
-| GWM-05         | Provision Gym Workspaces          | Design | In Design   |
-| GWM-06         | Provision Gym Workspaces          | T4     | In Progress |
-| GWM-07         | Provision Gym Workspaces          | Design | In Design   |
-| GWM-08         | Provision Gym Workspaces          | T4     | Implemented |
+| GWM-04         | Provision Gym Workspaces          | T6     | Implemented |
+| GWM-05         | Provision Gym Workspaces          | T6     | Implemented |
+| GWM-06         | Provision Gym Workspaces          | T6     | Implemented |
+| GWM-07         | Provision Gym Workspaces          | T6     | Implemented |
+| GWM-08         | Provision Gym Workspaces          | T6     | Implemented |
 | GWM-09         | Resolve Active Gym Context        | T4     | In Progress |
 | GWM-10         | Resolve Active Gym Context        | Design | In Design   |
 | GWM-11         | Resolve Active Gym Context        | Design | In Design   |
@@ -155,7 +155,7 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 | GWM-16         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-17         | Gym-Owned Records and Audit Store | Design | In Design   |
 | GWM-18         | Gym-Owned Records and Audit Store | T5     | Implemented |
-| GWM-19         | Gym-Owned Records and Audit Store | T5     | In Progress |
+| GWM-19         | Gym-Owned Records and Audit Store | T6     | Implemented |
 | GWM-20         | Gym-Owned Records and Audit Store | T5     | Implemented |
 | GWM-21         | Edge Cases                        | T9     | Planned     |
 | GWM-22         | Edge Cases                        | Design | In Design   |

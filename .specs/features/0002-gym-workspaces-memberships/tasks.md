@@ -206,11 +206,11 @@ gym, its immutable owner membership, and its audit event in one transaction.
 
 **Done when**:
 
-- [ ] A verified user can provision multiple independent gyms.
-- [ ] Each result has exactly one owner membership and one audit event.
-- [ ] Concurrent duplicate/invariant attempts are rejected by constraints.
-- [ ] Audit failure rolls back gym and membership records.
-- [ ] Integration tests cover success, multiple gyms, concurrency, forbidden owner mutation, and rollback; the Full gate passes.
+- [x] A verified user can provision multiple independent gyms.
+- [x] Each result has exactly one owner membership and one audit event.
+- [x] Concurrent duplicate/invariant attempts are rejected by constraints.
+- [x] Audit failure rolls back gym and membership records.
+- [x] Integration tests cover success, multiple gyms, concurrency, forbidden owner mutation, and rollback; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full
