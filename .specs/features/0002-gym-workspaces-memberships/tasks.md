@@ -231,11 +231,11 @@ revalidation and non-disclosing failures.
 
 **Done when**:
 
-- [ ] Exactly one active membership is auto-selected.
-- [ ] Multiple active memberships without a valid selection require explicit selection.
-- [ ] Inactive selections are cleared and cannot produce a context.
-- [ ] Malformed, unknown, and unauthorized gym IDs return the same public forbidden result.
-- [ ] Integration tests cover all resolver branches and cross-user isolation; the Full gate passes.
+- [x] Exactly one active membership is auto-selected.
+- [x] Multiple active memberships without a valid selection require explicit selection.
+- [x] Inactive selections are cleared and cannot produce a context.
+- [x] Malformed, unknown, and unauthorized gym IDs return the same public forbidden result.
+- [x] Integration tests cover all resolver branches and cross-user isolation; the Full gate passes.
 
 **Tests**: integration  
 **Gate**: full
