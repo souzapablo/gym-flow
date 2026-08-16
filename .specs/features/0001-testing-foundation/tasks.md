@@ -474,6 +474,8 @@ rule in both workout parsers.
 
 ### T15: Cover WorkoutApp interactions
 
+**Status**: Complete
+
 **What**: Add jsdom integration coverage for the existing interactive client
 using action fakes and accessible user interactions.
 **Where**: `src/components/workout-app.integration.test.tsx`
@@ -488,12 +490,12 @@ using action fakes and accessible user interactions.
 
 **Done when**:
 
-- [ ] Initial list, create success/failure, session success/failure, timers,
+- [x] Initial list, create success/failure, session success/failure, timers,
       pending state, and history visibility are covered.
-- [ ] Fake timers avoid real countdown delays.
-- [ ] Queries use accessible roles, names, labels, and visible outcomes.
-- [ ] Eight component integration tests pass.
-- [ ] Full gate passes with 8 new tests.
+- [x] Fake timers avoid real countdown delays.
+- [x] Queries use accessible roles, names, labels, and visible outcomes.
+- [x] Eight component integration tests pass.
+- [x] Full gate passes with 8 new tests.
 
 **Tests**: integration
 **Gate**: full
