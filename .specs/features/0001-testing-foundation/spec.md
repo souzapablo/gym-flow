@@ -9,15 +9,15 @@ and focused unit tests only where isolation improves coverage or diagnosis.
 
 ## Goals
 
-- [ ] Document the approved tools, boundaries, commands, and safety rules.
-- [ ] Run integration tests against an isolated PostgreSQL Testcontainer.
-- [ ] Use Drizzle with node-postgres over TCP for all production and integration
+- [x] Document the approved tools, boundaries, commands, and safety rules.
+- [x] Run integration tests against an isolated PostgreSQL Testcontainer.
+- [x] Use Drizzle with node-postgres over TCP for all production and integration
       database access.
-- [ ] Cover the current validation, data, Server Action, and interactive client
+- [x] Cover the current validation, data, Server Action, and interactive client
       behavior with integration-first tests.
-- [ ] Cover critical Next.js application wiring with a thin Playwright
+- [x] Cover critical Next.js application wiring with a thin Playwright
       end-to-end suite.
-- [ ] Provide deterministic local and continuous-integration commands.
+- [x] Provide deterministic local and continuous-integration commands.
 
 ## Out of Scope
 
@@ -233,8 +233,8 @@ and verify the three critical journeys pass without Neon credentials.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| TEST-01 | P1: Agent testing contract | Documentation | In Progress (T1-T2, T6 complete) |
-| TEST-02 | P1: Executable test infrastructure | Infrastructure | In Progress (T3-T8, T12, T16 complete) |
+| TEST-01 | P1: Agent testing contract | Documentation | Complete (T1-T2, T6, T19) |
+| TEST-02 | P1: Executable test infrastructure | Infrastructure | Complete (T3-T8, T12, T16, T19) |
 | TEST-03 | P1: Current behavior coverage | Tests | Complete (T9-T11, T13-T15) |
 | TEST-04 | P2: Critical browser journeys | E2E | Complete (T16-T18) |
 
@@ -244,16 +244,16 @@ and verify the three critical journeys pass without Neon credentials.
 
 ## Success Criteria
 
-- [ ] A new agent can determine what to test and which command to run from the
+- [x] A new agent can determine what to test and which command to run from the
       repository documentation alone.
-- [ ] Unit tests run without Docker or a database.
-- [ ] Integration tests run against an ephemeral PostgreSQL container without
+- [x] Unit tests run without Docker or a database.
+- [x] Integration tests run against an ephemeral PostgreSQL container without
       Neon credentials.
-- [ ] No automated test can reset the configured development or production
+- [x] No automated test can reset the configured development or production
       database.
 - [x] Current validation, data access, Server Action, and client interaction
       behavior has requirement-linked test coverage.
 - [x] Three Playwright journeys verify workout loading, workout creation, and
       workout-session completion through the real application.
-- [ ] The complete local and CI gates use non-watch commands and return a
+- [x] The complete local and CI gates use non-watch commands and return a
       non-zero exit code on failure.

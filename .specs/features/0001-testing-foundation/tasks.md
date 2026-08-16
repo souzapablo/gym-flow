@@ -12,7 +12,7 @@ atomic commits, verification, and final independent verifier.
 ---
 
 **Design**: `.specs/features/0001-testing-foundation/design.md`
-**Status**: Draft
+**Status**: Complete
 
 ---
 
@@ -587,6 +587,8 @@ the completed session in history.
 
 ### T19: Enforce the complete CI quality gate
 
+**Status**: Complete
+
 **What**: Add a Docker-capable GitHub Actions workflow that installs browser
 dependencies and runs the public `check` command.
 **Where**: `.github/workflows/quality.yml`
@@ -601,11 +603,11 @@ dependencies and runs the public `check` command.
 
 **Done when**:
 
-- [ ] CI uses the repository's supported Node.js version and `npm ci`.
-- [ ] CI installs the required Playwright browser and system dependencies.
-- [ ] CI has Docker access and requires no Neon credential.
-- [ ] `npm run check` executes lint, type checking, all tests, and build.
-- [ ] Build gate passes without reducing any test count.
+- [x] CI uses the repository's supported Node.js version and `npm ci`.
+- [x] CI installs the required Playwright browser and system dependencies.
+- [x] CI has Docker access and requires no Neon credential.
+- [x] `npm run check` executes lint, type checking, all tests, and build.
+- [x] Build gate passes without reducing any test count.
 
 **Tests**: none, CI wiring layer
 **Gate**: build

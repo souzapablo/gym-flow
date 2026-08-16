@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import { resolve } from "node:path";
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   webpack(config) {
     if (process.env.GYM_FLOW_E2E === "1") {
       const e2eClient = resolve(
