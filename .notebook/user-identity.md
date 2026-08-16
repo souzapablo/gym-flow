@@ -1,4 +1,5 @@
 # User Identity
+
 > Persisted, role-neutral identity boundary prepared for future ABAC
 
 Model: `src/lib/user.ts`

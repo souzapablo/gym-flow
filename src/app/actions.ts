@@ -1,16 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  createWorkout,
-  saveWorkoutSession,
-} from "@/data/workouts";
+import { createWorkout, saveWorkoutSession } from "@/data/workouts";
 import { getCurrentUser } from "@/lib/owner";
 import type { Workout } from "@/lib/workout";
-import {
-  parseNewWorkout,
-  parseWorkoutSession,
-} from "@/lib/workout-validation";
+import { parseNewWorkout, parseWorkoutSession } from "@/lib/workout-validation";
 
 export async function createWorkoutAction(input: unknown): Promise<Workout> {
   const user = await getCurrentUser();

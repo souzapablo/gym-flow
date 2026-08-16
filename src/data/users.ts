@@ -1,15 +1,17 @@
 import "server-only";
 
-import { db } from "@/lib/db";
+import { eq } from "drizzle-orm";
+
+import { database } from "@/db/client";
+import { users } from "@/db/schema";
 import type { User } from "@/lib/user";
 
 export async function findUserById(id: string): Promise<User | null> {
-  const sql = db();
-  const users = (await sql`
-    select id, name
-    from users
-    where id = ${id}
-  `) as User[];
+  const [user] = await database()
+    .select({ id: users.id, name: users.name })
+    .from(users)
+    .where(eq(users.id, id))
+    .limit(1);
 
-  return users[0] ?? null;
+  return user ?? null;
 }
