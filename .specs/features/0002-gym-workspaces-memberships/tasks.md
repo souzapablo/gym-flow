@@ -111,9 +111,9 @@ identity, gym, membership, selection, audit, and gym-owned training columns.
 
 **Done when**:
 
-- [ ] Drizzle types match every column and constraint introduced by T1.
-- [ ] UUIDv7 defaults are represented as database defaults rather than application-generated IDs.
-- [ ] Existing imports compile and the Build gate passes.
+- [x] Drizzle types match every column and constraint introduced by T1.
+- [x] UUIDv7 defaults are represented as database defaults rather than application-generated IDs.
+- [x] Existing imports compile and the Build gate passes.
 
 **Tests**: none -- schema declarations  
 **Gate**: build

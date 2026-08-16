@@ -137,15 +137,15 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 
 | Requirement ID | Story                             | Phase  | Status      |
 | -------------- | --------------------------------- | ------ | ----------- |
-| GWM-01         | Establish Global Identity         | T1     | In Progress |
-| GWM-02         | Establish Global Identity         | T1     | In Progress |
+| GWM-01         | Establish Global Identity         | T2     | In Progress |
+| GWM-02         | Establish Global Identity         | T2     | In Progress |
 | GWM-03         | Establish Global Identity         | Design | In Design   |
 | GWM-04         | Provision Gym Workspaces          | Design | In Design   |
 | GWM-05         | Provision Gym Workspaces          | Design | In Design   |
 | GWM-06         | Provision Gym Workspaces          | T1     | In Progress |
 | GWM-07         | Provision Gym Workspaces          | Design | In Design   |
 | GWM-08         | Provision Gym Workspaces          | Design | In Design   |
-| GWM-09         | Resolve Active Gym Context        | T1     | In Progress |
+| GWM-09         | Resolve Active Gym Context        | T2     | In Progress |
 | GWM-10         | Resolve Active Gym Context        | Design | In Design   |
 | GWM-11         | Resolve Active Gym Context        | Design | In Design   |
 | GWM-12         | Resolve Active Gym Context        | Design | In Design   |
@@ -154,7 +154,7 @@ Gym Flow currently treats one local user as the owner of every workout and sessi
 | GWM-15         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-16         | Gym-Owned Records and Audit Store | T9     | Planned     |
 | GWM-17         | Gym-Owned Records and Audit Store | Design | In Design   |
-| GWM-18         | Gym-Owned Records and Audit Store | T1     | In Progress |
+| GWM-18         | Gym-Owned Records and Audit Store | T2     | In Progress |
 | GWM-19         | Gym-Owned Records and Audit Store | Design | In Design   |
 | GWM-20         | Gym-Owned Records and Audit Store | T1     | In Progress |
 | GWM-21         | Edge Cases                        | T9     | Planned     |
