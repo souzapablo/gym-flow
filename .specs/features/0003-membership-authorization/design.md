@@ -150,6 +150,7 @@ never expose that reason.
 - **Location**: `src/modules/gym-access/authorization/authorize-gym-operation.ts`
 - **Interfaces**:
   - `withGymAuthorization(identity, request, handler): Promise<T>`
+  - `request.resolveResourceFacts?(transaction): Promise<AuthorizationResourceFacts>`
   - `handler(transaction, context: AuthorizedGymContext): Promise<T>`
 - **Dependencies**: Drizzle transaction manager, active-gym persistence,
   membership policy, relationship policy, and audit writer.
@@ -161,6 +162,13 @@ validated for this invocation. It is scoped to the handler and is not cached or
 returned for later operations. The boundary holds a shared lock on the current
 membership row until the handler finishes, so membership lifecycle mutations
 cannot invalidate an in-flight decision.
+
+Collection and creation operations supply their explicit resource gym in the
+request. ID-based operations supply a resource-fact resolver instead. The
+boundary invokes that resolver through the same transaction before policy
+evaluation. This lets the policy classify a real cross-gym resource for audit
+without exposing its existence to the caller. A missing result becomes a
+missing-resource-facts denial.
 
 ### Relationship Policy Port
 
@@ -239,6 +247,7 @@ type AuthorizationRequest = Readonly<{
     id?: string;
     gymId?: string;
   }>;
+  resolveResourceFacts?: ResourceFactResolver;
   relationship?: RelationshipQuery;
 }>;
 

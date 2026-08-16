@@ -97,23 +97,23 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 
 ## Requirement Traceability
 
-| Requirement ID | Story                         | Phase  | Status   |
-| -------------- | ----------------------------- | ------ | -------- |
-| AUTHZ-01       | Enforce the Membership Policy | Design | Designed |
-| AUTHZ-02       | Enforce the Membership Policy | Design | Designed |
-| AUTHZ-03       | Enforce the Membership Policy | Design | Designed |
-| AUTHZ-04       | Enforce the Membership Policy | Design | Designed |
-| AUTHZ-05       | Enforce the Membership Policy | Design | Designed |
-| AUTHZ-06       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-07       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-08       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-09       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-10       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-11       | Define Role Capabilities      | Design | Designed |
-| AUTHZ-12       | Edge Cases                    | Design | Designed |
-| AUTHZ-13       | Edge Cases                    | Design | Designed |
+| Requirement ID | Story                         | Phase                 | Status  |
+| -------------- | ----------------------------- | --------------------- | ------- |
+| AUTHZ-01       | Enforce the Membership Policy | T2/T4/T6/T7           | Planned |
+| AUTHZ-02       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | Planned |
+| AUTHZ-03       | Enforce the Membership Policy | T2/T4/T6/T8/T9/T10    | Planned |
+| AUTHZ-04       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | Planned |
+| AUTHZ-05       | Enforce the Membership Policy | T5/T6/T9/T10          | Planned |
+| AUTHZ-06       | Define Role Capabilities      | T1/T2/T8/T9/T10       | Planned |
+| AUTHZ-07       | Define Role Capabilities      | T1/T2/T8/T9/T10       | Planned |
+| AUTHZ-08       | Define Role Capabilities      | T1/T2/T3/T8/T9/T10    | Planned |
+| AUTHZ-09       | Define Role Capabilities      | T1/T2/T3/T8/T9/T10    | Planned |
+| AUTHZ-10       | Define Role Capabilities      | T1/T2/T4/T6/T8/T9/T10 | Planned |
+| AUTHZ-11       | Define Role Capabilities      | T3/T6/T7/T10          | Planned |
+| AUTHZ-12       | Edge Cases                    | T1/T2/T4/T6           | Planned |
+| AUTHZ-13       | Edge Cases                    | T2/T3/T4/T6/T8/T9/T10 | Planned |
 
-**Coverage:** 13 total, 13 covered by the approved design, 0 mapped to tasks.
+**Coverage:** 13 total, 13 mapped to draft tasks, 0 unmapped.
 
 ---
 
