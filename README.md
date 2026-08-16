@@ -6,7 +6,7 @@ A small personal workout app built with Next.js and Neon Postgres.
 
 Install these tools before working with the repository:
 
-- Node.js 20.9 or newer and npm.
+- Node.js 24 or newer and npm.
 - Docker Desktop or another Docker-compatible runtime for database integration
   and end-to-end tests.
 - The Playwright Chromium browser and its system dependencies for end-to-end
