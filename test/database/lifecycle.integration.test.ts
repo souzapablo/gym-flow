@@ -23,8 +23,12 @@ it("provides a PostgreSQL database with every real migration applied", async () 
     `);
 
     expect(result.rows.map((row) => row.table_name)).toEqual([
+      "active_gym_selections",
       "completed_sets",
       "exercises",
+      "gyms",
+      "memberships",
+      "security_audit_events",
       "users",
       "workout_sessions",
       "workouts",

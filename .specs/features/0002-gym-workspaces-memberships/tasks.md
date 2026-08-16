@@ -14,7 +14,7 @@ without it.**
 ---
 
 **Design**: `.specs/features/0002-gym-workspaces-memberships/design.md`  
-**Status**: Draft
+**Status**: In Progress
 
 ---
 
@@ -75,11 +75,11 @@ T8 -> T9 -> T10 -> T11
 **What**: Define Better Auth-compatible identity fields, gym access, active
 selection, append-only audit, and gym-owned training storage using PostgreSQL
 18 UUIDv7 defaults and database constraints.  
-**Where**: `migrations/003_gym_workspaces_memberships.sql`  
+**Where**: `migrations/003_gym_workspaces_memberships.sql`,
+`test/database/lifecycle.integration.test.ts`  
 **Depends on**: None  
 **Reuses**: `migrations/001_initial.sql`, `migrations/002_users.sql`  
-**Requirement**: GWM-01, GWM-02, GWM-06, GWM-09, GWM-15, GWM-16, GWM-18,
-GWM-20, GWM-21
+**Requirement**: GWM-01, GWM-02, GWM-06, GWM-09, GWM-18, GWM-20
 
 **Tools**:
 
@@ -88,12 +88,11 @@ GWM-20, GWM-21
 
 **Done when**:
 
-- [ ] All new Gym Flow entity primary keys default to PostgreSQL 18 `uuidv7()`; Better Auth user IDs remain text.
-- [ ] Constraints enforce normalized email uniqueness, one membership per gym/user, one immutable owner relationship, and valid gym ownership.
-- [ ] Workout and session rows store `gym_id` and creator attribution.
-- [ ] The migration applies to an empty PostgreSQL 18 test database and the Build gate passes.
+- [x] All new gym-access and audit entity primary keys default to PostgreSQL 18 `uuidv7()`; Better Auth user IDs remain text.
+- [x] Constraints enforce normalized email uniqueness, one membership per gym/user, one immutable owner relationship, and valid gym ownership.
+- [x] The migration applies to an empty PostgreSQL 18 test database and the Build gate passes.
 
-**Tests**: none -- schema layer; behavior is exercised as each repository is introduced  
+**Tests**: integration -- migration lifecycle regression  
 **Gate**: build
 
 ### T2: Map the Gym Access Schema in Drizzle
@@ -103,7 +102,7 @@ identity, gym, membership, selection, audit, and gym-owned training columns.
 **Where**: `src/db/schema.ts`  
 **Depends on**: T1  
 **Reuses**: Existing Drizzle table and relation conventions  
-**Requirement**: GWM-01, GWM-02, GWM-09, GWM-15, GWM-18
+**Requirement**: GWM-01, GWM-02, GWM-09, GWM-18
 
 **Tools**:
 
@@ -264,9 +263,11 @@ and active-context resolution without exporting repositories or entities.
 
 ### T9: Scope Training Records to the Active Gym
 
-**What**: Replace creator-owned workout/session authorization with mandatory
-validated gym context while retaining creator attribution.  
-**Where**: `src/data/workouts.ts`  
+**What**: Migrate workout/session storage from creator ownership to gym
+ownership, map that schema in Drizzle, and require mandatory validated gym
+context while retaining creator attribution.  
+**Where**: `migrations/004_gym_owned_training.sql`, `src/db/schema.ts`,
+`src/data/workouts.ts`  
 **Depends on**: T8  
 **Reuses**: Existing workout mapping, validation, and transaction behavior  
 **Requirement**: GWM-15, GWM-16, GWM-17, GWM-21
@@ -279,6 +280,7 @@ validated gym context while retaining creator attribution.
 **Done when**:
 
 - [ ] Every workout and session read/write requires `GymContext`.
+- [ ] Training entity UUIDs use PostgreSQL 18 `uuidv7()` database defaults.
 - [ ] Records persist `gym_id` plus creator attribution.
 - [ ] Cross-gym and missing-gym relationships are rejected without leakage.
 - [ ] Integration tests cover creation, listing, sessions, creator preservation, and cross-gym denial; the Full gate passes.

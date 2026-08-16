@@ -201,8 +201,8 @@ event type, gym, actor, target, and timestamp remain typed columns for querying.
 | `memberships`           | Database-generated UUIDv7 `id`; `gym_id`; `user_id`; `role`; `status`; unique `(gym_id, user_id)`; owner protection.     |
 | `active_gym_selections` | `user_id` primary key; `gym_id`; `membership_id`; updated timestamp; membership relationship validated on resolution.    |
 | `security_audit_events` | Database-generated UUIDv7 `id`; event type; gym; nullable actor; target type/id; timestamp; JSONB metadata; append-only. |
-| `workouts`              | Replace `owner_id` with `gym_id` and `created_by_user_id`; gym-scoped color uniqueness.                                  |
-| `workout_sessions`      | Add `gym_id`; replace `owner_id` with `created_by_user_id`; gym-scoped history index.                                    |
+| `workouts`              | T9 replaces `owner_id` with `gym_id` and `created_by_user_id`; gym-scoped color uniqueness.                              |
+| `workout_sessions`      | T9 adds `gym_id`, replaces `owner_id` with `created_by_user_id`, and adds a gym-scoped history index.                    |
 
 The migration may recreate development and test records as confirmed in the
 spec. Foreign keys protect referential integrity inside the single deployment;
