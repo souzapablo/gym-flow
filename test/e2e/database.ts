@@ -22,7 +22,7 @@ const proof: TestDatabaseProof = {
   connectionUri,
 };
 
-export async function seedWorkoutScenario() {
+export async function seedWorkoutScenario({ multiGym = false } = {}) {
   await resetTestDatabase(e2ePool, proof);
 
   const user = buildUserFixture();
@@ -57,11 +57,23 @@ export async function seedWorkoutScenario() {
        values ($1, $2, 'owner', 'active') returning id::text`,
       [gymId, user.id],
     );
-    await e2ePool.query(
-      `insert into active_gym_selections (user_id, gym_id, membership_id)
-       values ($1, $2, $3)`,
-      [user.id, gymId, membership.rows[0].id],
-    );
+    if (multiGym) {
+      const secondGym = await e2ePool.query<{ id: string }>(
+        "insert into gyms (name, owner_user_id) values ('Second gym', $1) returning id::text",
+        [user.id],
+      );
+      await e2ePool.query(
+        `insert into memberships (gym_id, user_id, role, status)
+         values ($1, $2, 'owner', 'active')`,
+        [secondGym.rows[0].id, user.id],
+      );
+    } else {
+      await e2ePool.query(
+        `insert into active_gym_selections (user_id, gym_id, membership_id)
+         values ($1, $2, $3)`,
+        [user.id, gymId, membership.rows[0].id],
+      );
+    }
     await e2ePool.query(
       `insert into sessions (id, user_id, token, expires_at)
        values ($1, $2, $1, now() + interval '1 day')`,

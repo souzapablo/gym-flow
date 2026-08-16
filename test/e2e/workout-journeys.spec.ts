@@ -14,8 +14,30 @@ test("loads a seeded workout", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: new RegExp(workout.name) }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Escolha uma academia" }),
+  ).toHaveCount(0);
   await expect(page.getByText(workout.focus)).toBeVisible();
   await expect(page.getByText(workout.exercises[0].name)).not.toBeVisible();
+});
+
+test("selects a gym before loading workouts for a multi-gym account", async ({
+  page,
+}) => {
+  const workout = await seedWorkoutScenario({ multiGym: true });
+
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Escolha uma academia" }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Academia", { exact: true })
+    .selectOption({ label: "Main gym" });
+  await page.getByRole("button", { name: "Continuar" }).click();
+
+  await expect(
+    page.getByRole("button", { name: new RegExp(workout.name) }),
+  ).toBeVisible();
 });
 
 test("creates a workout through the application", async ({ page }) => {

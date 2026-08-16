@@ -14,7 +14,7 @@ without it.**
 ---
 
 **Design**: `.specs/features/0002-gym-workspaces-memberships/design.md`  
-**Status**: In Progress
+**Status**: Implementation Complete
 
 ---
 
@@ -335,10 +335,10 @@ active memberships and preserve the existing workout experience after choice.
 
 **Done when**:
 
-- [ ] One membership proceeds without prompting and multiple memberships render an accessible selector.
-- [ ] Selection pending, success, forbidden, and stale-membership states are represented without disclosing other gyms.
-- [ ] Component integration tests cover accessible interaction and action outcomes.
-- [ ] The browser suite proves the multi-gym selection path and all existing journeys remain green; the Full and Build gates pass.
+- [x] One membership proceeds without prompting and multiple memberships render an accessible selector.
+- [x] Selection pending, success, forbidden, and stale-membership states are represented without disclosing other gyms.
+- [x] Component integration tests cover accessible interaction and action outcomes.
+- [x] The browser suite proves the multi-gym selection path and all existing journeys remain green; the Full and Build gates pass.
 
 **Tests**: component and e2e  
 **Gate**: full and build
