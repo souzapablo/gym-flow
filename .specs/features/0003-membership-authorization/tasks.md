@@ -232,7 +232,7 @@ T8 -> T9 -> T10
 **Gate**: full
 **Commit**: `feat(authz): enforce authorized operations`
 
-### T7: Publish the Gym Access Authorization Contract
+### T7: Publish the Gym Access Authorization Contract ✅
 
 **What**: Expose the authorized-operation boundary and provider-neutral request/context types through the Gym Access facade without exposing persistence collaborators.
 **Where**: `src/modules/gym-access/`
@@ -247,11 +247,11 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] Callers can invoke named authorization operations only through the Gym Access public contract.
-- [ ] DTOs expose primitive provider-neutral values and no Drizzle or domain internals.
-- [ ] Internal policy, loader, and audit collaborators remain unexported.
-- [ ] At least 4 facade integration cases cover allow, generic denial, default relationship denial, and invocation-scoped context.
-- [ ] Full gate passes.
+- [x] Callers can invoke named authorization operations only through the Gym Access public contract.
+- [x] DTOs expose primitive provider-neutral values and no Drizzle or domain internals.
+- [x] Internal policy, loader, and audit collaborators remain unexported.
+- [x] At least 4 facade integration cases cover allow, generic denial, default relationship denial, and invocation-scoped context.
+- [x] Full gate passes.
 
 **Tests**: integration
 **Gate**: full

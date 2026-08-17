@@ -22,14 +22,12 @@ const userId = "70000000-0000-7000-8000-000000000061";
 let gymId: string;
 beforeEach(async () => {
   await resetTestDatabase(context.pool, proof);
-  await context.database
-    .insert(users)
-    .values({
-      id: userId,
-      name: "User",
-      email: "user@example.com",
-      emailVerified: true,
-    });
+  await context.database.insert(users).values({
+    id: userId,
+    name: "User",
+    email: "user@example.com",
+    emailVerified: true,
+  });
   const gym = await createGymProvisioningService({ db: context.database })(
     { userId, email: "user@example.com" },
     { name: "Gym" },

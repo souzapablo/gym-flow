@@ -217,16 +217,19 @@ it.each(["owner", "admin", "coach", "trainee"])(
   },
 );
 
-it.each(["member", "unknown"])("rejects the non-canonical %s role", async (role) => {
-  const gym = await provisionGym(
-    identity("70000000-0000-7000-8000-000000000031"),
-    { name: "Downtown Gym" },
-  );
-  await insertUser("70000000-0000-7000-8000-000000000021");
-  await expect(
-    context.pool.query(
-      "insert into memberships (gym_id, user_id, role, status) values ($1, $2, $3, 'active')",
-      [gym.id, "70000000-0000-7000-8000-000000000021", role],
-    ),
-  ).rejects.toMatchObject({ constraint: "memberships_role_check" });
-});
+it.each(["member", "unknown"])(
+  "rejects the non-canonical %s role",
+  async (role) => {
+    const gym = await provisionGym(
+      identity("70000000-0000-7000-8000-000000000031"),
+      { name: "Downtown Gym" },
+    );
+    await insertUser("70000000-0000-7000-8000-000000000021");
+    await expect(
+      context.pool.query(
+        "insert into memberships (gym_id, user_id, role, status) values ($1, $2, $3, 'active')",
+        [gym.id, "70000000-0000-7000-8000-000000000021", role],
+      ),
+    ).rejects.toMatchObject({ constraint: "memberships_role_check" });
+  },
+);

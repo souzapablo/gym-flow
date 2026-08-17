@@ -20,14 +20,12 @@ const userId = "70000000-0000-7000-8000-000000000041";
 
 beforeEach(async () => {
   await resetTestDatabase(context.pool, proof);
-  await context.database
-    .insert(users)
-    .values({
-      id: userId,
-      name: "User",
-      email: "user@example.com",
-      emailVerified: true,
-    });
+  await context.database.insert(users).values({
+    id: userId,
+    name: "User",
+    email: "user@example.com",
+    emailVerified: true,
+  });
 });
 afterAll(async () => context.close());
 
@@ -156,14 +154,12 @@ async function selectedGym() {
 
 async function selectedTrainee() {
   const ownerId = "70000000-0000-7000-8000-000000000042";
-  await context.database
-    .insert(users)
-    .values({
-      id: ownerId,
-      name: "Owner",
-      email: "owner@example.com",
-      emailVerified: true,
-    });
+  await context.database.insert(users).values({
+    id: ownerId,
+    name: "Owner",
+    email: "owner@example.com",
+    emailVerified: true,
+  });
   const gym = await createGymProvisioningService({ db: context.database })(
     { userId: ownerId, email: "owner@example.com" },
     { name: "Gym" },

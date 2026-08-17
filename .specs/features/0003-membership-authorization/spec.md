@@ -99,7 +99,7 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 
 | Requirement ID | Story                         | Phase                 | Status      |
 | -------------- | ----------------------------- | --------------------- | ----------- |
-| AUTHZ-01       | Enforce the Membership Policy | T2/T4/T6/T7           | In Progress |
+| AUTHZ-01       | Enforce the Membership Policy | T2/T4/T6/T7           | Complete    |
 | AUTHZ-02       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
 | AUTHZ-03       | Enforce the Membership Policy | T2/T4/T6/T8/T9/T10    | In Progress |
 | AUTHZ-04       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
