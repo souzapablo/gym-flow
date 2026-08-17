@@ -18,3 +18,8 @@ export {
   loadCurrentAuthorizationFacts,
   type LoadedAuthorizationFacts,
 } from "./facts-loader";
+export {
+  AuthorizationAuditError,
+  persistAuthorizationDenial,
+  type AuditableDenialReason,
+} from "./denial-audit";

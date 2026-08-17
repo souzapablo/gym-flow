@@ -103,7 +103,7 @@ Gym tenancy alone does not determine which operations a member may perform. Gym 
 | AUTHZ-02       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
 | AUTHZ-03       | Enforce the Membership Policy | T2/T4/T6/T8/T9/T10    | In Progress |
 | AUTHZ-04       | Enforce the Membership Policy | T2/T6/T8/T9/T10       | In Progress |
-| AUTHZ-05       | Enforce the Membership Policy | T5/T6/T9/T10          | Planned     |
+| AUTHZ-05       | Enforce the Membership Policy | T5/T6/T9/T10          | In Progress |
 | AUTHZ-06       | Define Role Capabilities      | T1/T2/T8/T9/T10       | In Progress |
 | AUTHZ-07       | Define Role Capabilities      | T1/T2/T8/T9/T10       | In Progress |
 | AUTHZ-08       | Define Role Capabilities      | T1/T2/T3/T8/T9/T10    | In Progress |

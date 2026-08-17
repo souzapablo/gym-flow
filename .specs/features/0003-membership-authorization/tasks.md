@@ -178,7 +178,7 @@ T8 -> T9 -> T10
 **Gate**: full
 **Commit**: `feat(authz): load current authorization facts`
 
-### T5: Persist Authorization Denial Evidence
+### T5: Persist Authorization Denial Evidence ✅
 
 **What**: Translate auditable deny decisions into committed `authorization.denied` security events without exposing internal reason details publicly.
 **Where**: `src/modules/gym-access/authorization/`
@@ -193,12 +193,12 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] Cross-gym, role, membership-status, and relationship denials map to stable internal audit reason codes.
-- [ ] Audit metadata contains operation and resource type without resource payload or existence details.
-- [ ] A valid resource UUIDv7 is the target when available; otherwise the selected gym is the target.
-- [ ] Audit persistence completes before a forbidden result can be returned.
-- [ ] At least 6 integration cases cover the four required denial classes, target fallback, and audit-write failure.
-- [ ] Full gate passes.
+- [x] Cross-gym, role, membership-status, and relationship denials map to stable internal audit reason codes.
+- [x] Audit metadata contains operation and resource type without resource payload or existence details.
+- [x] A valid resource UUIDv7 is the target when available; otherwise the selected gym is the target.
+- [x] Audit persistence completes before a forbidden result can be returned.
+- [x] At least 6 integration cases cover the four required denial classes, target fallback, and audit-write failure.
+- [x] Full gate passes.
 
 **Tests**: integration
 **Gate**: full
