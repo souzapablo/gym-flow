@@ -204,7 +204,7 @@ T8 -> T9 -> T10
 **Gate**: full
 **Commit**: `feat(authz): audit authorization denials`
 
-### T6: Implement the Authorized Operation Boundary
+### T6: Implement the Authorized Operation Boundary ✅
 
 **What**: Coordinate membership and resource-fact loading, relationship resolution, policy evaluation, protected handler execution, transaction completion, denial auditing, and generic errors.
 **Where**: `src/modules/gym-access/authorization/`
@@ -219,14 +219,14 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] `withGymAuthorization` invokes its handler only for an allow decision.
-- [ ] ID-based requests can resolve the resource's actual gym through the authorization transaction before policy evaluation.
-- [ ] The handler receives the same transaction and an invocation-scoped `AuthorizedGymContext`.
-- [ ] Denials complete without protected work, commit required audit evidence separately, and throw only `GymAccessForbiddenError`.
-- [ ] Audit failure throws `AuthorizationAuditError` and never executes protected work.
-- [ ] Handler failure rolls back its transaction without creating a denial audit event.
-- [ ] At least 8 integration cases cover allow, each denial class, audit failure, handler rollback, stale context, and generic public errors.
-- [ ] Full gate passes.
+- [x] `withGymAuthorization` invokes its handler only for an allow decision.
+- [x] ID-based requests can resolve the resource's actual gym through the authorization transaction before policy evaluation.
+- [x] The handler receives the same transaction and an invocation-scoped `AuthorizedGymContext`.
+- [x] Denials complete without protected work, commit required audit evidence separately, and throw only `GymAccessForbiddenError`.
+- [x] Audit failure throws `AuthorizationAuditError` and never executes protected work.
+- [x] Handler failure rolls back its transaction without creating a denial audit event.
+- [x] At least 8 integration cases cover allow, each denial class, audit failure, handler rollback, stale context, and generic public errors.
+- [x] Full gate passes.
 
 **Tests**: integration
 **Gate**: full

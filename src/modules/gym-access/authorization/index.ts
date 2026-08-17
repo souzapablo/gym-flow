@@ -23,3 +23,8 @@ export {
   persistAuthorizationDenial,
   type AuditableDenialReason,
 } from "./denial-audit";
+export {
+  createAuthorizedOperationBoundary,
+  type AuthorizationRequest,
+  type AuthorizedGymContext,
+} from "./authorized-operation";
