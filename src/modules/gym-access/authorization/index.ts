@@ -14,3 +14,7 @@ export {
   type RelationshipQuery,
   type RelationshipResolver,
 } from "./relationship-policy";
+export {
+  loadCurrentAuthorizationFacts,
+  type LoadedAuthorizationFacts,
+} from "./facts-loader";

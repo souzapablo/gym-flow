@@ -152,7 +152,7 @@ T8 -> T9 -> T10
 
 ### Phase 2: Enforcement Boundary
 
-### T4: Load and Lock Current Authorization Facts
+### T4: Load and Lock Current Authorization Facts ✅
 
 **What**: Load the persisted active selection and current membership, validate database strings, and hold a shared membership lock for the protected transaction.
 **Where**: `src/modules/gym-access/authorization/`
@@ -167,12 +167,12 @@ T8 -> T9 -> T10
 
 **Done when**:
 
-- [ ] Facts come from current PostgreSQL state rather than a caller-supplied `GymContextDto`.
-- [ ] Membership role and status strings pass explicit runtime parsers without unsafe casts.
-- [ ] Missing, stale, inactive, and malformed selection/membership states produce deny facts without leaking existence.
-- [ ] A shared membership-row lock remains held until the supplied transaction finishes.
-- [ ] At least 8 integration cases cover active, stale, inactive, absent, malformed, unknown-role/status, and lock behavior.
-- [ ] Full gate passes.
+- [x] Facts come from current PostgreSQL state rather than a caller-supplied `GymContextDto`.
+- [x] Membership role and status strings pass explicit runtime parsers without unsafe casts.
+- [x] Missing, stale, inactive, and malformed selection/membership states produce deny facts without leaking existence.
+- [x] A shared membership-row lock remains held until the supplied transaction finishes.
+- [x] At least 8 integration cases cover active, stale, inactive, absent, malformed, unknown-role/status, and lock behavior.
+- [x] Full gate passes.
 
 **Tests**: integration
 **Gate**: full
